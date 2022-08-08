@@ -1,24 +1,22 @@
-# graduation-design2
+主题颜色：#98fb98
 
-## Project setup
-```
-npm install
-```
+# 页面
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## 普通用户
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### 登录注册（/loginRegister）
 
-### Lints and fixes files
-```
-npm run lint
-```
+### 首页（/index）
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 详情（/details）
+
+### 发布、编辑（/edit）
+
+## 管理员
+
+### 登录注册（/loginRegister）
+
+### 审核列表页（/index）
+
+### 审核页（/audit）
+
