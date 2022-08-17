@@ -12,8 +12,8 @@
         >
           <article>
             <router-link to="/">
-              <h1 class="title">Motor for Drone</h1>
-              <p class="description p1">
+              <h1>Motor for Drone</h1>
+              <p>
                 A drone cannot fly without a motor for drone. This article will
                 take you to understand the role of drone motors.
               </p>
@@ -29,16 +29,12 @@
     <div>
       <article>
         <router-link to="/">
-          <img src="" alt="">
-        </router-link>
-      </article>
-    </div>
-    <div>
-      <article>
-        <router-link to="/">
-          <img src="https://onlydroneparts.com/wp-content/uploads/2022/08/motor-for-drone.png" alt="" />
+          <img
+            src="https://onlydroneparts.com/wp-content/uploads/2022/08/motor-for-drone.png"
+            alt=""
+          />
           <div class="content">
-            <h3 class="title">Motor for Drone</h3>
+            <h2 class="title">Motor for Drone</h2>
             <p class="description p1">
               A drone cannot fly without a motor for drone. This article will
               take you to understand the role of drone motors.
@@ -50,11 +46,34 @@
     <div>
       <article>
         <router-link to="/">
-          <h3 class="title">Motor for Drone</h3>
-          <p class="description p1">
-            A drone cannot fly without a motor for drone. This article will take
-            you to understand the role of drone motors.
-          </p>
+          <img
+            src="https://onlydroneparts.com/wp-content/uploads/2022/08/motor-for-drone.png"
+            alt=""
+          />
+          <div class="content">
+            <h3>Motor for Drone</h3>
+            <p>
+              A drone cannot fly without a motor for drone. This article will
+              take you to understand the role of drone motors.
+            </p>
+          </div>
+        </router-link>
+      </article>
+    </div>
+    <div>
+      <article>
+        <router-link to="/">
+          <img
+            src="https://onlydroneparts.com/wp-content/uploads/2022/08/motor-for-drone.png"
+            alt=""
+          />
+          <div class="content">
+            <h3 class="title">Motor for Drone</h3>
+            <p>
+              A drone cannot fly without a motor for drone. This article will
+              take you to understand the role of drone motors.
+            </p>
+          </div>
         </router-link>
       </article>
     </div>
@@ -117,24 +136,12 @@ export default {
           text-align: center;
           width: 60%;
 
-          .title {
+          h1 {
             position: relative;
             margin-bottom: 40px;
           }
 
-          h1 {
-            font-size: 2rem;
-          }
-
-          h2 {
-            font-size: 1.5rem;
-          }
-
-          h3 {
-            font-size: 1rem;
-          }
-
-          .title::before {
+          h1::before {
             content: "";
             position: absolute;
             bottom: -5px;
@@ -143,9 +150,6 @@ export default {
             height: 3px;
             background-color: white;
             border-radius: 5px;
-          }
-
-          .description {
           }
         }
       }

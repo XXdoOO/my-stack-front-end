@@ -80,8 +80,6 @@
   </div>
 </template>
 <script>
-import axios from "axios";
-
 export default {
   name: "LoginRegister",
   data() {
@@ -109,18 +107,18 @@ export default {
         this.tip.loginTip = "用户名或密码不能为空！";
         this.tip.tipClass = true;
       } else {
-        axios
+        this.axios
           .post(
-            `http://localhost:8080/login?username=${username}&password=${password}`
+            `/login?username=${username}&password=${password}`
           )
           .then(
             (response) => {
               console.log(response);
-              if (response.data.statusCode !== 200) {
+              if (response.data.code !== 200) {
                 this.tip.loginTip = response.data.msg;
                 this.tip.tipClass = true;
               } else {
-                this.$router.push("/index");
+                this.$router.push("/");
               }
             },
             (error) => {
@@ -140,14 +138,15 @@ export default {
         this.tip.registerTip = "两次密码不一致！";
         this.tip.tipClass = true;
       } else {
-        axios
+        this.axios
           .post(
-            `http://localhost:8080/register?username=${username}&password=${password}`
+            `/register?username=${username}&password=${password}`
           )
           .then(
             (response) => {
               console.log(response);
-              if (response.data.statusCode !== 200) {
+              if (response.data.code !== 200) {
+                this.tip.registerTip = "用户已存在！";
                 this.tip.loginTip = response.data.msg;
                 this.tip.tipClass = true;
               } else {
