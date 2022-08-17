@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "jxzk";
+  src: url("@/assets/font/有爱魔兽圆体-M.ttf");
+}
+.container {
+  width: 90%;
+  max-width: 1250px;
+  margin: 0 auto;
+}
