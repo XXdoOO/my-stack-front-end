@@ -26,57 +26,108 @@
       <div class="swiper-button-prev"></div>
       <div class="swiper-button-next"></div>
     </div>
-    <div>
-      <article>
-        <router-link to="/">
-          <img
-            src="https://onlydroneparts.com/wp-content/uploads/2022/08/motor-for-drone.png"
-            alt=""
-          />
-          <div class="content">
-            <h2 class="title">Motor for Drone</h2>
-            <p class="description p1">
-              A drone cannot fly without a motor for drone. This article will
-              take you to understand the role of drone motors.
-            </p>
-          </div>
-        </router-link>
-      </article>
-    </div>
-    <div>
-      <article>
-        <router-link to="/">
-          <img
-            src="https://onlydroneparts.com/wp-content/uploads/2022/08/motor-for-drone.png"
-            alt=""
-          />
-          <div class="content">
-            <h3>Motor for Drone</h3>
-            <p>
-              A drone cannot fly without a motor for drone. This article will
-              take you to understand the role of drone motors.
-            </p>
-          </div>
-        </router-link>
-      </article>
-    </div>
-    <div>
-      <article>
-        <router-link to="/">
-          <img
-            src="https://onlydroneparts.com/wp-content/uploads/2022/08/motor-for-drone.png"
-            alt=""
-          />
-          <div class="content">
-            <h3 class="title">Motor for Drone</h3>
-            <p>
-              A drone cannot fly without a motor for drone. This article will
-              take you to understand the role of drone motors.
-            </p>
-          </div>
-        </router-link>
-      </article>
-    </div>
+    <article>
+      <router-link to="/">
+        <img
+          src="https://onlydroneparts.com/wp-content/uploads/2022/08/motor-for-drone.png"
+          alt=""
+        />
+        <div class="content">
+          <h2 class="title">Motor for Drone</h2>
+          <p class="description p1">
+            A drone cannot fly without a motor for drone. This article will take
+            you to understand the role of drone motors.
+          </p>
+          <ul>
+            <li>
+              <i></i>
+              <span>1000</span>
+            </li>
+            <li>
+              <i></i>
+              <span>1000</span>
+            </li>
+            <li>
+              <i></i>
+              <span>1000</span>
+            </li>
+            <li>
+              <i></i>
+              <span>1000</span>
+            </li>
+          </ul>
+        </div>
+        <div class="top">TOP 1</div>
+      </router-link>
+    </article>
+    <article>
+      <router-link to="/">
+        <img
+          src="https://onlydroneparts.com/wp-content/uploads/2022/08/motor-for-drone.png"
+          alt=""
+        />
+        <div class="content">
+          <h2>Motor for Drone</h2>
+          <p>
+            A drone cannot fly without a motor for drone. This article will take
+            you to understand the role of drone motors.
+          </p>
+          <ul>
+            <li>
+              <i></i>
+              <span>1000</span>
+            </li>
+            <li>
+              <i></i>
+              <span>1000</span>
+            </li>
+            <li>
+              <i></i>
+              <span>1000</span>
+            </li>
+            <li>
+              <i></i>
+              <span>1000</span>
+            </li>
+          </ul>
+        </div>
+        <div class="top">TOP 2</div>
+      </router-link>
+    </article>
+    <article>
+      <router-link to="/">
+        <img
+          src="https://onlydroneparts.com/wp-content/uploads/2022/08/motor-for-drone.png"
+          alt=""
+        />
+        <div class="content">
+          <h2 class="title">Motor for Drone</h2>
+          <p>
+            A drone cannot fly without a motor for drone. This article will take
+            you to understand the role of drone motors.
+          </p>
+          <ul>
+            <li>
+              <i></i>
+              <span>1000</span>
+            </li>
+            <li>
+              <i></i>
+              <span>1000</span>
+            </li>
+            <li>
+              <i></i>
+              <span>1000</span>
+            </li>
+            <li>
+              <i></i>
+              <span>1000</span>
+            </li>
+          </ul>
+        </div>
+        <div class="top">TOP 3</div>
+      </router-link>
+    </article>
   </div>
 </template>
 <script>
@@ -106,21 +157,18 @@ export default {
 <style lang="less" scoped>
 .show-block {
   display: grid;
-  grid-template-rows: 230px 230px;
+  grid-template-rows: 200px 400px;
   grid-template-columns: 50% calc(25% - 10px) calc(25% - 10px);
   gap: 20px;
   padding: 50px 0;
-
-  > div {
-    border-radius: 5px;
-    overflow: hidden;
-  }
 
   .swiper-container {
     width: 100%;
     height: 100%;
     grid-row-start: 1;
     grid-row-end: 3;
+    border-radius: 5px;
+    overflow: hidden;
 
     .swiper-slide {
       article {
@@ -156,17 +204,136 @@ export default {
     }
   }
 
-  > div:nth-child(2) {
-    background-color: green;
-    grid-column-start: 2;
-    grid-column-end: 4;
-  }
-  > div:nth-child(3) {
-    background-color: blue;
+  > article {
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: @shadow-color;
+
+    a {
+      position: relative;
+      display: flex;
+      width: 100%;
+      height: 100%;
+
+      .top {
+        position: absolute;
+        right: 0;
+        padding: 1% 2%;
+        background-color: @theme-color;
+        color: white;
+        font-weight: bold;
+      }
+
+      .top:first-of-type {
+        font-size: 20px;
+      }
+
+      .content {
+        position: relative;
+        padding: 15px 20px;
+        flex-grow: 1;
+
+        h2 {
+          margin-bottom: 10px;
+        }
+      }
+
+      ul {
+        position: absolute;
+        bottom: 20px;
+        display: flex;
+        align-items: center;
+
+        li {
+          display: flex;
+          align-items: center;
+          margin-right: 10px;
+
+          span {
+            font-size: 10px;
+          }
+        }
+
+        li:first-child i {
+          display: block;
+          width: 25px;
+          height: 25px;
+          background-image: url(../../assets/img/up.png);
+          background-size: cover;
+          transition: @transition-time;
+        }
+
+        li:first-child i:hover {
+          background-image: url(../../assets/img/up-hover.png);
+        }
+
+        li:nth-child(2) i {
+          display: block;
+          transform: rotate(180deg);
+          width: 25px;
+          height: 25px;
+          background-image: url(../../assets/img/up.png);
+          background-size: cover;
+          transition: @transition-time;
+        }
+
+        li:nth-child(2) i:hover {
+          background-image: url(../../assets/img/up-hover.png);
+        }
+
+        li:nth-child(3) i {
+          display: block;
+          width: 25px;
+          height: 25px;
+          background-image: url(../../assets/img/star.png);
+          background-size: cover;
+          transition: @transition-time;
+        }
+
+        li:nth-child(3) i:hover {
+          background-image: url(../../assets/img/star-hover.png);
+        }
+
+        li:nth-child(4) i {
+          display: block;
+          width: 25px;
+          height: 25px;
+          background-image: url(../../assets/img/view.png);
+          background-size: cover;
+          transition: @transition-time;
+        }
+      }
+    }
   }
 
-  > div:nth-child(4) {
-    background-color: yellow;
+  > article:nth-child(2) {
+    grid-column-start: 2;
+    grid-column-end: 4;
+
+    > img {
+      width: calc(50% - 10px);
+      height: 100%;
+    }
+
+    .top {
+      font-size: 23px;
+      top: 0;
+    }
+  }
+  > article:nth-child(3),
+  > article:nth-child(4) {
+    a {
+      flex-direction: column;
+    }
+
+    > img {
+      width: 100%;
+      height: 50%;
+    }
+
+    .top {
+      bottom: 0;
+    }
   }
 }
 </style>
