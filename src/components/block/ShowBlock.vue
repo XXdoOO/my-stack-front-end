@@ -250,57 +250,59 @@ export default {
           margin-right: 10px;
 
           span {
+            height: 17.5px;
             font-size: 10px;
+            transition: @transition-time;
           }
         }
 
-        li:first-child i {
+        li i {
+          width: 20px;
+          height: 20px;
           display: block;
-          width: 25px;
-          height: 25px;
-          background-image: url(../../assets/img/up.png);
           background-size: cover;
           transition: @transition-time;
         }
 
-        li:first-child i:hover {
+        li:first-child i {
+          background-image: url(../../assets/img/up.png);
+        }
+
+        li:first-child:hover i {
           background-image: url(../../assets/img/up-hover.png);
+        }
+
+        li:first-child:hover {
+          color: @theme-color;
         }
 
         li:nth-child(2) i {
-          display: block;
           transform: rotate(180deg);
-          width: 25px;
-          height: 25px;
           background-image: url(../../assets/img/up.png);
-          background-size: cover;
-          transition: @transition-time;
         }
 
-        li:nth-child(2) i:hover {
+        li:nth-child(2):hover i {
           background-image: url(../../assets/img/up-hover.png);
         }
 
-        li:nth-child(3) i {
-          display: block;
-          width: 25px;
-          height: 25px;
-          background-image: url(../../assets/img/star.png);
-          background-size: cover;
-          transition: @transition-time;
+        li:nth-child(2):hover {
+          color: @theme-color;
         }
 
-        li:nth-child(3) i:hover {
+        li:nth-child(3) i {
+          background-image: url(../../assets/img/star.png);
+        }
+
+        li:nth-child(3):hover i {
           background-image: url(../../assets/img/star-hover.png);
         }
 
+        li:nth-child(3):hover {
+          color: @theme-color;
+        }
+
         li:nth-child(4) i {
-          display: block;
-          width: 25px;
-          height: 25px;
           background-image: url(../../assets/img/view.png);
-          background-size: cover;
-          transition: @transition-time;
         }
       }
     }
