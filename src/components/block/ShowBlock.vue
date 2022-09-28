@@ -2,14 +2,11 @@
   <div class="container show-block">
     <div class="swiper-container">
       <div class="swiper-wrapper">
-        <div
-          class="swiper-slide swiper-slide1"
-          style="
-            background-image: url(https://onlydroneparts.com/wp-content/uploads/2022/08/motor-for-drone.png);
+        <div class="swiper-slide swiper-slide1" style="
+            background-image: url(../../assets/img/cover.webp);
             background-size: cover;
             background-position: center;
-          "
-        >
+          ">
           <article>
             <router-link to="/">
               <h1>Motor for Drone</h1>
@@ -28,10 +25,7 @@
     </div>
     <article>
       <router-link to="/">
-        <img
-          src="https://onlydroneparts.com/wp-content/uploads/2022/08/motor-for-drone.png"
-          alt=""
-        />
+        <img src="../../assets/img/cover.webp" alt="" />
         <div class="content">
           <h2 class="title">Motor for Drone</h2>
           <p class="description p1">
@@ -62,10 +56,7 @@
     </article>
     <article>
       <router-link to="/">
-        <img
-          src="https://onlydroneparts.com/wp-content/uploads/2022/08/motor-for-drone.png"
-          alt=""
-        />
+        <img src="../../assets/img/cover.webp" alt="" />
         <div class="content">
           <h2>Motor for Drone</h2>
           <p>
@@ -96,10 +87,7 @@
     </article>
     <article>
       <router-link to="/">
-        <img
-          src="https://onlydroneparts.com/wp-content/uploads/2022/08/motor-for-drone.png"
-          alt=""
-        />
+        <img src="../../assets/img/cover.webp" alt="" />
         <div class="content">
           <h2 class="title">Motor for Drone</h2>
           <p>
@@ -204,7 +192,7 @@ export default {
     }
   }
 
-  > article {
+  >article {
     border-radius: 5px;
     overflow: hidden;
     box-shadow: @shadow-color;
@@ -308,11 +296,11 @@ export default {
     }
   }
 
-  > article:nth-child(2) {
+  >article:nth-child(2) {
     grid-column-start: 2;
     grid-column-end: 4;
 
-    > img {
+    >img {
       width: calc(50% - 10px);
       height: 100%;
     }
@@ -322,13 +310,14 @@ export default {
       top: 0;
     }
   }
-  > article:nth-child(3),
-  > article:nth-child(4) {
+
+  >article:nth-child(3),
+  >article:nth-child(4) {
     a {
       flex-direction: column;
     }
 
-    > img {
+    >img {
       width: 100%;
       height: 50%;
     }

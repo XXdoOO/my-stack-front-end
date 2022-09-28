@@ -1,5 +1,5 @@
-<template lang="">
-    <div>
+<template>
+    <div class="root">
         <HeaderBlock />
         <ShowBlock />
         <FooterBlock />
@@ -14,5 +14,9 @@ export default {
   components: { HeaderBlock, ShowBlock, FooterBlock },
 };
 </script>
-<style lang="less">
+<style lang="less" scoped>
+.root {
+    position: relative;
+    top: 70px;
+  }
 </style>

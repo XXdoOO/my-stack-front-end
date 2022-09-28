@@ -1,12 +1,9 @@
 <template>
-  <header
-    class="header-block"
-    :style="{
-      top: scroll + 'px',
-      'box-shadow':
-        scroll === -70 ? 'none' : '0px 8px 25px 20px rgba(44, 16, 111, 0.06)',
-    }"
-  >
+  <header class="header-block" :style="{
+    top: scroll + 'px',
+    'box-shadow':
+      scroll === -70 ? 'none' : '0px 8px 25px 20px rgba(44, 16, 111, 0.06)',
+  }">
     <div class="container">
       <router-link class="logo" to="/">
         <img src="../../assets/img/logo.png" alt="" width="35" />
@@ -14,25 +11,16 @@
       </router-link>
 
       <nav>
-        <router-link to="">首页</router-link>
-        <router-link to="">热门</router-link>
-        <router-link to="">我的</router-link>
+        <router-link to="/" :class="{active: this.$route.path == '/'}">首页</router-link>
+        <router-link to="/top" :class="{active: this.$route.path == '/top'}">热门</router-link>
+        <router-link to="/user" :class="{active: this.$route}.path == '/user'">我的</router-link>
       </nav>
 
       <SearchInput />
 
       <router-link class="face" :to="isLogin ? '/logout' : '/loginRegister'">
-        <img
-          src="../../assets/img/logo.png"
-          alt=""
-          width="35"
-          :hidden="!isLogin"
-        />
-        <span
-          @mouseover="mouseoverLogout"
-          @mouseout="mouseoutLogout"
-          :style="{ '--loginMsg': loginMsg }"
-        ></span>
+        <img src="../../assets/img/logo.png" alt="" width="35" :hidden="!isLogin" />
+        <span @mouseover="mouseoverLogout" @mouseout="mouseoutLogout" :style="{ '--loginMsg': loginMsg }"></span>
       </router-link>
     </div>
   </header>
@@ -82,9 +70,8 @@ export default {
         window.pageYOffset ||
         document.documentElement.scrollTop ||
         document.body.scrollTop;
-      var scroll = scrollTop - this.scrollTop;
+      let scroll = scrollTop - this.scrollTop;
       this.scrollTop = scrollTop;
-      console.log(scroll);
 
       if (scroll < 0) {
         // 鼠标上滚
@@ -109,7 +96,7 @@ export default {
   box-shadow: @shadow-color;
   z-index: 999;
 
-  > div {
+  >div {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -150,7 +137,7 @@ export default {
         transition: @transition-time;
       }
 
-      a:hover {
+      a:hover, a.active {
         color: @theme-color;
         background-color: @gray-color;
       }

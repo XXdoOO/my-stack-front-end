@@ -123,6 +123,8 @@ export default {
             },
             (error) => {
               console.log(error);
+              this.tip.loginTip = error.message;
+              this.tip.tipClass = true;
             }
           );
       }
@@ -155,6 +157,8 @@ export default {
             },
             (error) => {
               console.log(error);
+              this.tip.loginTip = error.message;
+              this.tip.tipClass = true;
             }
           );
       }

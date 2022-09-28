@@ -11,9 +11,10 @@ Vue.use(VueRouter);
 const router = new VueRouter({
     routes: [
         { path: "/", meta: { title: "首页" }, component: IndexPage },
-        { path: "/loginRegister", meta: { title: "登录-注册" }, component: LoginRegister },
-        { path: "/details", meta: { title: "详情" }, component: DetailPage },
+        { path: "/top", meta: { title: "热门" }, component: PersonalPage },
         { path: "/user", meta: { title: "个人主页" }, component: PersonalPage },
+        { path: "/loginRegister", meta: { title: "登录/注册" }, component: LoginRegister },
+        { path: "/details", meta: { title: "详情" }, component: DetailPage },
         { path: "/search", meta: { title: "搜索" }, component: SearchPage },
     ]
 });
