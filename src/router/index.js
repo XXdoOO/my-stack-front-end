@@ -11,7 +11,7 @@ const router = new VueRouter({
     routes: [
         { path: "/", meta: { title: "首页" }, component: IndexPage },
         { path: "/top", meta: { title: "热门" }, component: PersonalPage },
-        { path: "/user", meta: { title: "个人主页" }, component: PersonalPage },
+        { path: "/my", meta: { title: "个人主页" }, component: PersonalPage },
         { path: "/details", meta: { title: "详情" }, component: DetailPage },
         { path: "/search", meta: { title: "搜索" }, component: SearchPage },
     ]

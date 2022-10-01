@@ -35,6 +35,7 @@
 </template>
 
 <script>
+
 export default {
   name: "ListBlock",
   props: {
@@ -78,13 +79,16 @@ export default {
 
 <style lang="less" scoped>
 .root {
+  position: relative;
+  top: 100px;
+
   article {
     display: flex;
     align-items: center;
     max-width: 1000px;
     width: 100%;
     margin: 0 auto;
-    padding: 10px 20px;
+    padding: 15px 20px;
     border: 1px solid @gray-color;
     border-radius: 5px;
     transition: 0.2s;

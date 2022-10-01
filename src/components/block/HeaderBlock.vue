@@ -13,56 +13,45 @@
       <nav>
         <router-link to="/" :class="{active: this.$route.path == '/'}">首页</router-link>
         <router-link to="/top" :class="{active: this.$route.path == '/top'}">热门</router-link>
-        <router-link to="/user" :class="{active: this.$route}.path == '/user'">我的</router-link>
+        <router-link to="/my" :class="{active: this.$route.path == '/my'}">我的</router-link>
       </nav>
 
       <SearchInput />
 
-      <router-link class="face" :to="isLogin ? '/logout' : '/loginRegister'">
-        <img src="../../assets/img/logo.png" alt="" width="35" :hidden="!isLogin" />
-        <span @mouseover="mouseoverLogout" @mouseout="mouseoutLogout" :style="{ '--loginMsg': loginMsg }"></span>
-      </router-link>
+      <div class="face" @click="isLogin ? logout() : loginRegister()">
+        {{loginMsg }}
+      </div>
     </div>
+
+    <LoginRegister :isShowPopup="isShowPopup" :togglePopup="loginRegister" />
   </header>
 </template>
 
 <script>
 import SearchInput from "../block/SearchInput.vue";
-
+import LoginRegister from './LoginRegister.vue';
 export default {
   name: "HeaderBlock",
-  components: { SearchInput },
+  components: { SearchInput, LoginRegister },
   data() {
     return {
       isLogin: false,
       links: [],
-      user: {
-        username: "用户名",
-        avatar: "",
-      },
       headerPosition: "relative",
       scrollTop: 0,
       scroll: 0,
+      isShowPopup: false,
     };
   },
   computed: {
     loginMsg() {
-      return this.isLogin ? `'${this.user.username}'` : "'登录/注册'";
+      return this.isLogin ? `退出登录` : "登录/注册";
     },
   },
   methods: {
-    mouseoverLogout() {
-      console.log(this.isLogin);
-      if (this.isLogin) {
-        this.loginMsg = "'退出登录'";
-      }
-    },
-    mouseoutLogout() {
-      console.log(this.isLogin);
-      if (this.isLogin) {
-        this.loginMsg = "'用户名'";
-      }
-    },
+    loginRegister(){
+      this.isShowPopup = !this.isShowPopup;
+    }
   },
   mounted() {
     window.addEventListener("scroll", () => {
@@ -96,7 +85,7 @@ export default {
   box-shadow: @shadow-color;
   z-index: 999;
 
-  >div {
+  >.container {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -144,23 +133,8 @@ export default {
     }
 
     .face {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      color: black;
       transition: @transition-time;
-
-      img {
-        border-radius: 50%;
-      }
-
-      span {
-        margin-left: 10px;
-      }
-
-      span:before {
-        content: var(--loginMsg);
-      }
+      cursor: pointer;
     }
 
     .face:hover {

@@ -29,6 +29,8 @@ export default {
 
 <style lang="less" scoped>
 .footer-block {
+  position: relative;
+  top: 130px;
   width: 100%;
   background-color: @gray-color;
 
