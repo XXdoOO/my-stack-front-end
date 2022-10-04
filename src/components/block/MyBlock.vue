@@ -1,10 +1,10 @@
 <template>
   <div class="root">
     <div class="face">
-      <img src="../../assets/img/cover.webp" alt="" width="50" height="50" />
+      <img :src="$store.state.user.avatar" alt="" width="50" height="50" />
       <span>
         <input :class="{edit: isEditNickname === true}" ref="editInput" :disabled="!isEditNickname" @blur="editNickname"
-          value="昵称" />
+          v-model="$store.state.user.nickname" />
         <i @click="editNickname"></i>
       </span>
     </div>
@@ -42,7 +42,7 @@ export default {
     editNickname() {
       this.isEditNickname = !this.isEditNickname;
 
-      if(this.isEditNickname){
+      if (this.isEditNickname) {
         this.$refs.editInput.focus();
       }
     }
@@ -55,11 +55,11 @@ export default {
   width: 210px;
   padding: 20px;
   border-radius: 5px;
-  border: 1px solid @gray-color;
   background-color: white;
   position: fixed;
-  top: 100px;
+  top: 80px;
   left: 40px;
+  z-index: 666;
 
   .edit-blog {
     display: block;
@@ -89,16 +89,6 @@ export default {
   img {
     border-radius: 50%;
     position: relative;
-  }
-
-  img:after {
-    content: "";
-    display: block;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-image: url(../../assets/img/logo.png);
-    background-size: cover;
   }
 
   span {

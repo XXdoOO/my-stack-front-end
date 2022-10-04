@@ -1,5 +1,7 @@
 <template>
   <div class="root">
+    <div id="top"></div>
+
     <article v-for="blog in blogList" :key="blog.id">
       <div>
         <ul class="topContent">
@@ -31,6 +33,8 @@
       </div>
       <img v-if="blog.cover" :src="blog.cover" alt="" height="100">
     </article>
+
+    <i @click="goAnchor('top')" class="goTop" title="返回顶部"></i>
   </div>
 </template>
 
@@ -72,6 +76,15 @@ export default {
         minutes = "0" + minutes;
       }
       return `${year}-${month}-${strDate} ${hours}:${seconds}:${minutes}`;
+    },
+    goAnchor(id) {
+      var anchor = document.getElementById(id);
+      // chrome
+      document.body.scrollTop = anchor.offsetTop - 80;
+      // firefox
+      document.documentElement.scrollTop = anchor.offsetTop - 80;
+      // safari
+      window.pageYOffset = anchor.offsetTop - 80;
     }
   }
 }
@@ -79,22 +92,21 @@ export default {
 
 <style lang="less" scoped>
 .root {
-  position: relative;
-  top: 100px;
+  padding-top: 80px;
 
   article {
     display: flex;
     align-items: center;
     max-width: 1000px;
     width: 100%;
-    margin: 0 auto;
+    margin: 0 auto 7px auto;
     padding: 15px 20px;
-    border: 1px solid @gray-color;
     border-radius: 5px;
-    transition: 0.2s;
+    transition: 0.1s;
     cursor: pointer;
+    background-color: white;
 
-    > img {
+    >img {
       object-fit: cover;
       margin-left: 20px;
     }
@@ -104,14 +116,33 @@ export default {
       margin-bottom: 10px;
     }
 
-    p{
+    p {
       font-size: 14px;
       color: @gray-color-dep;
     }
   }
 
   article:hover {
-    background-color: @gray-color;
+    background-color: #f4f5f6;
+  }
+
+  .goTop {
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 20px;
+    background-color: @theme-color;
+    background-image: url(../../assets/img/arrow.png);
+    background-size: cover;
+    color: white;
+    border-radius: 50%;
+    transform: rotate(180deg);
+    cursor: pointer;
   }
 }
 

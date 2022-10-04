@@ -3,6 +3,7 @@
     top: scroll + 'px',
     'box-shadow':
       scroll === -70 ? 'none' : '0px 8px 25px 20px rgba(44, 16, 111, 0.06)',
+      '--progress-width':$store.state.progressWidth
   }">
     <div class="container">
       <router-link class="logo" to="/">
@@ -18,10 +19,12 @@
 
       <SearchInput />
 
-      <div class="face" @click="isLogin ? logout() : loginRegister()">
+      <div class="face" @click="$store.state.isLogin ? logout() : loginRegister()">
         {{loginMsg }}
       </div>
     </div>
+
+    <div class="progress"></div>
 
     <LoginRegister :isShowPopup="isShowPopup" :togglePopup="loginRegister" />
   </header>
@@ -35,7 +38,6 @@ export default {
   components: { SearchInput, LoginRegister },
   data() {
     return {
-      isLogin: false,
       links: [],
       headerPosition: "relative",
       scrollTop: 0,
@@ -45,11 +47,11 @@ export default {
   },
   computed: {
     loginMsg() {
-      return this.isLogin ? `退出登录` : "登录/注册";
+      return this.$store.state.isLogin ? `退出登录` : "登录/注册";
     },
   },
   methods: {
-    loginRegister(){
+    loginRegister() {
       this.isShowPopup = !this.isShowPopup;
     }
   },
@@ -84,6 +86,7 @@ export default {
   background-color: white;
   box-shadow: @shadow-color;
   z-index: 999;
+  box-sizing: content-box;
 
   >.container {
     display: flex;
@@ -126,7 +129,8 @@ export default {
         transition: @transition-time;
       }
 
-      a:hover, a.active {
+      a:hover,
+      a.active {
         color: @theme-color;
         background-color: @gray-color;
       }
@@ -141,5 +145,13 @@ export default {
       color: @theme-color;
     }
   }
+}
+
+.header-block:after {
+  content: "";
+  display: block;
+  width: var(--progress-width);
+  height: 2px;
+  background-color: @theme-color;
 }
 </style>

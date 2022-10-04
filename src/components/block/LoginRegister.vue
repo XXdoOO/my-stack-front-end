@@ -90,7 +90,9 @@ export default {
                 this.tip.loginTip = response.data.msg;
                 this.tip.tipClass = true;
               } else {
-                this.$router.push("/");
+                this.togglePopup();
+                this.$store.state.isLogin = true;
+                this.$store.state.user = response.data.data;
               }
             },
             (error) => {
