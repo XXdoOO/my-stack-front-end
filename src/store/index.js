@@ -4,12 +4,29 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
+  mutations: {
+    logout(state) {
+      this.axios.get("/user/logout").then((res) => {
+        console.log(res);
+        state.userInfo = {
+          isLogin: false,
+          info: {
+            avatar: "../../assets/img/cover.webp",
+            nickname: "点击登录",
+          },
+        }
+      });
+    }
+  },
   state: {
-    isLogin: false,
-    user: {
-      avatar: "../../assets/img/cover.webp",
-      nickname: "未登录",
+    userInfo: {
+      isLogin: false,
+      info: {
+        avatar: "../../assets/img/cover.webp",
+        nickname: "点击登录",
+      },
     },
+    blogList: [],
     progressWidth: "10%",
   }
 })

@@ -19,41 +19,29 @@
 
       <SearchInput />
 
-      <div class="face" @click="$store.state.isLogin ? logout() : loginRegister()">
-        {{loginMsg }}
-      </div>
     </div>
 
     <div class="progress"></div>
-
-    <LoginRegister :isShowPopup="isShowPopup" :togglePopup="loginRegister" />
   </header>
 </template>
 
 <script>
 import SearchInput from "../block/SearchInput.vue";
-import LoginRegister from './LoginRegister.vue';
 export default {
   name: "HeaderBlock",
-  components: { SearchInput, LoginRegister },
+  components: { SearchInput },
   data() {
     return {
       links: [],
       headerPosition: "relative",
       scrollTop: 0,
       scroll: 0,
-      isShowPopup: false,
     };
   },
   computed: {
     loginMsg() {
       return this.$store.state.isLogin ? `退出登录` : "登录/注册";
     },
-  },
-  methods: {
-    loginRegister() {
-      this.isShowPopup = !this.isShowPopup;
-    }
   },
   mounted() {
     window.addEventListener("scroll", () => {
@@ -119,6 +107,7 @@ export default {
       align-items: center;
 
       a {
+        position: relative;
         color: black;
         font-size: 20px;
         flex-grow: 1;
@@ -129,20 +118,26 @@ export default {
         transition: @transition-time;
       }
 
+      a:after {
+        content: "";
+        position: absolute;
+        bottom: 15px;
+        width: 0;
+        height: 2.5px;
+        border-radius: 50px;
+        background-color: @theme-color;
+        transition: @transition-time;
+      }
+
       a:hover,
       a.active {
         color: @theme-color;
-        background-color: @gray-color;
       }
-    }
 
-    .face {
-      transition: @transition-time;
-      cursor: pointer;
-    }
-
-    .face:hover {
-      color: @theme-color;
+      a:hover:after,
+      a.active:after {
+        width: 30%;
+      }
     }
   }
 }

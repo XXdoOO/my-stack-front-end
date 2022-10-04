@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div class="root" v-show="isShowPopup" @click="togglePopup">
+    <div class="login-register" v-show="isShowPopup" @click="togglePopup">
       <div @click.stop="">
         <div :class="{ cover: true, active }"></div>
         <div :class="{ login: true, active }">
@@ -91,8 +91,8 @@ export default {
                 this.tip.tipClass = true;
               } else {
                 this.togglePopup();
-                this.$store.state.isLogin = true;
-                this.$store.state.user = response.data.data;
+                this.$store.state.userInfo.isLogin = true;
+                this.$store.state.userInfo.info = response.data.data;
               }
             },
             (error) => {
@@ -163,19 +163,22 @@ export default {
   }
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.2s
- }
- .fade-enter,
- .fade-leave-to {
-	opacity: 0
-} 
+}
 
-.root {
+.fade-enter,
+.fade-leave-to {
+  opacity: 0
+}
+
+.login-register {
   position: fixed;
   width: 100%;
   height: 100%;
   top: 0;
+  left: 0;
   display: flex;
   justify-content: center;
   align-items: center;

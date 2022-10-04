@@ -1,10 +1,12 @@
 <template>
   <div class="root">
-    <div class="face">
-      <img :src="$store.state.user.avatar" alt="" width="50" height="50" />
+    <LoginRegister :isShowPopup="isShowPopup" :togglePopup="togglePopup" />
+
+    <div :class="{face:true,show:!userInfo.isLogin}" @click="userInfo.isLogin? null:togglePopup()">
+      <img :src="userInfo.info.avatar" alt="" width="50" height="50" />
       <span>
         <input :class="{edit: isEditNickname === true}" ref="editInput" :disabled="!isEditNickname" @blur="editNickname"
-          v-model="$store.state.user.nickname" />
+          v-model="userInfo.info.nickname" />
         <i @click="editNickname"></i>
       </span>
     </div>
@@ -26,18 +28,25 @@
         <span>收藏</span>
       </router-link>
     </nav>
-    <router-link to="/edit" class="edit-blog">写博客</router-link>
+    <button @click="editBlog" class="edit-blog">写博客</button>
+    <button v-if="userInfo.isLogin" @click="$store.commit('logout')" class="logout">退出登录</button>
   </div>
 </template>
 
 <script>
+import LoginRegister from './LoginRegister.vue';
+import { mapState } from "vuex";
+
 export default {
   name: "MyBlock",
+  components: { LoginRegister },
   data() {
     return {
-      isEditNickname: false
+      isShowPopup: false,
+      isEditNickname: false,
     }
   },
+  computed: { ...mapState(["userInfo"]) },
   methods: {
     editNickname() {
       this.isEditNickname = !this.isEditNickname;
@@ -45,6 +54,16 @@ export default {
       if (this.isEditNickname) {
         this.$refs.editInput.focus();
       }
+    },
+    editBlog() {
+      if (this.userInfo.isLogin) {
+        this.$router.push("/edit");
+      } else {
+        this.isShowPopup = true;
+      }
+    },
+    togglePopup() {
+      this.isShowPopup = !this.isShowPopup;
     }
   }
 }
@@ -61,7 +80,8 @@ export default {
   left: 40px;
   z-index: 666;
 
-  .edit-blog {
+  .edit-blog,
+  .logout {
     display: block;
     width: 100%;
     text-align: center;
@@ -79,6 +99,16 @@ export default {
   .edit-blog:hover {
     background-color: @theme-color;
     color: white;
+  }
+
+  .logout {
+    color: red;
+    border-color: red;
+  }
+
+  .logout:hover {
+    color: white;
+    background-color: red;
   }
 }
 
@@ -105,6 +135,7 @@ export default {
       width: 70px;
       border-bottom: 1px solid transparent;
       margin-right: 10px;
+      transition: @transition-time;
     }
 
     input.edit {
@@ -118,6 +149,14 @@ export default {
       background-size: cover;
     }
   }
+}
+
+.face.show {
+  cursor: pointer;
+}
+
+.face.show:hover input {
+  color: @theme-color;
 }
 
 .my {

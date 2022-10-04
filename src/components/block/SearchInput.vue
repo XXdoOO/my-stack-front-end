@@ -16,7 +16,10 @@ export default {
   },
   methods: {
     search(keywords) {
-      axios.get(`http://localhost:8080/getBlogByKeywords?keywords=${keywords}`);
+      axios.get(`http://localhost:8080/getBlogByKeywords?keywords=${keywords}`).then((res) =>{
+        console.log(res.data.data);
+        this.$store.state.blogList = res.data.data;
+      });
     },
   },
 };

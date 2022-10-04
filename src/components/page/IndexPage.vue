@@ -1,7 +1,7 @@
 <template>
   <main>
     <MyBlock />
-    <ListBlock :blogList="blogList" />
+    <ListBlock/>
   </main>
 </template>
 <script>
@@ -10,16 +10,11 @@ import MyBlock from "../block/MyBlock.vue";
 export default {
   name: "IndexPage",
   components: { ListBlock, MyBlock },
-  data() {
-    return {
-      blogList: []
-    }
-  },
   created() {
     this.axios.get("/getBlogByKeywords?startIndex=10&pageSize=20").then((res) => {
       console.log(res);
       if (res.data.code === 200) {
-        this.blogList = res.data.data;
+        this.$store.state.blogList = res.data.data;
       }
     });
   }

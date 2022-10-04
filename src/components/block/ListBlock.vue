@@ -2,7 +2,7 @@
   <div class="root">
     <div id="top"></div>
 
-    <article v-for="blog in blogList" :key="blog.id">
+    <article v-for="blog in $store.state.blogList" :key="blog.id">
       <div>
         <ul class="topContent">
           <li>
@@ -42,15 +42,6 @@
 
 export default {
   name: "ListBlock",
-  props: {
-    blogList: {
-      type: Array,
-      require: true,
-      default() {
-        return [{ title: "标题", description: "描述" }]
-      }
-    }
-  },
   methods: {
     formatTime(timestamp) {
       let date = new Date(timestamp);
@@ -119,11 +110,17 @@ export default {
     p {
       font-size: 14px;
       color: @gray-color-dep;
+      transition: 0.1s;
     }
   }
 
   article:hover {
     background-color: #f4f5f6;
+    color: @theme-color;
+  }
+
+  article:hover p {
+    color: @theme-color;
   }
 
   .goTop {
