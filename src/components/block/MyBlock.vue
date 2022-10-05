@@ -1,5 +1,5 @@
 <template>
-  <div class="root">
+  <div class="my-block">
     <LoginRegister :isShowPopup="isShowPopup" :togglePopup="togglePopup" />
 
     <div :class="{face:true,show:!userInfo.isLogin}" @click="userInfo.isLogin? null:togglePopup()">
@@ -70,15 +70,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.root {
+.my-block {
   width: 210px;
   padding: 20px;
   border-radius: 5px;
   background-color: white;
-  position: fixed;
-  top: 80px;
-  left: 40px;
-  z-index: 666;
 
   .edit-blog,
   .logout {
@@ -151,7 +147,7 @@ export default {
   }
 }
 
-.face.show {
+.face.show input{
   cursor: pointer;
 }
 

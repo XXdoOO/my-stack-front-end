@@ -2,46 +2,54 @@
   <div class="root">
     <div id="top"></div>
 
-    <article v-for="blog in $store.state.blogList" :key="blog.id">
-      <div>
-        <ul class="topContent">
-          <li>
-            <router-link to="">{{blog.authorUsername}}</router-link>
-          </li>
-          <li>{{formatTime(blog.postTime)}}</li>
-        </ul>
-        <h2>{{blog.title}}</h2>
-        <p>{{blog.description}}</p>
-        <ul class="bottomContent">
-          <li title="顶数">
-            <i title="顶"></i>
-            <span>{{blog.up}}</span>
-          </li>
-          <li title="踩数">
-            <i title="踩"></i>
-            <span>{{blog.down}}</span>
-          </li>
-          <li title="收藏数">
-            <i title="收藏"></i>
-            <span>{{blog.star}}</span>
-          </li>
-          <li title="浏览数">
-            <i></i>
-            <span>{{blog.views}}</span>
-          </li>
-        </ul>
+    <div class="container content">
+      <MyBlock></MyBlock>
+
+      <div class="articles">
+        <article v-for="blog in $store.state.blogList" :key="blog.id" @click="getDetail(blog.id)">
+          <div>
+            <ul class="topContent">
+              <li>
+                <router-link to="">{{blog.authorUsername}}</router-link>
+              </li>
+              <li>{{formatTime(blog.postTime)}}</li>
+            </ul>
+            <h2>{{blog.title}}</h2>
+            <p>{{blog.description}}</p>
+            <ul class="bottomContent">
+              <li title="顶数">
+                <i title="顶" @click="up(blog.id)"></i>
+                <span>{{blog.up}}</span>
+              </li>
+              <li title="踩数">
+                <i title="踩" @click="down(blog.id)"></i>
+                <span>{{blog.down}}</span>
+              </li>
+              <li title="收藏数">
+                <i title="收藏" @click="star(blog.id)"></i>
+                <span>{{blog.star}}</span>
+              </li>
+              <li title="浏览数">
+                <i></i>
+                <span>{{blog.views}}</span>
+              </li>
+            </ul>
+          </div>
+          <img v-if="blog.cover" :src="blog.cover" alt="" height="100">
+        </article>
       </div>
-      <img v-if="blog.cover" :src="blog.cover" alt="" height="100">
-    </article>
+    </div>
 
     <i @click="goAnchor('top')" class="goTop" title="返回顶部"></i>
   </div>
 </template>
 
 <script>
+import MyBlock from "../block/MyBlock.vue"
 
 export default {
   name: "ListBlock",
+  components: { MyBlock },
   methods: {
     formatTime(timestamp) {
       let date = new Date(timestamp);
@@ -76,7 +84,19 @@ export default {
       document.documentElement.scrollTop = anchor.offsetTop - 80;
       // safari
       window.pageYOffset = anchor.offsetTop - 80;
-    }
+    },
+    getDetail(blogId) {
+      this.$router.push(`/details?id=${blogId}`);
+    },
+    // up(blogId) {
+
+    // },
+    // down(blogId) {
+
+    // },
+    // star(blogId) {
+
+    // },
   }
 }
 </script>
@@ -85,42 +105,49 @@ export default {
 .root {
   padding-top: 80px;
 
-  article {
+  .content {
     display: flex;
-    align-items: center;
-    max-width: 1000px;
-    width: 100%;
-    margin: 0 auto 7px auto;
-    padding: 15px 20px;
-    border-radius: 5px;
-    transition: 0.1s;
-    cursor: pointer;
-    background-color: white;
 
-    >img {
-      object-fit: cover;
-      margin-left: 20px;
+    .articles {
+      width: calc(100% - 217px);
+      margin-left: auto;
+
+      article {
+        display: flex;
+        align-items: center;
+        margin: 0 auto 7px auto;
+        padding: 15px 20px;
+        border-radius: 5px;
+        transition: 0.1s;
+        cursor: pointer;
+        background-color: white;
+
+        >img {
+          object-fit: cover;
+          margin-left: 20px;
+        }
+
+        h2 {
+          font-size: 18px;
+          margin-bottom: 10px;
+        }
+
+        p {
+          font-size: 14px;
+          color: @gray-color-dep;
+          transition: 0.1s;
+        }
+      }
+
+      article:hover {
+        background-color: #f4f5f6;
+        color: @theme-color;
+      }
+
+      article:hover p {
+        color: @theme-color;
+      }
     }
-
-    h2 {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    p {
-      font-size: 14px;
-      color: @gray-color-dep;
-      transition: 0.1s;
-    }
-  }
-
-  article:hover {
-    background-color: #f4f5f6;
-    color: @theme-color;
-  }
-
-  article:hover p {
-    color: @theme-color;
   }
 
   .goTop {

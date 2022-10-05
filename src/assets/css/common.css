@@ -4,6 +4,58 @@
 }
 .container {
   width: 90%;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
+}
+.markdown hr {
+  height: 1px;
+  border: none;
+  border-top: 1px dashed #409EFF;
+}
+.markdown h2 {
+  font-size: 2em;
+}
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  position: relative;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  padding: 0.15em 0 0.15em 0.5em;
+  background-color: #f5f5f5;
+}
+.markdown h1:before,
+.markdown h2:before,
+.markdown h3:before,
+.markdown h4:before,
+.markdown h5:before,
+.markdown h6:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 0.15em;
+  height: 100%;
+  background-color: #409EFF;
+}
+.markdown img {
+  margin-top: 1rem;
+  width: 100%;
+}
+.markdown li {
+  list-style: inherit;
+  margin-left: 3em;
+}
+.markdown a {
+  color: #409EFF;
+  opacity: 0.7;
+  transition: 0.3s;
+}
+.markdown a:hover {
+  opacity: 1;
 }

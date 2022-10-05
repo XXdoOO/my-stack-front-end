@@ -12,6 +12,69 @@
 
 .container {
     width: 90%;
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
+}
+
+.markdown {
+    hr {
+        height: 1px;
+        border: none;
+        border-top: 1px dashed @theme-color;
+    }
+
+    h2 {
+        font-size: 2em;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        position: relative;
+        // border-bottom: 1px solid @theme-color-shallow;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        padding: 0.15em 0 0.15em 0.5em;
+        background-color: rgb(245, 245, 245);
+    }
+
+    h1:before,
+    h2:before,
+    h3:before,
+    h4:before,
+    h5:before,
+    h6:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: 0.15em;
+        height: 100%;
+        background-color: @theme-color;
+    }
+
+    img {
+        margin-top: 1rem;
+        width: 100%;
+    }
+
+    li {
+        list-style: inherit;
+        margin-left: 3em;
+    }
+
+    a {
+        color: @theme-color;
+        opacity: 0.7;
+        transition: @transition-time;
+    }
+
+    a:hover {
+        opacity: 1;
+    }
 }
