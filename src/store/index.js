@@ -8,32 +8,54 @@ axios.defaults.withCredentials = true;
 Vue.prototype.axios = axios;
 Vue.use(Vuex)
 
-const store = new Vuex.Store({
-  mutations: {
-    logout(state) {
-      axios.get("/user/logout").then((res) => {
-        console.log(res);
-        state.userInfo = {
-          isLogin: false,
-          info: {
-            avatar: "../../assets/img/cover.webp",
-            nickname: "点击登录",
-          },
-        }
-      });
-    }
+const actions = {
+  logout(context) {
+    axios.get("/user/logout").then((res) => {
+      console.log(res);
+
+      context.commit("logout");
+    });
   },
-  state: {
-    userInfo: {
+  up(context, blogId) {
+    axios.put(`/user/upBlog?id=${blogId}`).then((res) => {
+      console.log(res);
+
+      context.commit("up");
+    });
+  }
+}
+
+const mutations = {
+  logout(state) {
+    state.userInfo = {
       isLogin: false,
       info: {
         avatar: "../../assets/img/cover.webp",
         nickname: "点击登录",
-      },
-    },
-    blogList: [],
-    progressWidth: "10%",
+      }
+    }
+  },
+  up(state){
+    console.log(state.blogList);
   }
+}
+
+const state = {
+  userInfo: {
+    isLogin: false,
+    info: {
+      avatar: "../../assets/img/cover.webp",
+      nickname: "点击登录",
+    },
+  },
+  blogList: [],
+  progressWidth: "10%",
+}
+
+const store = new Vuex.Store({
+  actions,
+  mutations,
+  state
 })
 
 export default store

@@ -4,6 +4,7 @@ import IndexPage from "../components/page/IndexPage";
 import DetailPage from "../components/page/DetailPage";
 import PersonalPage from "../components/page/PersonalPage";
 import SearchPage from "../components/page/SearchPage";
+import EditPage from "../components/page/EditPage";
 
 Vue.use(VueRouter);
 
@@ -13,6 +14,7 @@ const router = new VueRouter({
         { path: "/top", meta: { title: "热门" }, component: PersonalPage },
         { path: "/my", meta: { title: "个人主页" }, component: PersonalPage },
         { path: "/details", meta: { title: "详情" }, component: DetailPage },
+        { path: "/edit", meta: { title: "编辑" }, component: EditPage },
         { path: "/search", meta: { title: "搜索" }, component: SearchPage },
     ]
 });

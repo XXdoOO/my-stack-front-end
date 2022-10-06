@@ -2,7 +2,9 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from "./router/index.js";
 import store from "./store/index.js"
+import Highlight from './assets/js/highlight'
 
+Vue.use(Highlight)
 
 Vue.config.productionTip = false
 

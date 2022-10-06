@@ -12,8 +12,23 @@
   border: none;
   border-top: 1px dashed #409EFF;
 }
-.markdown h2 {
+.markdown h1 {
   font-size: 2em;
+}
+.markdown h2 {
+  font-size: 1.8em;
+}
+.markdown h3 {
+  font-size: 1.6em;
+}
+.markdown h4 {
+  font-size: 1.4em;
+}
+.markdown h5 {
+  font-size: 1.2em;
+}
+.markdown h6 {
+  font-size: 1em;
 }
 .markdown h1,
 .markdown h2,
@@ -58,4 +73,27 @@
 }
 .markdown a:hover {
   opacity: 1;
+}
+.markdown pre code {
+  border-radius: 0 5px 5px 0;
+  flex-grow: 1;
+}
+.markdown pre {
+  position: relative;
+  display: flex;
+  flex-direction: row-reverse;
+}
+.markdown .pre-numbering {
+  width: 30px;
+  border-right: 1px solid #C3CCD0;
+  background-color: #1C1D21;
+  text-align: center;
+  padding: 1em 0;
+  border-radius: 5px 0 0 5px;
+}
+.markdown .pre-numbering li {
+  list-style: none;
+  color: #AAA;
+  font-size: 1em;
+  margin-left: 0;
 }
