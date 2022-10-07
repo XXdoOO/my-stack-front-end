@@ -17,15 +17,15 @@
             <h2>{{blog.title}}</h2>
             <p>{{blog.description}}</p>
             <ul class="bottomContent">
-              <li title="顶数">
+              <li :class="{'up-hover':blog.isUp}" title="顶数">
                 <i title="顶" @click="up(blog.id)"></i>
                 <span>{{blog.up}}</span>
               </li>
-              <li title="踩数">
+              <li :class="{'down-hover':blog.isDown}" title="踩数">
                 <i title="踩" @click="down(blog.id)"></i>
                 <span>{{blog.down}}</span>
               </li>
-              <li title="收藏数">
+              <li :class="{'star-hover':blog.isStar}" title="收藏数">
                 <i title="收藏" @click="star(blog.id)"></i>
                 <span>{{blog.star}}</span>
               </li>
@@ -218,21 +218,24 @@ export default {
     background-image: url(../../assets/img/up.png);
   }
 
-  li:first-child i:hover,
-  li:nth-child(2) i:hover {
-    background-image: url(../../assets/img/up-hover.png);
-  }
-
   li:nth-child(2) i {
     background-image: url(../../assets/img/up.png);
     transform: rotate(180deg);
+  }
+
+  li:first-child i:hover,
+  li:nth-child(2) i:hover,
+  li.up-hover i,
+  li.down-hover i {
+    background-image: url(../../assets/img/up-hover.png);
   }
 
   li:nth-child(3) i {
     background-image: url(../../assets/img/star.png);
   }
 
-  li:nth-child(3) i:hover {
+  li:nth-child(3) i:hover,
+  li.star-hover i {
     background-image: url(../../assets/img/star-hover.png);
   }
 

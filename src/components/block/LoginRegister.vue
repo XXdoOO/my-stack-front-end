@@ -93,6 +93,8 @@ export default {
                 this.togglePopup();
                 this.$store.state.userInfo.isLogin = true;
                 this.$store.state.userInfo.info = response.data.data;
+
+                this.$store.dispatch("login");
               }
             },
             (error) => {
