@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div class="login-register" v-show="isShowPopup" @click="togglePopup">
+    <div class="login-register" v-show="$store.state.isShowPopup" @click="$store.commit('togglePopup')">
       <div @click.stop="">
         <div :class="{ cover: true, active }"></div>
         <div :class="{ login: true, active }">
@@ -43,16 +43,6 @@
 <script>
 export default {
   name: "LoginRegister",
-  props: {
-    isShowPopup: {
-      type: Boolean,
-      default: true
-    },
-    togglePopup: {
-      type: Function,
-      require: true
-    }
-  },
   data() {
     return {
       active: false,
@@ -90,11 +80,12 @@ export default {
                 this.tip.loginTip = response.data.msg;
                 this.tip.tipClass = true;
               } else {
-                this.togglePopup();
-                this.$store.state.userInfo.isLogin = true;
-                this.$store.state.userInfo.info = response.data.data;
+                this.$store.state.userInfo = response.data.data;
 
-                this.$store.dispatch("login");
+                localStorage.setItem("userInfo", JSON.stringify(this.$store.state.userInfo));
+
+                this.$store.commit('togglePopup');
+                this.$store.dispatch("refresh");
               }
             },
             (error) => {

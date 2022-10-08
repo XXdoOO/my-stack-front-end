@@ -4,16 +4,16 @@
             <MyBlock />
 
             <ul class="menu">
-                <li title="顶数">
-                    <i title="顶" @click="up()"></i>
+                <li title="顶数" :class="{'up-hover': blog.isUp}">
+                    <i title="顶" @click="$store.dispatch('up', blog.id)"></i>
                     <span>{{blog.up}}</span>
                 </li>
-                <li title="踩数">
-                    <i title="踩" @click="down()"></i>
+                <li title="踩数" :class="{'down-hover': blog.isDown}">
+                    <i title="踩" @click="$store.dispatch('down', blog.id)"></i>
                     <span>{{blog.down}}</span>
                 </li>
-                <li title="收藏数">
-                    <i title="收藏" @click="star()"></i>
+                <li title="收藏数" :class="{'star-hover': blog.isStar}">
+                    <i title="收藏" @click="$store.dispatch('star', blog.id)"></i>
                     <span>{{blog.star}}</span>
                 </li>
                 <li title="浏览数">
@@ -38,7 +38,10 @@ export default {
     data() {
         return {
             blog: {
-                content: ""
+                content: "",
+                isStar: false,
+                isUp: false,
+                isDown: false,
             }
         }
     },
@@ -52,6 +55,36 @@ export default {
             vm.axios.get(`/getBlogDetails?id=${to.query.id}`).then((res) => {
                 res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/");
                 vm.blog = res.data.data;
+
+                if (vm.$store.state.userInfo !== null) {
+                    const blogId = vm.blog.id;
+                    const myStarList = vm.$store.state.myStarList;
+                    const myUpList = vm.$store.state.myUpList;
+                    const myDownList = vm.$store.state.myDownList;
+
+                    for (const star of myStarList) {
+                        if (blogId === star.id) {
+                            vm.blog.isStar = true;
+                        }
+                    }
+
+                    for (const up of myUpList) {
+                        if (blogId === up.id) {
+                            vm.blog.isUp = true;
+                        }
+                    }
+
+                    for (const down of myDownList) {
+                        if (blogId === down.id) {
+                            vm.blog.isDown = true;
+                        }
+                    }
+
+                } else {
+                    vm.blog.isStar = false;
+                    vm.blog.isUp = false;
+                    vm.blog.isDown = false;
+                }
             });
         });
     }
@@ -112,21 +145,24 @@ export default {
         background-image: url(../../assets/img/up.png);
     }
 
-    li:first-child i:hover,
-    li:nth-child(2) i:hover {
-        background-image: url(../../assets/img/up-hover.png);
-    }
-
     li:nth-child(2) i {
         background-image: url(../../assets/img/up.png);
         transform: rotate(180deg);
+    }
+
+    li:first-child i:hover,
+    li:nth-child(2) i:hover,
+    li.up-hover i,
+    li.down-hover i {
+        background-image: url(../../assets/img/up-hover.png);
     }
 
     li:nth-child(3) i {
         background-image: url(../../assets/img/star.png);
     }
 
-    li:nth-child(3) i:hover {
+    li:nth-child(3) i:hover,
+    li.star-hover i {
         background-image: url(../../assets/img/star-hover.png);
     }
 

@@ -5,10 +5,9 @@ import store from "./store/index.js"
 import Highlight from './assets/js/highlight'
 
 Vue.use(Highlight)
-
 Vue.config.productionTip = false
 
-new Vue({
+window.vm = new Vue({
   render: h => h(App),
   router,
   store

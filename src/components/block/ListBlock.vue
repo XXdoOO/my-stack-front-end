@@ -18,15 +18,15 @@
             <p>{{blog.description}}</p>
             <ul class="bottomContent">
               <li :class="{'up-hover':blog.isUp}" title="顶数">
-                <i title="顶" @click="up(blog.id)"></i>
+                <i title="顶" @click.stop="$store.dispatch('up', blog.id)"></i>
                 <span>{{blog.up}}</span>
               </li>
               <li :class="{'down-hover':blog.isDown}" title="踩数">
-                <i title="踩" @click="down(blog.id)"></i>
+                <i title="踩" @click.stop="$store.dispatch('down', blog.id)"></i>
                 <span>{{blog.down}}</span>
               </li>
               <li :class="{'star-hover':blog.isStar}" title="收藏数">
-                <i title="收藏" @click="star(blog.id)"></i>
+                <i title="收藏" @click.stop="$store.dispatch('star', blog.id)"></i>
                 <span>{{blog.star}}</span>
               </li>
               <li title="浏览数">
@@ -88,15 +88,6 @@ export default {
     getDetail(blogId) {
       this.$router.push(`/details?id=${blogId}`);
     },
-    // up(blogId) {
-
-    // },
-    // down(blogId) {
-
-    // },
-    // star(blogId) {
-
-    // },
   }
 }
 </script>
