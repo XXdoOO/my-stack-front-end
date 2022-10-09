@@ -82,7 +82,7 @@ export default {
               } else {
                 this.$store.state.userInfo = response.data.data;
 
-                localStorage.setItem("userInfo", JSON.stringify(this.$store.state.userInfo));
+                sessionStorage.setItem("userInfo", JSON.stringify(this.$store.state.userInfo));
 
                 this.$store.commit('togglePopup');
                 this.$store.dispatch("refresh");

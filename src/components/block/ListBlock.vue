@@ -6,7 +6,7 @@
       <MyBlock></MyBlock>
 
       <div class="articles">
-        <article v-for="blog in $store.state.blogList" :key="blog.id" @click="getDetail(blog.id)">
+        <article v-for="(blog, index) in $store.state.blogList" :key="blog.id" @click="getDetail(blog.id)">
           <div>
             <ul class="topContent">
               <li>
@@ -18,15 +18,15 @@
             <p>{{blog.description}}</p>
             <ul class="bottomContent">
               <li :class="{'up-hover':blog.isUp}" title="顶数">
-                <i title="顶" @click.stop="$store.dispatch('up', blog.id)"></i>
+                <i title="顶" @click.stop="up(index, blog.id)"></i>
                 <span>{{blog.up}}</span>
               </li>
               <li :class="{'down-hover':blog.isDown}" title="踩数">
-                <i title="踩" @click.stop="$store.dispatch('down', blog.id)"></i>
+                <i title="踩" @click.stop="down(index, blog.id)"></i>
                 <span>{{blog.down}}</span>
               </li>
               <li :class="{'star-hover':blog.isStar}" title="收藏数">
-                <i title="收藏" @click.stop="$store.dispatch('star', blog.id)"></i>
+                <i title="收藏" @click.stop="star(index, blog.id)"></i>
                 <span>{{blog.star}}</span>
               </li>
               <li title="浏览数">
@@ -87,6 +87,36 @@ export default {
     },
     getDetail(blogId) {
       this.$router.push(`/details?id=${blogId}`);
+    },
+    up(index, blogId) {
+      if (this.$store.state.blogList[index].isUp) {
+        this.$store.state.blogList[index].up--;
+      } else {
+        this.$store.state.blogList[index].up++;
+      }
+
+      this.$store.state.blogList[index].isUp = !this.$store.state.blogList[index].isUp;
+      this.$store.dispatch('up', blogId);
+    },
+    down(index, blogId) {
+      if (this.$store.state.blogList[index].isDown) {
+        this.$store.state.blogList[index].down--;
+      } else {
+        this.$store.state.blogList[index].down++;
+      }
+
+      this.$store.state.blogList[index].isDown = !this.$store.state.blogList[index].isDown;
+      this.$store.dispatch('down', blogId);
+    },
+    star(index, blogId) {
+      if (this.$store.state.blogList[index].isStar) {
+        this.$store.state.blogList[index].star--;
+      } else {
+        this.$store.state.blogList[index].star++;
+      }
+
+      this.$store.state.blogList[index].isStar = !this.$store.state.blogList[index].isStar;
+      this.$store.dispatch('star', blogId);
     },
   }
 }

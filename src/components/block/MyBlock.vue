@@ -2,7 +2,7 @@
   <div class="my-block">
     <LoginRegister />
 
-    <div :class="{face:true,show:!userInfo !== null}" @click="userInfo !== null? $store.commit('togglePopup'):null">
+    <div :class="{face:true,show:!userInfo.isLogin}" @click="userInfo.isLogin? null:$store.commit('togglePopup')">
       <img :src="userInfo.avatar" alt="" width="50" height="50" />
       <span>
         <input :class="{edit: isEditNickname === true}" ref="editInput" :disabled="!isEditNickname" @blur="editNickname"
@@ -29,7 +29,7 @@
       </router-link>
     </nav>
     <button @click="editBlog" class="edit-blog">写博客</button>
-    <button v-if="userInfo !== null" @click="$store.dispatch('logout')" class="logout">退出登录</button>
+    <button v-if="userInfo.isLogin" @click="$store.dispatch('logout')" class="logout">退出登录</button>
   </div>
 </template>
 
@@ -56,7 +56,7 @@ export default {
       }
     },
     editBlog() {
-      if (this.userInfo !== null) {
+      if (this.userInfo.isLogin) {
         this.$router.push("/edit");
       } else {
         this.isShowPopup = true;

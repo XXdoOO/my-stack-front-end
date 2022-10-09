@@ -12,12 +12,44 @@ import FooterBlock from "./components/block/FooterBlock.vue"
 export default {
   name: "App",
   components: { HeaderBlock, FooterBlock },
-  mounted() {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  data() {
+    return {
+      timer: null
+    }
+  },
+  created() {
+    this.axios.interceptors.request.use((req) => {
+      clearInterval(this.timer);
+      this.timer = setInterval(() => {
+        if (this.$store.state.progressWidth < 60) {
+          this.$store.state.progressWidth++;
+        }
+      }, 100);
+      console.log("定时器", this.timer)
+      return req;
+    });
+
+    this.axios.interceptors.response.use((res) => {
+      console.log("清除定时器");
+      clearInterval(this.timer);
+
+      this.$store.state.progressWidth = 100;
+
+      setTimeout(() => {
+        this.$store.state.progressWidth = 0;
+      }, 100);
+      return res;
+    });
+
+
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
 
     if (userInfo !== null) {
+      userInfo.isLogin = true;
       this.$store.state.userInfo = userInfo;
-      this.$store.dispatch("refresh");
+      this.$store.dispatch("refresh").then((res) => {
+        this.$store.commit("refresh", res);
+      });
     }
   }
 };
