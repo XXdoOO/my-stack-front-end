@@ -26,46 +26,31 @@ const actions = {
     });
   },
   up(context, blogId) {
-    if (context.state.userInfo.isLogin) {
-      axios.put(`/user/upBlog?id=${blogId}`).then((res) => {
-        console.log(res);
+    axios.put(`/user/upBlog?id=${blogId}`).then((res) => {
+      console.log(res);
 
-        context.dispatch("refresh").then((res) => {
-          context.commit("refresh", res);
-        });
+      context.dispatch("refresh").then((res) => {
+        context.commit("refresh", res);
       });
-    } else {
-      context.commit('togglePopup');
-    }
+    });
   },
   down(context, blogId) {
-    if (context.state.userInfo.isLogin) {
-      axios.put(`/user/downBlog?id=${blogId}`).then((res) => {
-        console.log(res);
+    axios.put(`/user/downBlog?id=${blogId}`).then((res) => {
+      console.log(res);
 
-        context.dispatch("refresh").then((res) => {
-          context.commit("refresh", res);
-        });
+      context.dispatch("refresh").then((res) => {
+        context.commit("refresh", res);
       });
-    } else {
-      context.commit('togglePopup');
-    }
+    });
   },
   star(context, blogId) {
-    if (context.state.userInfo.isLogin) {
-      axios.put(`/user/starBlog?id=${blogId}`).then((res) => {
-        console.log(res);
+    axios.put(`/user/starBlog?id=${blogId}`).then((res) => {
+      console.log(res);
 
-        context.dispatch("refresh").then((res) => {
-          
-
-          
-          context.commit("refresh", res);
-        });
+      context.dispatch("refresh").then((res) => {
+        context.commit("refresh", res);
       });
-    } else {
-      context.commit('togglePopup');
-    }
+    });
   },
 }
 
@@ -76,15 +61,13 @@ const mutations = {
     state.myDownList = res[2].data.data;
   },
   logout(state) {
+    sessionStorage.clear();
     state.userInfo = {
       isLogin: false,
-      info: {
-        avatar: "../../assets/img/cover.webp",
-        nickname: "点击登录",
-      }
+      avatar: "../../assets/img/cover.webp",
+      nickname: "点击登录",
     }
-
-    localStorage.clear();
+    window.location.reload();
   },
   up(state) {
     console.log(state.blogList);

@@ -85,7 +85,10 @@ export default {
                 sessionStorage.setItem("userInfo", JSON.stringify(this.$store.state.userInfo));
 
                 this.$store.commit('togglePopup');
-                this.$store.dispatch("refresh");
+                this.$store.dispatch("refresh").then((res) => {
+                  this.$store.commit("refresh", res);
+                  window.location.reload();
+                });
               }
             },
             (error) => {
@@ -186,6 +189,7 @@ export default {
     aspect-ratio: calc(1 / 0.618);
     border-radius: 10px;
     box-shadow: @shadow-color;
+    z-index: 999;
 
     .cover {
       position: absolute;

@@ -128,6 +128,7 @@ export default {
 
   .content {
     display: flex;
+    align-items: flex-start;
 
     .articles {
       width: calc(100% - 217px);

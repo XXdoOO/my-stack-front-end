@@ -3,8 +3,11 @@ import App from './App.vue';
 import router from "./router/index.js";
 import store from "./store/index.js"
 import Highlight from './assets/js/highlight'
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 
-Vue.use(Highlight)
+Vue.use(ElementUI);
+Vue.use(Highlight);
 Vue.config.productionTip = false
 
 window.vm = new Vue({

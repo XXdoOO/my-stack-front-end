@@ -18,19 +18,29 @@ export default {
     }
   },
   created() {
+    const CancelToken = this.axios.CancelToken;
+    const source = CancelToken.source();
+
     this.axios.interceptors.request.use((req) => {
-      clearInterval(this.timer);
-      this.timer = setInterval(() => {
-        if (this.$store.state.progressWidth < 60) {
-          this.$store.state.progressWidth++;
-        }
-      }, 100);
-      console.log("定时器", this.timer)
+      if (req.url.split("/")[1] === "user" || req.url.split("/")[1] === "admin") {
+        console.log(req.url.split("/")[1] === "user");
+
+        req.cancelToken = source.token;
+        source.cancel(this.$store.commit("togglePopup"));
+      } else {
+        clearInterval(this.timer);
+        this.timer = setInterval(() => {
+          if (this.$store.state.progressWidth < 60) {
+            this.$store.state.progressWidth++;
+          }
+        }, 100);
+        console.log("定时器", this.timer)
+      }
       return req;
     });
 
     this.axios.interceptors.response.use((res) => {
-      console.log("清除定时器");
+      console.log("清除定时器", res);
       clearInterval(this.timer);
 
       this.$store.state.progressWidth = 100;

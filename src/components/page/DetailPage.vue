@@ -84,22 +84,26 @@ export default {
     },
     beforeRouteEnter(to, from, next) {
         next((vm) => {
-            vm.$store.dispatch("refresh").then((res) => {
-                vm.$store.commit("refresh", res);
+            if (vm.$store.state.userInfo.isLogin) {
+                vm.$store.dispatch("refresh").then((res) => {
+                    vm.$store.commit("refresh", res);
 
-                console.log(res);
+                    console.log(res);
 
-                vm.axios.get(`/getBlogDetails?id=${to.query.id}`).then((res) => {
-                    res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/");
-                    vm.blog = res.data.data;
+                    vm.axios.get(`/getBlogDetails?id=${to.query.id}`).then((res) => {
+                        res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/");
+                        vm.blog = res.data.data;
 
-                    console.log(vm.$store.state);
+                        console.log(vm.$store.state);
 
-                    if (vm.$store.state.userInfo.isLogin) {
                         const blogId = vm.blog.id;
                         const myStarList = vm.$store.state.myStarList;
                         const myUpList = vm.$store.state.myUpList;
                         const myDownList = vm.$store.state.myDownList;
+
+                        vm.blog.isStar = false;
+                        vm.blog.isUp = false;
+                        vm.blog.isDown = false;
 
                         for (const star of myStarList) {
                             if (blogId === star.id) {
@@ -118,14 +122,15 @@ export default {
                                 vm.blog.isDown = true;
                             }
                         }
-
-                    } else {
-                        vm.blog.isStar = false;
-                        vm.blog.isUp = false;
-                        vm.blog.isDown = false;
-                    }
+                    });
                 });
-            });
+            } else {
+                vm.axios.get(`/getBlogDetails?id=${to.query.id}`).then((res) => {
+                    res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/");
+                    vm.blog = res.data.data;
+                });
+            }
+
         });
     }
 }

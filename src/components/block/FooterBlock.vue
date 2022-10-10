@@ -2,17 +2,14 @@
   <footer class="footer-block">
     <nav class="container">
       <nav>
-        <div>导航</div>
         <router-link to="">首页</router-link>
         <router-link to="">热门</router-link>
         <router-link to="">我的</router-link>
       </nav>
 
       <nav>
-        <div>联系</div>
-        <router-link to="">邮箱</router-link>
-        <router-link to="">热门</router-link>
-        <router-link to="">我的</router-link>
+        <router-link to="">邮箱：</router-link>
+        <router-link to="">GitHub：</router-link>
       </nav>
     </nav>
   </footer>
@@ -30,13 +27,17 @@ export default {
 <style lang="less" scoped>
 .footer-block {
   width: 100%;
-  background-color: @theme-color-shallow;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2em;
+  background-color: white;
+  border-radius: 5px;
 
   nav.container {
     display: flex;
     justify-content: space-around;
 
-    > nav {
+    >nav {
       display: flex;
       flex-direction: column;
     }
