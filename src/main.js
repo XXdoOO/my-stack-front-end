@@ -5,7 +5,10 @@ import store from "./store/index.js"
 import Highlight from './assets/js/highlight'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import Message from "./components/message"
 
+
+Vue.use(Message);
 Vue.use(ElementUI);
 Vue.use(Highlight);
 Vue.config.productionTip = false

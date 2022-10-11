@@ -6,7 +6,7 @@
       <MyBlock></MyBlock>
 
       <div class="articles">
-        <article v-for="(blog, index) in $store.state.blogList" :key="blog.id" @click="getDetail(blog.id)">
+        <article v-for="(blog) in blogList" :key="blog.id" @click="getDetail(blog.id)">
           <div>
             <ul class="topContent">
               <li>
@@ -18,15 +18,15 @@
             <p>{{blog.description}}</p>
             <ul class="bottomContent">
               <li :class="{'up-hover':blog.isUp}" title="顶数">
-                <i title="顶" @click.stop="up(index, blog.id)"></i>
+                <i title="顶" @click.stop="up(blog.id)"></i>
                 <span>{{blog.up}}</span>
               </li>
               <li :class="{'down-hover':blog.isDown}" title="踩数">
-                <i title="踩" @click.stop="down(index, blog.id)"></i>
+                <i title="踩" @click.stop="down(blog.id)"></i>
                 <span>{{blog.down}}</span>
               </li>
               <li :class="{'star-hover':blog.isStar}" title="收藏数">
-                <i title="收藏" @click.stop="star(index, blog.id)"></i>
+                <i title="收藏" @click.stop="star(blog.id)"></i>
                 <span>{{blog.star}}</span>
               </li>
               <li title="浏览数">
@@ -50,6 +50,10 @@ import MyBlock from "../block/MyBlock.vue"
 export default {
   name: "ListBlock",
   components: { MyBlock },
+  props: {
+    blogList: Array,
+    modeifyList: Function
+  },
   methods: {
     formatTime(timestamp) {
       let date = new Date(timestamp);
@@ -88,36 +92,58 @@ export default {
     getDetail(blogId) {
       this.$router.push(`/details?id=${blogId}`);
     },
-    up(index, blogId) {
-      if (this.$store.state.blogList[index].isUp) {
-        this.$store.state.blogList[index].up--;
-      } else {
-        this.$store.state.blogList[index].up++;
-      }
+    syncData(startIndex, pageSize) {
+      console.log("同步数据")
+      this.axios.get(`/getBlogByKeywords?startIndex=${startIndex}&pageSize=${pageSize}`).then((res) => {
+        res.data.data.forEach((item) => {
+          item.isUp = false;
+          item.isDown = false;
+          item.isStar = false;
+        });
 
-      this.$store.state.blogList[index].isUp = !this.$store.state.blogList[index].isUp;
-      this.$store.dispatch('up', blogId);
-    },
-    down(index, blogId) {
-      if (this.$store.state.blogList[index].isDown) {
-        this.$store.state.blogList[index].down--;
-      } else {
-        this.$store.state.blogList[index].down++;
-      }
+        for (const star of this.$store.state.myStarList) {
+          res.data.data.forEach((item) => {
+            if (item.id == star.id) {
+              item.isStar = true;
+            }
+          });
+        }
 
-      this.$store.state.blogList[index].isDown = !this.$store.state.blogList[index].isDown;
-      this.$store.dispatch('down', blogId);
-    },
-    star(index, blogId) {
-      if (this.$store.state.blogList[index].isStar) {
-        this.$store.state.blogList[index].star--;
-      } else {
-        this.$store.state.blogList[index].star++;
-      }
+        for (const up of this.$store.state.myUpList) {
+          res.data.data.forEach((item) => {
+            if (item.id == up.id) {
+              item.isUp = true;
+            }
+          });
+        }
 
-      this.$store.state.blogList[index].isStar = !this.$store.state.blogList[index].isStar;
-      this.$store.dispatch('star', blogId);
+        for (const down of this.$store.state.myDownList) {
+          res.data.data.forEach((item) => {
+            if (item.id == down.id) {
+              item.isDown = true;
+            }
+          });
+        }
+
+        this.modeifyList(res.data.data);
+      });
     },
+    up(blogId) {
+      this.$store.dispatch('up', {
+        blogId, callback: () => {
+          this.syncData(30, 20);
+        }
+      });
+    },
+    // down(index, blogId) {
+    // },
+    // star(index, blogId) {
+    // },
+  },
+  mounted() {
+    if (this.$store.state.userInfo.isLogin) {
+      this.syncData(30, 20);
+    }
   }
 }
 </script>

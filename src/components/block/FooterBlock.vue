@@ -1,16 +1,10 @@
 <template>
   <footer class="footer-block">
     <nav class="container">
-      <nav>
-        <router-link to="">首页</router-link>
-        <router-link to="">热门</router-link>
-        <router-link to="">我的</router-link>
-      </nav>
-
-      <nav>
-        <router-link to="">邮箱：</router-link>
-        <router-link to="">GitHub：</router-link>
-      </nav>
+      <router-link to="">
+        本项目已开源，GitHub地址：
+      </router-link>
+      <router-link to="">作者邮箱：1972524359@qq.com</router-link>
     </nav>
   </footer>
 </template>

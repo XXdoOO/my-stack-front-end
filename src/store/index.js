@@ -1,57 +1,18 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from "axios";
+import $axios from "../assets/js/$axios";
 
-axios.defaults.baseURL = "http://localhost:8080";
-axios.defaults.withCredentials = true;
-
-Vue.prototype.axios = axios;
+Vue.prototype.$axios = $axios;
 Vue.use(Vuex)
 
 const actions = {
   refresh() {
-    const getMyStarList = axios.get("/user/getMyStarList");
-
-    const getMyUpList = axios.get("/user/getMyUpList");
-
-    const getMyDownList = axios.get("/user/getMyDownList");
+    const getMyStarList = $axios.getMyStarList();
+    const getMyUpList = $axios.getMyUpList();
+    const getMyDownList = $axios.getMyDownList();
 
     return Promise.all([getMyStarList, getMyUpList, getMyDownList]);
-  },
-  logout(context) {
-    axios.get("/user/logout").then((res) => {
-      console.log(res);
-
-      context.commit("logout");
-    });
-  },
-  up(context, blogId) {
-    axios.put(`/user/upBlog?id=${blogId}`).then((res) => {
-      console.log(res);
-
-      context.dispatch("refresh").then((res) => {
-        context.commit("refresh", res);
-      });
-    });
-  },
-  down(context, blogId) {
-    axios.put(`/user/downBlog?id=${blogId}`).then((res) => {
-      console.log(res);
-
-      context.dispatch("refresh").then((res) => {
-        context.commit("refresh", res);
-      });
-    });
-  },
-  star(context, blogId) {
-    axios.put(`/user/starBlog?id=${blogId}`).then((res) => {
-      console.log(res);
-
-      context.dispatch("refresh").then((res) => {
-        context.commit("refresh", res);
-      });
-    });
-  },
+  }
 }
 
 const mutations = {
@@ -69,9 +30,6 @@ const mutations = {
     }
     window.location.reload();
   },
-  up(state) {
-    console.log(state.blogList);
-  },
   togglePopup(state) {
     state.isShowPopup = !state.isShowPopup;
   }
@@ -84,7 +42,6 @@ const state = {
     avatar: "../../assets/img/cover.webp",
     nickname: "点击登录",
   },
-  blogList: [],
   myStarList: [],
   myUpList: [],
   myDownList: [],

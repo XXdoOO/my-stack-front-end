@@ -51,35 +51,54 @@ export default {
         }
     },
     methods: {
-        up(blogId) {
-            if (this.blog.isUp) {
-                this.blog.up--;
-            } else {
-                this.blog.up++;
-            }
+        getDetails(blogId, that) {
+            console.log(2143124)
+            that.axios.get(`/getBlogDetails?id=${blogId}`).then((res) => {
+                res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/");
+                that.blog = res.data.data;
+                that.blog.isStar = false;
+                that.blog.isUp = false;
+                that.blog.isDown = false;
 
-            this.blog.isUp = !this.blog.isUp;
-            this.$store.dispatch('up', blogId);
+                for (const item of that.$store.state.myStarList) {
+                    if (item.id == blogId) {
+                        that.blog.isStar = true;
+                    }
+                }
+
+                for (const item of that.$store.state.myUpList) {
+                    if (item.id == blogId) {
+                        that.blog.isUp = true;
+                    }
+                }
+
+                for (const item of that.$store.state.myDownList) {
+                    if (item.id == blogId) {
+                        that.blog.isDown = true;
+                    }
+                }
+            });
+        },
+        up(blogId) {
+            this.$store.dispatch('up', {
+                blogId, callback: () => {
+                    this.getDetails(blogId, this);
+                }
+            });
         },
         down(blogId) {
-            if (this.blog.isDown) {
-                this.blog.down--;
-            } else {
-                this.blog.down++;
-            }
-
-            this.blog.isDown = !this.blog.isDown;
-            this.$store.dispatch('down', blogId);
+            this.$store.dispatch('down', {
+                blogId, callback: () => {
+                    this.getDetails(blogId, this);
+                }
+            });
         },
         star(blogId) {
-            if (this.blog.isStar) {
-                this.blog.star--;
-            } else {
-                this.blog.star++;
-            }
-
-            this.blog.isStar = !this.blog.isStar;
-            this.$store.dispatch('star', blogId);
+            this.$store.dispatch('star', {
+                blogId, callback: () => {
+                    this.getDetails(blogId, this);
+                }
+            });
         }
     },
     beforeRouteEnter(to, from, next) {
@@ -88,42 +107,8 @@ export default {
                 vm.$store.dispatch("refresh").then((res) => {
                     vm.$store.commit("refresh", res);
 
-                    console.log(res);
-
-                    vm.axios.get(`/getBlogDetails?id=${to.query.id}`).then((res) => {
-                        res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/");
-                        vm.blog = res.data.data;
-
-                        console.log(vm.$store.state);
-
-                        const blogId = vm.blog.id;
-                        const myStarList = vm.$store.state.myStarList;
-                        const myUpList = vm.$store.state.myUpList;
-                        const myDownList = vm.$store.state.myDownList;
-
-                        vm.blog.isStar = false;
-                        vm.blog.isUp = false;
-                        vm.blog.isDown = false;
-
-                        for (const star of myStarList) {
-                            if (blogId === star.id) {
-                                vm.blog.isStar = true;
-                            }
-                        }
-
-                        for (const up of myUpList) {
-                            if (blogId === up.id) {
-                                vm.blog.isUp = true;
-                            }
-                        }
-
-                        for (const down of myDownList) {
-                            if (blogId === down.id) {
-                                vm.blog.isDown = true;
-                            }
-                        }
-                    });
-                });
+                    vm.getDetails(to.query.id, vm);
+                })
             } else {
                 vm.axios.get(`/getBlogDetails?id=${to.query.id}`).then((res) => {
                     res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/");
