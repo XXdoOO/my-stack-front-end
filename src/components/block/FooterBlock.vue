@@ -21,11 +21,8 @@ export default {
 <style lang="less" scoped>
 .footer-block {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
   padding: 2em;
   background-color: white;
-  border-radius: 5px;
 
   nav.container {
     display: flex;

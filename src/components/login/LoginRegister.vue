@@ -1,44 +1,42 @@
 <template>
-  <transition name="fade">
-    <div class="login-register" v-show="$store.state.isShowPopup" @click="$store.commit('togglePopup')">
-      <div @click.stop="">
-        <div :class="{ cover: true, active }"></div>
-        <div :class="{ login: true, active }">
-          <h1>登录</h1>
-          <input type="text" maxlength="10" required placeholder="请输入用户名" v-model="loginFrom.username" />
-          <input type="password" maxlength="10" required placeholder="请输入密码" v-model="loginFrom.password" />
-          <p :class="{ active: tip.tipClass }" @animationend="tip.tipClass = false">
-            {{ tip.loginTip }}
-          </p>
+  <div class="login-register" ref="login" @click="hiddenPopup">
+    <div @click.stop="">
+      <div :class="{ cover: true, active }"></div>
+      <div :class="{ login: true, active }">
+        <h1>登录</h1>
+        <input type="text" maxlength="10" required placeholder="请输入用户名" v-model="loginFrom.username" />
+        <input type="password" maxlength="10" required placeholder="请输入密码" v-model="loginFrom.password" />
+        <p :class="{ active: tip.tipClass }" @animationend="tip.tipClass = false">
+          {{ tip.loginTip }}
+        </p>
 
-          <button type="submit" @click.stop="login(loginFrom.username, loginFrom.password)">
-            登录
-          </button>
-          <p @click.stop="active = !active">没有账号？点击注册</p>
-        </div>
-        <div :class="{ register: true, active }">
-          <h1>注册</h1>
-          <input type="text" maxlength="10" required placeholder="请输入用户名" v-model="registerFrom.username" />
-          <input type="password" maxlength="10" required placeholder="请输入密码" v-model="registerFrom.password" />
-          <input type="password" maxlength="10" required placeholder="请输入确认密码" v-model="registerFrom.password2" />
-          <p :class="{ active: tip.tipClass }" @animationend="tip.tipClass = false">
-            {{ tip.registerTip }}
-          </p>
+        <button type="submit" @click.stop="login(loginFrom.username, loginFrom.password)">
+          登录
+        </button>
+        <p @click.stop="active = !active">没有账号？点击注册</p>
+      </div>
+      <div :class="{ register: true, active }">
+        <h1>注册</h1>
+        <input type="text" maxlength="10" required placeholder="请输入用户名" v-model="registerFrom.username" />
+        <input type="password" maxlength="10" required placeholder="请输入密码" v-model="registerFrom.password" />
+        <input type="password" maxlength="10" required placeholder="请输入确认密码" v-model="registerFrom.password2" />
+        <p :class="{ active: tip.tipClass }" @animationend="tip.tipClass = false">
+          {{ tip.registerTip }}
+        </p>
 
-          <button @click.stop="
-            register(
-              registerFrom.username,
-              registerFrom.password,
-              registerFrom.password2
-            )
-          ">
-            注册
-          </button>
-          <p @click.stop="active = !active">已有账号？点击登录</p>
-        </div>
+        <button @click.stop="
+          register(
+            registerFrom.username,
+            registerFrom.password,
+            registerFrom.password2
+          )
+        ">
+          注册
+        </button>
+        <p @click.stop="active = !active">已有账号？点击登录</p>
       </div>
     </div>
-  </transition>
+  </div>
 </template>
 <script>
 export default {
@@ -60,43 +58,32 @@ export default {
         password: "",
         password2: "",
       },
-      isHidenPopup2: this.isHidenPopup
     };
   },
   methods: {
+    hiddenPopup() {
+      this.$refs.login.style.opacity = 0
+      this.$refs.login.style.zIndex = -1
+    },
     login(username, password) {
       if (username.length === 0 || password.length === 0) {
         this.tip.loginTip = "用户名或密码不能为空！";
         this.tip.tipClass = true;
       } else {
-        this.axios
-          .post(
-            `/login?username=${username}&password=${password}`
-          )
-          .then(
-            (response) => {
-              console.log(response);
-              if (response.data.code !== 200) {
-                this.tip.loginTip = response.data.msg;
-                this.tip.tipClass = true;
-              } else {
-                this.$store.state.userInfo = response.data.data;
+        console.log(this.$store);
 
-                sessionStorage.setItem("userInfo", JSON.stringify(this.$store.state.userInfo));
+        this.$axios.myRequest.login(username, password).then((res) => {
+          console.log(res)
+          if (res.data.code !== 200) {
+            this.tip.loginTip = res.data.msg;
+            this.tip.tipClass = true;
+          } else {
+            console.log(res.data.data);
+            sessionStorage.setItem("userInfo", JSON.stringify(res.data.data));
 
-                this.$store.commit('togglePopup');
-                this.$store.dispatch("refresh").then((res) => {
-                  this.$store.commit("refresh", res);
-                  window.location.reload();
-                });
-              }
-            },
-            (error) => {
-              console.log(error);
-              this.tip.loginTip = error.message;
-              this.tip.tipClass = true;
-            }
-          );
+            window.location.reload();
+          }
+        })
       }
     },
     register(username, password, password2) {
@@ -159,16 +146,6 @@ export default {
   }
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s
-}
-
-.fade-enter,
-.fade-leave-to {
-  opacity: 0
-}
-
 .login-register {
   position: fixed;
   width: 100%;
@@ -179,8 +156,9 @@ export default {
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.2);
-  transition: 1s;
-  z-index: 999;
+  transition: opacity @transition-time;
+  z-index: -1;
+  opacity: 0;
 
   >div {
     position: relative;

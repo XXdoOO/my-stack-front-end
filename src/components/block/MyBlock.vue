@@ -1,9 +1,8 @@
 <template>
   <div class="my-block">
-    <LoginRegister />
-
-    <div :class="{face:true,show:!userInfo.isLogin}" @click="userInfo.isLogin? null:$store.commit('togglePopup')">
-      <img :src="userInfo.avatar" alt="" width="50" height="50" />
+    <div :class="{face:true,show:!userInfo.isLogin}" @click="userInfo.isLogin? null:$loginRegister.showLoginRegister()">
+      <img :src="userInfo.avatar === null? require('../../assets/img/cover.webp'):userInfo.avatar" alt="" width="50"
+        height="50">
       <span>
         <input :class="{edit: isEditNickname === true}" ref="editInput" :disabled="!isEditNickname" @blur="editNickname"
           v-model="userInfo.nickname" />
@@ -29,17 +28,16 @@
       </router-link>
     </nav>
     <button @click="editBlog" class="edit-blog">写博客</button>
-    <button v-if="userInfo.isLogin" @click="$store.dispatch('logout')" class="logout">退出登录</button>
+    <router-link v-if="$store.state.userInfo.identity" to="/admin" class="go-admin">进入后台</router-link>
+    <button v-if="userInfo.isLogin" @click="logout" class="logout">退出登录</button>
   </div>
 </template>
 
 <script>
-import LoginRegister from './LoginRegister.vue';
 import { mapState } from "vuex";
 
 export default {
   name: "MyBlock",
-  components: { LoginRegister },
   data() {
     return {
       isShowPopup: false,
@@ -59,9 +57,28 @@ export default {
       if (this.userInfo.isLogin) {
         this.$router.push("/edit");
       } else {
-        this.isShowPopup = true;
+        this.$loginRegister.showLoginRegister()
       }
+    },
+    logout() {
+      this.$axios.myRequest.logout().then((res) => {
+        console.log(res)
+
+        sessionStorage.clear();
+
+        this.$store.state.userInfo = {
+          isLogin: false,
+          username: null,
+          avatar: null,
+          nickname: "点击登录",
+          identity: false
+        }
+        window.location.reload();
+      })
     }
+  },
+  mounted() {
+
   }
 }
 </script>
@@ -74,6 +91,7 @@ export default {
   background-color: white;
 
   .edit-blog,
+  .go-admin,
   .logout {
     display: block;
     width: 100%;
@@ -89,8 +107,19 @@ export default {
     transition: @transition-time;
   }
 
-  .edit-blog:hover {
+  .edit-blog {
     background-color: @theme-color;
+    color: white;
+  }
+
+  .go-admin {
+    background-color: white;
+    border-color: #67C23A;
+    color: #67C23A;
+  }
+
+  .go-admin:hover {
+    background-color: #67C23A;
     color: white;
   }
 

@@ -7,12 +7,12 @@ Vue.use(Vuex)
 
 const actions = {
   refresh() {
-    const getMyStarList = $axios.getMyStarList();
-    const getMyUpList = $axios.getMyUpList();
-    const getMyDownList = $axios.getMyDownList();
+    const getMyStarList = $axios.myRequest.getMyStarList()
+    const getMyUpList = $axios.myRequest.getMyUpList()
+    const getMyDownList = $axios.myRequest.getMyDownList()
 
-    return Promise.all([getMyStarList, getMyUpList, getMyDownList]);
-  }
+    return Promise.all([getMyStarList, getMyUpList, getMyDownList])
+  },
 }
 
 const mutations = {
@@ -20,15 +20,6 @@ const mutations = {
     state.myStarList = res[0].data.data;
     state.myUpList = res[1].data.data;
     state.myDownList = res[2].data.data;
-  },
-  logout(state) {
-    sessionStorage.clear();
-    state.userInfo = {
-      isLogin: false,
-      avatar: "../../assets/img/cover.webp",
-      nickname: "点击登录",
-    }
-    window.location.reload();
   },
   togglePopup(state) {
     state.isShowPopup = !state.isShowPopup;
@@ -39,14 +30,14 @@ const state = {
   userInfo: {
     isLogin: false,
     username: null,
-    avatar: "../../assets/img/cover.webp",
+    avatar: null,
     nickname: "点击登录",
+    identity: false
   },
   myStarList: [],
   myUpList: [],
   myDownList: [],
   progressWidth: 0,
-  isShowPopup: false,
 }
 
 const store = new Vuex.Store({

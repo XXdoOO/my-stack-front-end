@@ -6,8 +6,10 @@ import Highlight from './assets/js/highlight'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import Message from "./components/message"
+import Login from "./components/login"
 
 
+Vue.use(Login);
 Vue.use(Message);
 Vue.use(ElementUI);
 Vue.use(Highlight);

@@ -51,71 +51,69 @@ export default {
         }
     },
     methods: {
-        getDetails(blogId, that) {
-            console.log(2143124)
-            that.axios.get(`/getBlogDetails?id=${blogId}`).then((res) => {
-                res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/");
-                that.blog = res.data.data;
-                that.blog.isStar = false;
-                that.blog.isUp = false;
-                that.blog.isDown = false;
+        syncData(opt) {
+            this.blog[opt] = !this.blog[opt]
 
-                for (const item of that.$store.state.myStarList) {
-                    if (item.id == blogId) {
-                        that.blog.isStar = true;
-                    }
-                }
+            const key = opt.slice(2, opt.lenght).toLowerCase()
 
-                for (const item of that.$store.state.myUpList) {
-                    if (item.id == blogId) {
-                        that.blog.isUp = true;
-                    }
-                }
-
-                for (const item of that.$store.state.myDownList) {
-                    if (item.id == blogId) {
-                        that.blog.isDown = true;
-                    }
-                }
-            });
+            if (this.blog[opt]) {
+                this.blog[key]++
+            } else {
+                this.blog[key]--
+            }
         },
         up(blogId) {
-            this.$store.dispatch('up', {
-                blogId, callback: () => {
-                    this.getDetails(blogId, this);
-                }
-            });
+            this.$axios.myRequest.up(blogId).then((res) => {
+                console.log(res)
+
+                this.syncData("isUp")
+            })
         },
         down(blogId) {
-            this.$store.dispatch('down', {
-                blogId, callback: () => {
-                    this.getDetails(blogId, this);
-                }
-            });
+            this.$axios.myRequest.down(blogId).then((res) => {
+                console.log(res)
+
+                this.syncData("isDown")
+            })
         },
         star(blogId) {
-            this.$store.dispatch('star', {
-                blogId, callback: () => {
-                    this.getDetails(blogId, this);
-                }
-            });
+            this.$axios.myRequest.star(blogId).then((res) => {
+                console.log(res)
+
+                this.syncData("isStar")
+            })
         }
     },
     beforeRouteEnter(to, from, next) {
         next((vm) => {
-            if (vm.$store.state.userInfo.isLogin) {
-                vm.$store.dispatch("refresh").then((res) => {
-                    vm.$store.commit("refresh", res);
+            vm.$axios.myRequest.getBlogDetails(to.query.id).then((res) => {
+                res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/")
 
-                    vm.getDetails(to.query.id, vm);
-                })
-            } else {
-                vm.axios.get(`/getBlogDetails?id=${to.query.id}`).then((res) => {
-                    res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/");
-                    vm.blog = res.data.data;
-                });
-            }
+                vm.blog = res.data.data
+                vm.blog.isUp = false
+                vm.blog.isDown = false
+                vm.blog.isStar = false
 
+                console.log(2222)
+
+                for (const item of vm.$store.state.myStarList) {
+                    if (item.id === vm.blog.id) {
+                        vm.blog.isStar = true
+                    }
+                }
+
+                for (const item of vm.$store.state.myUpList) {
+                    if (item.id === vm.blog.id) {
+                        vm.blog.isUp = true
+                    }
+                }
+
+                for (const item of vm.$store.state.myDownList) {
+                    if (item.id === vm.blog.id) {
+                        vm.blog.isDown = true
+                    }
+                }
+            });
         });
     }
 }
@@ -140,6 +138,7 @@ export default {
 
 .menu {
     display: flex;
+    justify-content: space-between;
     width: 210px;
     margin-top: 10px;
     padding: 10px;
@@ -147,7 +146,6 @@ export default {
     border-radius: 5px;
 
     li {
-        padding-right: 10px;
         cursor: pointer;
         display: flex;
         align-items: center;

@@ -6,7 +6,7 @@
       <MyBlock></MyBlock>
 
       <div class="articles">
-        <article v-for="(blog) in blogList" :key="blog.id" @click="getDetail(blog.id)">
+        <article v-for="(blog, index) in blogList" :key="blog.id" @click="getDetail(blog.id)">
           <div>
             <ul class="topContent">
               <li>
@@ -18,15 +18,15 @@
             <p>{{blog.description}}</p>
             <ul class="bottomContent">
               <li :class="{'up-hover':blog.isUp}" title="顶数">
-                <i title="顶" @click.stop="up(blog.id)"></i>
+                <i title="顶" @click.stop="up(index, blog.id)"></i>
                 <span>{{blog.up}}</span>
               </li>
               <li :class="{'down-hover':blog.isDown}" title="踩数">
-                <i title="踩" @click.stop="down(blog.id)"></i>
+                <i title="踩" @click.stop="down(index, blog.id)"></i>
                 <span>{{blog.down}}</span>
               </li>
               <li :class="{'star-hover':blog.isStar}" title="收藏数">
-                <i title="收藏" @click.stop="star(blog.id)"></i>
+                <i title="收藏" @click.stop="star(index, blog.id)"></i>
                 <span>{{blog.star}}</span>
               </li>
               <li title="浏览数">
@@ -52,7 +52,7 @@ export default {
   components: { MyBlock },
   props: {
     blogList: Array,
-    modeifyList: Function
+    modifyList: Function
   },
   methods: {
     formatTime(timestamp) {
@@ -92,59 +92,28 @@ export default {
     getDetail(blogId) {
       this.$router.push(`/details?id=${blogId}`);
     },
-    syncData(startIndex, pageSize) {
-      console.log("同步数据")
-      this.axios.get(`/getBlogByKeywords?startIndex=${startIndex}&pageSize=${pageSize}`).then((res) => {
-        res.data.data.forEach((item) => {
-          item.isUp = false;
-          item.isDown = false;
-          item.isStar = false;
-        });
+    up(index, blogId) {
+      this.$axios.myRequest.up(blogId).then((res) => {
+        console.log(res)
 
-        for (const star of this.$store.state.myStarList) {
-          res.data.data.forEach((item) => {
-            if (item.id == star.id) {
-              item.isStar = true;
-            }
-          });
-        }
-
-        for (const up of this.$store.state.myUpList) {
-          res.data.data.forEach((item) => {
-            if (item.id == up.id) {
-              item.isUp = true;
-            }
-          });
-        }
-
-        for (const down of this.$store.state.myDownList) {
-          res.data.data.forEach((item) => {
-            if (item.id == down.id) {
-              item.isDown = true;
-            }
-          });
-        }
-
-        this.modeifyList(res.data.data);
-      });
+        this.modifyList(index, "isUp")
+      })
     },
-    up(blogId) {
-      this.$store.dispatch('up', {
-        blogId, callback: () => {
-          this.syncData(30, 20);
-        }
-      });
+    down(index, blogId) {
+      this.$axios.myRequest.down(blogId).then((res) => {
+        console.log(res)
+
+        this.modifyList(index, "isDown")
+      })
     },
-    // down(index, blogId) {
-    // },
-    // star(index, blogId) {
-    // },
+    star(index, blogId) {
+      this.$axios.myRequest.star(blogId).then((res) => {
+        console.log(res)
+
+        this.modifyList(index, "isStar")
+      })
+    },
   },
-  mounted() {
-    if (this.$store.state.userInfo.isLogin) {
-      this.syncData(30, 20);
-    }
-  }
 }
 </script>
 
