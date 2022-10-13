@@ -39,7 +39,7 @@ export default {
       }
       return req;
     }, (error) => {
-      console.log(error);
+      console.log("error");
       this.$xMessage.show({
         title: '请求或相应错误！',
         message: error,
@@ -58,6 +58,14 @@ export default {
         this.$store.state.progressWidth = 0;
       }, 100);
       return res;
+    }, (error) => {
+      console.log("error");
+      this.$xMessage.show({
+        title: '请求或相应错误！',
+        message: error,
+        type: 'error',
+        duration: 5000
+      });
     });
 
 

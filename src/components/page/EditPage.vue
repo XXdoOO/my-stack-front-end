@@ -80,6 +80,7 @@ export default {
   display: flex;
   position: relative;
   border-top: 2px dashed @theme-color;
+  border-bottom: 2px dashed @theme-color;
 
   .edit {
     width: 50%;
