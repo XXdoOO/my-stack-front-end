@@ -26,7 +26,7 @@ export default {
       if (req.url.split("/")[1] === "user" || req.url.split("/")[1] === "admin") {
         if (!this.$store.state.userInfo.isLogin) {
           req.cancelToken = source.token;
-          source.cancel();
+          source.cancel(this.$loginRegister.showLoginRegister());
         }
       } else {
         clearInterval(this.timer);
@@ -42,7 +42,7 @@ export default {
       console.log("error");
       this.$xMessage.show({
         title: '请求或相应错误！',
-        message: error,
+        message: error.message,
         type: 'error',
         duration: 5000
       });
@@ -59,10 +59,10 @@ export default {
       }, 100);
       return res;
     }, (error) => {
-      console.log("error");
+      console.log(error);
       this.$xMessage.show({
         title: '请求或相应错误！',
-        message: error,
+        message: error.message,
         type: 'error',
         duration: 5000
       });

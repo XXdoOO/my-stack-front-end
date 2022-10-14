@@ -20,6 +20,13 @@
 
       <SearchInput />
 
+      <div to="/my" class="my" @click="userInfo.isLogin? goMy():$loginRegister.showLoginRegister()">
+        <img v-if="userInfo.isLogin" :src="userInfo.avatar" alt="" width="50" height="50">
+        <span>
+          {{userInfo.nickname}}
+        </span>
+      </div>
+
     </div>
 
     <div class="progress"></div>
@@ -28,6 +35,8 @@
 
 <script>
 import SearchInput from "../block/SearchInput.vue";
+import { mapState } from "vuex";
+
 export default {
   name: "HeaderBlock",
   components: { SearchInput },
@@ -41,8 +50,14 @@ export default {
   },
   computed: {
     loginMsg() {
-      return this.$store.state.isLogin ? `退出登录` : "登录/注册";
+      return this.$store.state.isLogin ? "退出登录" : "登录/注册";
     },
+    ...mapState(["userInfo"])
+  },
+  methods: {
+    goMy() {
+      this.$router.push("/my")
+    }
   },
   mounted() {
     window.addEventListener("scroll", () => {
@@ -139,6 +154,23 @@ export default {
       a.active:after {
         width: 30%;
       }
+    }
+
+    .my {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 130px;
+      cursor: pointer;
+      transition: @transition-time;
+
+      img {
+        border-radius: 100%;
+      }
+    }
+
+    .my:hover {
+      color: @theme-color;
     }
   }
 }

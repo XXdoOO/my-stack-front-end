@@ -1,13 +1,16 @@
 <template>
   <main>
     <ListBlock :blogList=blogList :modifyList=modifyList />
+
+    <GoTop></GoTop>
   </main>
 </template>
 <script>
 import ListBlock from "../block/ListBlock.vue";
+import GoTop from "../block/GoTop.vue";
 export default {
   name: "IndexPage",
-  components: { ListBlock },
+  components: { ListBlock, GoTop },
   data() {
     return {
       blogList: []

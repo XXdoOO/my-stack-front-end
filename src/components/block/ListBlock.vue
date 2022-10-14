@@ -1,10 +1,7 @@
 <template>
   <div class="root">
-    <div id="top"></div>
 
     <div class="container content">
-      <MyBlock></MyBlock>
-
       <div class="articles">
         <article v-for="(blog, index) in blogList" :key="blog.id" @click="getDetail(blog.id)">
           <div>
@@ -39,17 +36,13 @@
         </article>
       </div>
     </div>
-
-    <i @click="goAnchor('top')" class="goTop" title="返回顶部"></i>
   </div>
 </template>
 
 <script>
-import MyBlock from "../block/MyBlock.vue"
 
 export default {
   name: "ListBlock",
-  components: { MyBlock },
   props: {
     blogList: Array,
     modifyList: Function
@@ -96,21 +89,27 @@ export default {
       this.$axios.myRequest.up(blogId).then((res) => {
         console.log(res)
 
-        this.modifyList(index, "isUp")
+        if (res) {
+          this.modifyList(index, "isUp")
+        }
       })
     },
     down(index, blogId) {
       this.$axios.myRequest.down(blogId).then((res) => {
         console.log(res)
 
-        this.modifyList(index, "isDown")
+        if (res) {
+          this.modifyList(index, "isDown")
+        }
       })
     },
     star(index, blogId) {
       this.$axios.myRequest.star(blogId).then((res) => {
         console.log(res)
 
-        this.modifyList(index, "isStar")
+        if (res) {
+          this.modifyList(index, "isStar")
+        }
       })
     },
   },
@@ -119,8 +118,6 @@ export default {
 
 <style lang="less" scoped>
 .root {
-  padding-top: 80px;
-
   .content {
     display: flex;
     align-items: flex-start;
@@ -165,25 +162,6 @@ export default {
         color: @theme-color;
       }
     }
-  }
-
-  .goTop {
-    position: fixed;
-    right: 50px;
-    bottom: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    padding: 20px;
-    background-color: @theme-color;
-    background-image: url(../../assets/img/arrow.png);
-    background-size: cover;
-    color: white;
-    border-radius: 50%;
-    transform: rotate(180deg);
-    cursor: pointer;
   }
 }
 

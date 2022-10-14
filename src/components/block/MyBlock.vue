@@ -1,85 +1,69 @@
 <template>
   <div class="my-block">
-    <div :class="{face:true,show:!userInfo.isLogin}" @click="userInfo.isLogin? null:$loginRegister.showLoginRegister()">
-      <img :src="userInfo.avatar === null? require('../../assets/img/cover.webp'):userInfo.avatar" alt="" width="50"
-        height="50">
+    <div :class="{face:true}">
+      <img :src="userInfo.avatar" alt="" width="50" height="50">
       <span>
-        <input :class="{edit: isEditNickname === true}" ref="editInput" :disabled="!isEditNickname" @blur="editNickname"
-          v-model="userInfo.nickname" />
-        <i @click="editNickname"></i>
+        {{userInfo.nickname}}
       </span>
     </div>
     <nav class="my">
-      <router-link to="/myBlog">
-        <span>1000</span>
+      <router-link to="/user/blog">
+        <span>{{userInfo.postCount}}</span>
         <span>发布</span>
       </router-link>
-      <router-link to="/myUp">
-        <span>1000</span>
+      <router-link to="/user/up">
+        <span>{{userInfo.upCount}}</span>
         <span>顶</span>
       </router-link>
-      <router-link to="/myDown">
-        <span>1000</span>
+      <router-link to="/user/down">
+        <span>{{userInfo.downCount}}</span>
         <span>踩</span>
       </router-link>
-      <router-link to="/myStar">
-        <span>1000</span>
+      <router-link to="/user/star">
+        <span>{{userInfo.starCount}}</span>
         <span>收藏</span>
       </router-link>
     </nav>
-    <button @click="editBlog" class="edit-blog">写博客</button>
-    <router-link v-if="$store.state.userInfo.identity" to="/admin" class="go-admin">进入后台</router-link>
-    <button v-if="userInfo.isLogin" @click="logout" class="logout">退出登录</button>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
-
 export default {
   name: "MyBlock",
-  data() {
-    return {
-      isShowPopup: false,
-      isEditNickname: false,
-    }
-  },
-  computed: { ...mapState(["userInfo"]) },
-  methods: {
-    editNickname() {
-      this.isEditNickname = !this.isEditNickname;
-
-      if (this.isEditNickname) {
-        this.$refs.editInput.focus();
-      }
-    },
-    editBlog() {
-      if (this.userInfo.isLogin) {
-        this.$router.push("/edit");
-      } else {
-        this.$loginRegister.showLoginRegister()
-      }
-    },
-    logout() {
-      this.$axios.myRequest.logout().then((res) => {
-        console.log(res)
-
-        sessionStorage.clear();
-
-        this.$store.state.userInfo = {
-          isLogin: false,
-          username: null,
-          avatar: null,
-          nickname: "点击登录",
-          identity: false
+  props: {
+    userInfo: {
+      type: Object,
+      default() {
+        return {
+          nickname: "用户昵称",
+          avatar: "/",
+          postCount: 100,
+          upCount: 100,
+          downCount: 100,
+          starCount: 100,
         }
-        window.location.reload();
-      })
+      },
+      require: true
     }
   },
-  mounted() {
+  methods: {
+    // logout() {
+    //   this.$axios.myRequest.logout().then((res) => {
+    //     console.log(res)
 
-  }
+    //     sessionStorage.clear();
+
+    //     this.$store.state.userInfo = {
+    //       isLogin: false,
+    //       username: null,
+    //       avatar: null,
+    //       nickname: "点击登录",
+    //       identity: false
+    //     }
+    //     window.location.reload();
+    //   })
+    // }
+  },
 }
 </script>
 

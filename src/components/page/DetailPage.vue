@@ -1,7 +1,7 @@
 <template>
     <main class="container details">
         <div class="sidebar">
-            <MyBlock />
+            <MyBlock :user-info="blog.authorInfo" />
 
             <ul class="menu">
                 <li title="顶数" :class="{'up-hover': blog.isUp}">
@@ -25,16 +25,17 @@
 
         <div v-html="markdownToHtml" class="markdown"></div>
 
-
+        <GoTop></GoTop>
     </main>
 </template>
 <script>
 import { marked } from 'marked';
 import MyBlock from "../block/MyBlock.vue"
+import GoTop from "../block/GoTop.vue"
 
 export default {
     name: "DetailPage",
-    components: { MyBlock },
+    components: { MyBlock, GoTop },
     data() {
         return {
             blog: {
@@ -94,7 +95,7 @@ export default {
                 vm.blog.isDown = false
                 vm.blog.isStar = false
 
-                console.log(2222)
+                console.log(vm.blog)
 
                 for (const item of vm.$store.state.myStarList) {
                     if (item.id === vm.blog.id) {
@@ -151,8 +152,8 @@ export default {
         align-items: center;
 
         i {
-            width: 20px;
-            height: 20px;
+            width: 21px;
+            height: 21px;
             display: block;
             background-size: cover;
             transition: @transition-time;

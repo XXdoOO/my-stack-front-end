@@ -31,7 +31,7 @@ const state = {
     isLogin: false,
     username: null,
     avatar: null,
-    nickname: "点击登录",
+    nickname: "登录/注册",
     identity: false
   },
   myStarList: [],
