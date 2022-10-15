@@ -1,27 +1,23 @@
 <template>
   <div class="my-block">
-    <div :class="{face:true}">
+    <router-link :to="`/user/${userInfo.username}/postBlogList`" class="face">
       <img :src="userInfo.avatar" alt="" width="50" height="50">
       <span>
         {{userInfo.nickname}}
       </span>
-    </div>
+    </router-link>
     <nav class="my">
-      <router-link to="/user/blog">
+      <router-link :to="`/user/${userInfo.username}/postBlogList`">
         <span>{{userInfo.postCount}}</span>
         <span>发布</span>
       </router-link>
-      <router-link to="/user/up">
+      <router-link :to="`/user/${userInfo.username}/upBlogList`">
         <span>{{userInfo.upCount}}</span>
-        <span>顶</span>
+        <span>顶过</span>
       </router-link>
-      <router-link to="/user/down">
+      <router-link :to="`/user/${userInfo.username}/downBlogList`">
         <span>{{userInfo.downCount}}</span>
-        <span>踩</span>
-      </router-link>
-      <router-link to="/user/star">
-        <span>{{userInfo.starCount}}</span>
-        <span>收藏</span>
+        <span>踩过</span>
       </router-link>
     </nav>
   </div>
@@ -70,7 +66,7 @@ export default {
 <style lang="less" scoped>
 .my-block {
   width: 210px;
-  padding: 20px;
+  padding: 20px 30px;
   border-radius: 5px;
   background-color: white;
 
@@ -131,7 +127,6 @@ export default {
     margin-left: 20px;
     display: flex;
     align-items: center;
-    cursor: pointer;
 
     input {
       border: none;
@@ -166,7 +161,6 @@ export default {
 }
 
 .my {
-  width: 170px;
   display: flex;
   justify-content: space-between;
   margin-top: 20px;

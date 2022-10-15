@@ -15,10 +15,12 @@ const router = new VueRouter({
         { path: "/", meta: { title: "首页" }, component: IndexPage },
         { path: "/top", meta: { title: "热门" }, component: MyPage },
         { path: "/my", meta: { title: "个人主页" }, component: MyPage },
-        { path: "/user", meta: { title: "用户主页" }, component: UserPage },
-        { path: "/details", meta: { title: "详情" }, component: DetailPage },
+        { path: "/user/:username/postBlogList", meta: { title: "用户发布的博客" }, component: UserPage },
+        { path: "/user/:username/upBlogList", meta: { title: "用户顶过的博客" }, component: UserPage },
+        { path: "/user/:username/downBlogList", meta: { title: "用户踩过的博客" }, component: UserPage },
+        { path: "/details/:blogId", meta: { title: "详情" }, component: DetailPage },
         { path: "/edit", meta: { title: "编辑" }, component: EditPage },
-        { path: "/search", meta: { title: "搜索" }, component: SearchPage },
+        { path: "/search/:keywords", meta: { title: "搜索" }, component: SearchPage },
         { path: "/admin", meta: { title: "管理页面" }, component: AdminPage },
     ]
 });
@@ -28,7 +30,7 @@ router.beforeEach((to, from, next) => {
         document.title = to.meta.title;
     }
 
-    next();
+    next()
 })
 
 export default router;

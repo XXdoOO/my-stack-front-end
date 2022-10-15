@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="container">
     <ListBlock :blogList=blogList :modifyList=modifyList />
 
     <GoTop></GoTop>
@@ -30,19 +30,16 @@ export default {
       } else {
         this.$set(item, key, value - 1)
       }
-
-    }
-  },
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$axios.myRequest.getBlogList(10, 20).then((res) => {
+    },
+    getBlogList() {
+      this.$axios.myRequest.getBlogList(10, 20).then((res) => {
         console.log(res)
 
         res.data.data.forEach((i) => {
           i.isStar = false;
         })
 
-        for (const item of vm.$store.state.myStarList) {
+        for (const item of this.$store.state.myStarList) {
           res.data.data.forEach((i) => {
             if (item.id === i.id) {
               i.isStar = true;
@@ -50,7 +47,7 @@ export default {
           })
         }
 
-        for (const item of vm.$store.state.myUpList) {
+        for (const item of this.$store.state.myUpList) {
           res.data.data.forEach((i) => {
             if (item.id === i.id) {
               i.isUp = true;
@@ -58,7 +55,7 @@ export default {
           })
         }
 
-        for (const item of vm.$store.state.myDownList) {
+        for (const item of this.$store.state.myDownList) {
           res.data.data.forEach((i) => {
             if (item.id === i.id) {
               i.isDown = true;
@@ -66,8 +63,21 @@ export default {
           })
         }
 
-        vm.blogList = res.data.data
+        this.blogList = res.data.data
       })
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      if (vm.$store.state.userInfo.isLogin) {
+        vm.$store.dispatch("refresh").then((res) => {
+          vm.$store.commit("refresh", res);
+
+          vm.getBlogList()
+        });
+      } else {
+        vm.getBlogList()
+      }
     });
   }
 };

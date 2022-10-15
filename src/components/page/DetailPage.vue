@@ -21,9 +21,13 @@
                     <span>{{blog.views}}</span>
                 </li>
             </ul>
+
+            <div id="directory" v-html="directory">
+
+            </div>
         </div>
 
-        <div v-html="markdownToHtml" class="markdown"></div>
+        <div v-html="markdownToHtml" id="markdown" ref="markdown"></div>
 
         <GoTop></GoTop>
     </main>
@@ -43,11 +47,13 @@ export default {
                 isStar: false,
                 isUp: false,
                 isDown: false,
-            }
+            },
+            directory: null
         }
     },
     computed: {
         markdownToHtml() {
+            console.log(4444)
             return marked(this.blog.content);
         }
     },
@@ -83,38 +89,112 @@ export default {
 
                 this.syncData("isStar")
             })
-        }
-    },
-    beforeRouteEnter(to, from, next) {
-        next((vm) => {
-            vm.$axios.myRequest.getBlogDetails(to.query.id).then((res) => {
+        },
+        createDirectory() {
+            const content = this.$refs.markdown.children
+            console.log(content[0])
+            var arr = [{
+                content: '',
+                children: []
+            }]
+            let h1 = 0
+            let h2 = 0
+            let h3 = 0
+            let h4 = 0
+            let h5 = 0
+            let element
+            let localName
+            for (let i = 0; i < content.length; i++) {
+                element = { content: '', children: [] }
+                localName = content[i].localName
+
+                if (localName === "h1" || localName === "h2" || localName === "h3" || localName === "h4" || localName === "h5" || localName === "h6") {
+                    element.content = content[i].innerHTML
+                }
+
+                console.log(localName, arr)
+
+                if (localName === 'h1') {
+                    if (h1 === 0) {
+                        arr[0] = element
+                    } else {
+                        arr.push(element)
+                    }
+                    h1++
+                    h2 = 0
+                    h3 = 0
+                    h4 = 0
+                    h5 = 0
+                } else if (localName === 'h2') {
+                    arr[h1 - 1].children.push(element)
+                    h2++
+                    h3 = 0
+                    h4 = 0
+                    h5 = 0
+                } else if (localName === 'h3') {
+                    arr[h1 - 1].children[h2 - 1].children.push(element)
+                    h3++
+                    h4 = 0
+                    h5 = 0
+                } else if (localName === 'h4') {
+                    arr[h1 - 1].children[h2 - 1].children[h3 - 1].children.push(element)
+                    h4++
+                    h5 = 0
+                } else if (localName === 'h5') {
+                    arr[h1 - 1].children[h2 - 1].children[h3 - 1].children[h4 - 1].children.push(element)
+                    h5++
+                } else if (localName === 'h6') {
+                    arr[h1 - 1].children[h2 - 1].children[h3 - 1].children[h4 - 1].children[h5 - 1].children.push(element)
+                }
+            }
+
+            console.log(arr)
+        },
+        getBlogDetails(blogId) {
+            this.$axios.myRequest.getBlogDetails(blogId).then((res) => {
                 res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/")
 
-                vm.blog = res.data.data
-                vm.blog.isUp = false
-                vm.blog.isDown = false
-                vm.blog.isStar = false
+                this.blog = res.data.data
+                this.blog.isUp = false
+                this.blog.isDown = false
+                this.blog.isStar = false
 
-                console.log(vm.blog)
+                console.log(this.blog)
 
-                for (const item of vm.$store.state.myStarList) {
-                    if (item.id === vm.blog.id) {
-                        vm.blog.isStar = true
+                for (const item of this.$store.state.myStarList) {
+                    if (item.id === this.blog.id) {
+                        this.blog.isStar = true
                     }
                 }
 
-                for (const item of vm.$store.state.myUpList) {
-                    if (item.id === vm.blog.id) {
-                        vm.blog.isUp = true
+                for (const item of this.$store.state.myUpList) {
+                    if (item.id === this.blog.id) {
+                        this.blog.isUp = true
                     }
                 }
 
-                for (const item of vm.$store.state.myDownList) {
-                    if (item.id === vm.blog.id) {
-                        vm.blog.isDown = true
+                for (const item of this.$store.state.myDownList) {
+                    if (item.id === this.blog.id) {
+                        this.blog.isDown = true
                     }
                 }
             });
+        }
+    },
+    mounted() {
+        this.createDirectory()
+    },
+    beforeRouteEnter(to, from, next) {
+        next((vm) => {
+            if (vm.$store.state.userInfo.isLogin) {
+                vm.$store.dispatch("refresh").then((res) => {
+                    vm.$store.commit("refresh", res)
+
+                    vm.getBlogDetails(to.params.blogId)
+                });
+            } else {
+                vm.getBlogDetails(to.params.blogId)
+            }
         });
     }
 }
@@ -123,7 +203,7 @@ export default {
 .details {
     margin: 80px auto 30px auto;
 
-    .markdown {
+    #markdown {
         width: calc(100% - 217px);
         margin-left: auto;
         background-color: white;
@@ -141,7 +221,7 @@ export default {
     display: flex;
     justify-content: space-between;
     width: 210px;
-    margin-top: 10px;
+    margin-top: 5px;
     padding: 10px;
     background-color: white;
     border-radius: 5px;

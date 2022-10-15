@@ -179,7 +179,7 @@ export default {
   content: "";
   display: block;
   width: var(--progress-width);
-  height: 2px;
+  height: 5px;
   background-color: @theme-color;
 }
 </style>

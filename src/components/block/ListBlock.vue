@@ -1,41 +1,36 @@
 <template>
-  <div class="root">
-
-    <div class="container content">
-      <div class="articles">
-        <article v-for="(blog, index) in blogList" :key="blog.id" @click="getDetail(blog.id)">
-          <div>
-            <ul class="topContent">
-              <li>
-                <router-link to="">{{blog.authorUsername}}</router-link>
-              </li>
-              <li>{{formatTime(blog.postTime)}}</li>
-            </ul>
-            <h2>{{blog.title}}</h2>
-            <p>{{blog.description}}</p>
-            <ul class="bottomContent">
-              <li :class="{'up-hover':blog.isUp}" title="顶数">
-                <i title="顶" @click.stop="up(index, blog.id)"></i>
-                <span>{{blog.up}}</span>
-              </li>
-              <li :class="{'down-hover':blog.isDown}" title="踩数">
-                <i title="踩" @click.stop="down(index, blog.id)"></i>
-                <span>{{blog.down}}</span>
-              </li>
-              <li :class="{'star-hover':blog.isStar}" title="收藏数">
-                <i title="收藏" @click.stop="star(index, blog.id)"></i>
-                <span>{{blog.star}}</span>
-              </li>
-              <li title="浏览数">
-                <i></i>
-                <span>{{blog.views}}</span>
-              </li>
-            </ul>
-          </div>
-          <img v-if="blog.cover" :src="blog.cover" alt="" height="100">
-        </article>
+  <div class="articles">
+    <article v-for="(blog, index) in blogList" :key="blog.id" @click="getDetails(blog.id)">
+      <div>
+        <ul class="topContent">
+          <li>
+            <router-link :to="`/user/${blog.authorUsername}/postBlogList`">{{blog.authorUsername}}</router-link>
+          </li>
+          <li>{{formatTime(blog.postTime)}}</li>
+        </ul>
+        <h2>{{blog.title}}</h2>
+        <p>{{blog.description}}</p>
+        <ul class="bottomContent">
+          <li :class="{'up-hover':blog.isUp}" title="顶数">
+            <i title="顶" @click.stop="up(index, blog.id)"></i>
+            <span>{{blog.up}}</span>
+          </li>
+          <li :class="{'down-hover':blog.isDown}" title="踩数">
+            <i title="踩" @click.stop="down(index, blog.id)"></i>
+            <span>{{blog.down}}</span>
+          </li>
+          <li :class="{'star-hover':blog.isStar}" title="收藏数">
+            <i title="收藏" @click.stop="star(index, blog.id)"></i>
+            <span>{{blog.star}}</span>
+          </li>
+          <li title="浏览数">
+            <i></i>
+            <span>{{blog.views}}</span>
+          </li>
+        </ul>
       </div>
-    </div>
+      <img v-if="blog.cover" :src="blog.cover" alt="" height="100">
+    </article>
   </div>
 </template>
 
@@ -82,8 +77,8 @@ export default {
       // safari
       window.pageYOffset = anchor.offsetTop - 80;
     },
-    getDetail(blogId) {
-      this.$router.push(`/details?id=${blogId}`);
+    getDetails(blogId) {
+      this.$router.push(`/details/${blogId}`);
     },
     up(index, blogId) {
       this.$axios.myRequest.up(blogId).then((res) => {
@@ -117,51 +112,53 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.root {
-  .content {
+.articles {
+  border-radius: 5px;
+  overflow: hidden;
+
+  article {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    padding: 15px 25px;
+    transition: 0.1s;
+    cursor: pointer;
+    background-color: white;
+    position: relative;
 
-    .articles {
-      width: calc(100% - 217px);
-      margin-left: auto;
-
-      article {
-        display: flex;
-        align-items: center;
-        margin: 0 auto 7px auto;
-        padding: 15px 20px;
-        border-radius: 5px;
-        transition: 0.1s;
-        cursor: pointer;
-        background-color: white;
-
-        >img {
-          object-fit: cover;
-          margin-left: 20px;
-        }
-
-        h2 {
-          font-size: 18px;
-          margin-bottom: 10px;
-        }
-
-        p {
-          font-size: 14px;
-          color: @gray-color-dep;
-          transition: 0.1s;
-        }
-      }
-
-      article:hover {
-        background-color: #f4f5f6;
-        color: @theme-color;
-      }
-
-      article:hover p {
-        color: @theme-color;
-      }
+    >img {
+      object-fit: cover;
+      margin-left: 20px;
     }
+
+    h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 14px;
+      color: @gray-color-dep;
+      transition: 0.1s;
+    }
+  }
+
+  article:after {
+    content: "";
+    width: 94%;
+    height: 1px;
+    background-color: @gray-color;
+    position: absolute;
+    bottom: 0;
+    left: 3%;
+  }
+
+  article:hover {
+    background-color: #f4f5f6;
+    color: @theme-color;
+  }
+
+  article:hover p {
+    color: @theme-color;
   }
 }
 
@@ -183,6 +180,8 @@ export default {
 .bottomContent {
   display: flex;
   margin-top: 10px;
+  width: 220px;
+  justify-content: space-between;
 
   li {
     padding: 0 10px;

@@ -44,7 +44,7 @@ export default {
         title: '请求或相应错误！',
         message: error.message,
         type: 'error',
-        duration: 5000
+        duration: 3000
       });
     });
 
@@ -60,12 +60,22 @@ export default {
       return res;
     }, (error) => {
       console.log(error);
-      this.$xMessage.show({
-        title: '请求或相应错误！',
-        message: error.message,
-        type: 'error',
-        duration: 5000
-      });
+
+      if (error.code === 'ECONNABORTED' && error.message.indexOf('timeout') !== -1) {
+        this.$xMessage.show({
+          title: '请求超时，请刷新！',
+          message: error.message,
+          type: 'error',
+          duration: 3000
+        });
+      } else {
+        this.$xMessage.show({
+          title: '请求或相应错误！',
+          message: error.message,
+          type: 'error',
+          duration: 3000
+        });
+      }
     });
 
 
@@ -74,10 +84,6 @@ export default {
     if (userInfo !== null) {
       userInfo.isLogin = true;
       this.$store.state.userInfo = userInfo;
-
-      this.$store.dispatch("refresh").then((res) => {
-        this.$store.commit("refresh", res);
-      });
     }
   }
 };
