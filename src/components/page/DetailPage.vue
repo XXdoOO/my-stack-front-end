@@ -27,7 +27,61 @@
             </div>
         </div>
 
-        <div v-html="markdownToHtml" id="markdown" ref="markdown"></div>
+        <div>
+            <div v-html="markdownToHtml" id="markdown" ref="markdown"></div>
+
+            <div class="comments">
+                <div class="post-area">
+                    <img class="face" :src="blog.authorInfo.avatar" alt="" width="40" height="40">
+                    <textarea name="" id="" cols="30" rows="10" v-model="comment"></textarea>
+                </div>
+
+                <button @click="postComment(comment)">发表评论</button>
+
+                <div class="comments-area">
+                    <div class="hot-comments">热门评论</div>
+                    <div class="comment" v-for="hot in blog.commentsList.hotComments" :key="hot.id">
+                        <img :src="hot.authorInfo.avatar" alt="" width="40" height="40" />
+                        <div class="content">
+                            <router-link :to="`/user/${hot.authorUsername}/postBlogList`">{{hot.authorInfo.nickname}}
+                            </router-link>
+                            <p>{{hot.content}}</p>
+                            <ul class="menu comment-menu">
+                                <li title="顶数" :class="{'up-hover': blog.isUp}">
+                                    <i title="顶" @click="up(blog.id)"></i>
+                                    <span>{{hot.up}}</span>
+                                </li>
+                                <li title="踩数" :class="{'down-hover': blog.isDown}">
+                                    <i title="踩" @click="down(blog.id)"></i>
+                                    <span>{{hot.down}}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <div class="new-comments">新评论</div>
+                    <div class="comment" v-for="(item, index) in blog.commentsList.newComments" :key="index">
+                        <img :src="item.authorInfo.avatar" alt="" width="40" height="40" />
+                        <div class="content">
+                            <router-link :to="`/user/${item.authorUsername}/postBlogList`">{{item.authorInfo.nickname}}
+                            </router-link>
+                            <p>{{item.content}}</p>
+                            <ul class="menu comment-menu">
+                                <li title="顶数" :class="{'up-hover': blog.isUp}">
+                                    <i title="顶" @click="up(blog.id)"></i>
+                                    <span>{{item.up}}</span>
+                                </li>
+                                <li title="踩数" :class="{'down-hover': blog.isDown}">
+                                    <i title="踩" @click="down(blog.id)"></i>
+                                    <span>{{item.down}}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <GoTop></GoTop>
     </main>
@@ -47,8 +101,13 @@ export default {
                 isStar: false,
                 isUp: false,
                 isDown: false,
+                authorInfo: {
+                    avatar: ""
+                },
+                commentsList: {}
             },
-            directory: null
+            directory: null,
+            comment: ""
         }
     },
     computed: {
@@ -88,6 +147,15 @@ export default {
                 console.log(res)
 
                 this.syncData("isStar")
+            })
+        },
+        postComment(comment) {
+            const data = {
+                blogId: this.blog.id,
+                content: comment
+            }
+            this.$axios.myRequest.postComments(data).then((res) => {
+                console.log(res)
             })
         },
         createDirectory() {
@@ -182,7 +250,7 @@ export default {
         }
     },
     mounted() {
-        this.createDirectory()
+        // this.createDirectory()
     },
     beforeRouteEnter(to, from, next) {
         next((vm) => {
@@ -204,8 +272,7 @@ export default {
     margin: 80px auto 30px auto;
 
     #markdown {
-        width: calc(100% - 217px);
-        margin-left: auto;
+        margin-left: 217px;
         background-color: white;
         border-radius: 5px;
         min-height: 100vh;
@@ -277,6 +344,89 @@ export default {
 
     li:nth-child(4) i {
         background-image: url(../../assets/img/views.png);
+    }
+}
+
+.comment-menu {
+    width: 100px;
+    padding: 0;
+}
+
+.comments {
+    margin-top: 5px;
+    margin-left: 217px;
+    background-color: white;
+    border-radius: 5px;
+    padding: 20px 30px;
+
+    .post-area {
+        display: flex;
+        justify-content: space-between;
+
+        img {
+            border-radius: 50%;
+        }
+
+        textarea {
+            flex-grow: 0.96;
+            height: 100px;
+            border-radius: 5px;
+            outline: none;
+            padding: 5px;
+            resize: none;
+            border-color: @theme-color;
+        }
+    }
+
+    button {
+        margin-top: 10px;
+        margin-left: auto;
+        display: block;
+        border-radius: 5px;
+        padding: 5px 10px;
+        border: 1px solid @theme-color;
+        background-color: white;
+        cursor: pointer;
+        color: @theme-color;
+    }
+
+    .comments-area {
+
+        .hot-comments,
+        .new-comments {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .hot-comments {
+            color: red;
+        }
+    }
+}
+
+.comment {
+    display: flex;
+    margin-bottom: 15px;
+
+    img {
+        border-radius: 50%;
+    }
+
+    .content {
+        margin-left: 20px;
+
+        a {
+            display: block;
+            margin-top: 5px;
+        }
+
+        p {
+            margin-top: 10px;
+            color: @gray-color-dep;
+            font-size: 14px;
+        }
     }
 }
 </style>

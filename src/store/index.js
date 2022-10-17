@@ -7,9 +7,9 @@ Vue.use(Vuex)
 
 const actions = {
   refresh() {
-    const getMyStarList = $axios.myRequest.getMyStarList()
-    const getMyUpList = $axios.myRequest.getMyUpList()
-    const getMyDownList = $axios.myRequest.getMyDownList()
+    const getMyStarList = $axios.myRequest.getMyStarList(0, 20)
+    const getMyUpList = $axios.myRequest.getMyUpList(0, 20)
+    const getMyDownList = $axios.myRequest.getMyDownList(0, 20)
 
     return Promise.all([getMyStarList, getMyUpList, getMyDownList])
   },

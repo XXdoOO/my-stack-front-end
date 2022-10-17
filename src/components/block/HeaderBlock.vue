@@ -4,7 +4,7 @@
     'box-shadow':
       scroll === -70 ? 'none' : '0px 8px 25px 20px rgba(44, 16, 111, 0.06)',
       '--progress-width':$store.state.progressWidth + '%',
-      'transition':$store.state.progressWidth == 100 || $store.state.progressWidth == 0? '0':'@transition-time'
+      'transition':$store.state.progressWidth == 100? '0':'0.3'
   }">
     <div class="container">
       <router-link class="logo" to="/">
@@ -13,9 +13,9 @@
       </router-link>
 
       <nav>
-        <router-link to="/" :class="{active: this.$route.path == '/'}">首页</router-link>
-        <router-link to="/top" :class="{active: this.$route.path == '/top'}">热门</router-link>
-        <router-link to="/my" :class="{active: this.$route.path == '/my'}">我的</router-link>
+        <router-link to="/" :class="{active: $route.path == '/'}">首页</router-link>
+        <router-link to="/top" :class="{active: $route.path == '/top'}">热门</router-link>
+        <router-link to="/my/pass" :class="{active: $route.path.split('/')[1] == 'my'}">我的</router-link>
       </nav>
 
       <SearchInput />

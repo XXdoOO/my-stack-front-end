@@ -30,36 +30,46 @@ export default {
       type: null
     }
   },
+  methods: {
+    getUserInfo(path, username) {
+      this.$axios.myRequest.getUserInfo(username).then((res) => {
+        console.log(res)
+        this.userInfo = res.data.data
+
+        const type = path.split("/")
+        this.type = type[type.length - 1]
+
+        if (this.type === "postBlogList") {
+          this.$axios.myRequest.getUserPostBlogList(username, 0, 20).then((res) => {
+            console.log(res)
+            this.blogList = res.data.data
+          })
+        } else if (this.type === "upBlogList") {
+          this.$axios.myRequest.getUserUpBlogList(username, 0, 20).then((res) => {
+            console.log(res)
+            this.blogList = res.data.data
+          })
+        } else {
+          this.$axios.myRequest.getUserDownBlogList(username, 0, 20).then((res) => {
+            console.log(res)
+            this.blogList = res.data.data
+          })
+        }
+      })
+    }
+  },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      vm.$store.dispatch("refresh").then((res) => {
-        vm.$store.commit("refresh", res)
+      if (vm.$store.state.userInfo.isLogin) {
+        vm.$store.dispatch("refresh").then((res) => {
+          vm.$store.commit("refresh", res)
 
-        vm.$axios.myRequest.getUserInfo(to.params.username).then((res) => {
-          console.log(res)
-          vm.userInfo = res.data.data
 
-          const type = to.path.split("/")
-          vm.type = type[type.length - 1]
-
-          if (vm.type === "postBlogList") {
-            vm.$axios.myRequest.getUserPostBlogList(to.params.username).then((res) => {
-              console.log(res)
-              vm.blogList = res.data.data
-            })
-          } else if (vm.type === "upBlogList") {
-            vm.$axios.myRequest.getUserUpBlogList(to.params.username).then((res) => {
-              console.log(res)
-              vm.blogList = res.data.data
-            })
-          } else {
-            vm.$axios.myRequest.getUserDownBlogList(to.params.username).then((res) => {
-              console.log(res)
-              vm.blogList = res.data.data
-            })
-          }
+          vm.getUserInfo(to.path, to.params.username)
         })
-      })
+      } else {
+        vm.getUserInfo(to.path, to.params.username)
+      }
     })
   }
 }
@@ -85,15 +95,20 @@ export default {
   }
 }
 
+nav+.articles {
+  border-radius: 0 0 5px 5px;
+}
+
 nav {
   width: 100%;
   height: 40px;
   display: flex;
   align-items: center;
   background-color: white;
-  margin: 5px 0;
   padding: 0 20px;
   border-radius: 5px;
+  margin-top: 2px;
+  border-radius: 5px 5px 0 0;
 
   a {
     padding: 2px 15px;

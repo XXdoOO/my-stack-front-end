@@ -14,7 +14,12 @@ const router = new VueRouter({
     routes: [
         { path: "/", meta: { title: "首页" }, component: IndexPage },
         { path: "/top", meta: { title: "热门" }, component: MyPage },
-        { path: "/my", meta: { title: "个人主页" }, component: MyPage },
+        { path: "/my/auditing", meta: { title: "审核中" }, component: MyPage },
+        { path: "/my/pass", meta: { title: "审核通过" }, component: MyPage },
+        { path: "/my/noPass", meta: { title: "审核不通过" }, component: MyPage },
+        { path: "/my/up", meta: { title: "我顶过的博客" }, component: MyPage },
+        { path: "/my/down", meta: { title: "我踩过的博客" }, component: MyPage },
+        { path: "/my/star", meta: { title: "我收藏的博客" }, component: MyPage },
         { path: "/user/:username/postBlogList", meta: { title: "用户发布的博客" }, component: UserPage },
         { path: "/user/:username/upBlogList", meta: { title: "用户顶过的博客" }, component: UserPage },
         { path: "/user/:username/downBlogList", meta: { title: "用户踩过的博客" }, component: UserPage },
