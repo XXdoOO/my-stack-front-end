@@ -6,7 +6,7 @@
           <li>
             <router-link :to="`/user/${blog.authorUsername}/postBlogList`">{{blog.authorUsername}}</router-link>
           </li>
-          <li>{{formatTime(blog.postTime)}}</li>
+          <li>{{util.formatTime(blog.postTime)}}</li>
         </ul>
         <h2>{{blog.title}}</h2>
         <p>{{blog.description}}</p>
@@ -43,31 +43,6 @@ export default {
     modifyList: Function
   },
   methods: {
-    formatTime(timestamp) {
-      let date = new Date(timestamp);
-      let year = date.getFullYear();
-      let month = date.getMonth() + 1;
-      let strDate = date.getDate();
-      let hours = date.getHours();
-      let seconds = date.getSeconds();
-      let minutes = date.getMinutes();
-      if (month >= 1 && month <= 9) {
-        month = "0" + month;
-      }
-      if (strDate >= 0 && strDate <= 9) {
-        strDate = "0" + strDate;
-      }
-      if (hours >= 0 && hours <= 9) {
-        hours = "0" + hours;
-      }
-      if (seconds >= 0 && seconds <= 9) {
-        seconds = "0" + seconds;
-      }
-      if (minutes >= 0 && minutes <= 9) {
-        minutes = "0" + minutes;
-      }
-      return `${year}-${month}-${strDate} ${hours}:${seconds}:${minutes}`;
-    },
     goAnchor(id) {
       var anchor = document.getElementById(id);
       // chrome

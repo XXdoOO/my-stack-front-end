@@ -20,7 +20,7 @@
 
       <SearchInput />
 
-      <div to="/my" class="my" @click="userInfo.isLogin? goMy():$loginRegister.showLoginRegister()">
+      <div class="my" @click="userInfo.isLogin? goMy():$loginRegister.showLoginRegister()">
         <img v-if="userInfo.isLogin" :src="userInfo.avatar" alt="" width="50" height="50">
         <span>
           {{userInfo.nickname}}
@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     goMy() {
-      this.$router.push("/my")
+      this.$router.push("/my/pass")
     }
   },
   mounted() {

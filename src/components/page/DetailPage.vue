@@ -33,29 +33,32 @@
             <div class="comments">
                 <div class="post-area">
                     <img class="face" :src="blog.authorInfo.avatar" alt="" width="40" height="40">
-                    <textarea name="" id="" cols="30" rows="10" v-model="comment"></textarea>
+                    <textarea name="" id="" cols="30" rows="10" v-model="content"></textarea>
                 </div>
 
-                <button @click="postComment(comment)">发表评论</button>
+                <button @click="postComment(content)" :class="{active:$store.state.userInfo.isLogin}">发表评论</button>
 
                 <div class="comments-area">
                     <div class="hot-comments">热门评论</div>
-                    <div class="comment" v-for="hot in blog.commentsList.hotComments" :key="hot.id">
+                    <div class="comment" v-for="(hot,index) in blog.commentsList.hotComments" :key="hot.id">
                         <img :src="hot.authorInfo.avatar" alt="" width="40" height="40" />
                         <div class="content">
                             <router-link :to="`/user/${hot.authorUsername}/postBlogList`">{{hot.authorInfo.nickname}}
                             </router-link>
                             <p>{{hot.content}}</p>
-                            <ul class="menu comment-menu">
-                                <li title="顶数" :class="{'up-hover': blog.isUp}">
-                                    <i title="顶" @click="up(blog.id)"></i>
-                                    <span>{{hot.up}}</span>
-                                </li>
-                                <li title="踩数" :class="{'down-hover': blog.isDown}">
-                                    <i title="踩" @click="down(blog.id)"></i>
-                                    <span>{{hot.down}}</span>
-                                </li>
-                            </ul>
+                            <div class="bottom-content">
+                                <time>{{util.formatTime(hot.postTime)}}</time>
+                                <ul class="menu comment-menu">
+                                    <li title="顶数" :class="{'up-hover': hot.isUp}">
+                                        <i title="顶" @click="upComments('hot',index, hot.id)"></i>
+                                        <span>{{hot.up}}</span>
+                                    </li>
+                                    <li title="踩数" :class="{'down-hover': hot.isDown}">
+                                        <i title="踩" @click="downComments('hot',index, hot.id)"></i>
+                                        <span>{{hot.down}}</span>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
@@ -67,16 +70,19 @@
                             <router-link :to="`/user/${item.authorUsername}/postBlogList`">{{item.authorInfo.nickname}}
                             </router-link>
                             <p>{{item.content}}</p>
-                            <ul class="menu comment-menu">
-                                <li title="顶数" :class="{'up-hover': blog.isUp}">
-                                    <i title="顶" @click="up(blog.id)"></i>
-                                    <span>{{item.up}}</span>
-                                </li>
-                                <li title="踩数" :class="{'down-hover': blog.isDown}">
-                                    <i title="踩" @click="down(blog.id)"></i>
-                                    <span>{{item.down}}</span>
-                                </li>
-                            </ul>
+                            <div class="bottom-content">
+                                <time>{{util.formatTime(item.postTime)}}</time>
+                                <ul class="menu comment-menu">
+                                    <li title="顶数" :class="{'up-hover': item.isUp}">
+                                        <i title="顶" @click="upComments('new',index, item.id)"></i>
+                                        <span>{{item.up}}</span>
+                                    </li>
+                                    <li title="踩数" :class="{'down-hover': item.isDown}">
+                                        <i title="踩" @click="downComments('new',index,item.id)"></i>
+                                        <span>{{item.down}}</span>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -104,10 +110,23 @@ export default {
                 authorInfo: {
                     avatar: ""
                 },
-                commentsList: {}
+                commentsList: {
+                    hotComments: [{
+                        isUp: false,
+                        isDown: false,
+                        authorInfo: {},
+                        postTime: ""
+                    }],
+                    newComments: [{
+                        isUp: false,
+                        isDown: false,
+                        authorInfo: {},
+                        postTime: ""
+                    }],
+                },
             },
             directory: null,
-            comment: ""
+            content: ""
         }
     },
     computed: {
@@ -149,13 +168,76 @@ export default {
                 this.syncData("isStar")
             })
         },
-        postComment(comment) {
+        postComment(content) {
             const data = {
                 blogId: this.blog.id,
-                content: comment
+                content: content
             }
             this.$axios.myRequest.postComments(data).then((res) => {
                 console.log(res)
+
+                this.blog.commentsList.newComments.unshift({
+                    authorInfo: this.blog.authorInfo,
+                    authorUsername: this.blog.authorUsername,
+                    blogId: this.blog.id,
+                    content: this.content,
+                    up: 0,
+                    down: 0,
+                    isUp: false,
+                    isDown: false,
+                    postTime: new Date().getTime(),
+
+                })
+            })
+        },
+        upComments(type, index, commentsId) {
+            this.$axios.myRequest.upComments(commentsId).then((res) => {
+                console.log(res)
+                if (res.data.code === 200) {
+                    if (type === "hot") {
+                        this.blog.commentsList.hotComments[index].isUp = !this.blog.commentsList.hotComments[index].isUp
+
+                        if (this.blog.commentsList.hotComments[index].isUp) {
+                            this.blog.commentsList.hotComments[index].up++
+                        } else {
+                            this.blog.commentsList.hotComments[index].up--
+                        }
+                    } else {
+                        this.blog.commentsList.newComments[index].isUp = !this.blog.commentsList.newComments[index].isUp
+
+                        if (this.blog.commentsList.newComments[index].isUp) {
+                            this.blog.commentsList.newComments[index].up++
+                        } else {
+                            this.blog.commentsList.newComments[index].up--
+                        }
+                    }
+
+                }
+            })
+        },
+        downComments(type, index, commentsId) {
+            this.$axios.myRequest.downComments(commentsId).then((res) => {
+                console.log(res)
+                if (res.data.code === 200) {
+                    if (type === "hot") {
+                        this.blog.commentsList.hotComments[index].isDown = !this.blog.commentsList.hotComments[index].isDown
+
+                        if (this.blog.commentsList.hotComments[index].isDown) {
+                            this.blog.commentsList.hotComments[index].down++
+                        } else {
+                            this.blog.commentsList.hotComments[index].down--
+                        }
+                    } else {
+                        this.blog.commentsList.newComments[index].isDown = !this.blog.commentsList.newComments[index].isDown
+
+                        if (this.blog.commentsList.newComments[index].isDown) {
+                            this.blog.commentsList.newComments[index].down++
+                        } else {
+                            this.blog.commentsList.newComments[index].down--
+                        }
+                    }
+
+                }
             })
         },
         createDirectory() {
@@ -357,7 +439,7 @@ export default {
     margin-left: 217px;
     background-color: white;
     border-radius: 5px;
-    padding: 20px 30px;
+    padding: 30px 40px;
 
     .post-area {
         display: flex;
@@ -384,10 +466,15 @@ export default {
         display: block;
         border-radius: 5px;
         padding: 5px 10px;
-        border: 1px solid @theme-color;
-        background-color: white;
+        border: 1px solid @theme-color-shallow;
+        background-color: @theme-color-shallow;
         cursor: pointer;
-        color: @theme-color;
+        color: white;
+    }
+
+    button.active {
+        background-color: @theme-color;
+        border-color: @theme-color;
     }
 
     .comments-area {
@@ -416,6 +503,7 @@ export default {
 
     .content {
         margin-left: 20px;
+        flex-grow: 1;
 
         a {
             display: block;
@@ -423,9 +511,21 @@ export default {
         }
 
         p {
-            margin-top: 10px;
+            margin: 10px 0 5px 0;
             color: @gray-color-dep;
-            font-size: 14px;
+            font-size: 15px;
+        }
+
+        .bottom-content {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            time {
+                font-size: 13px;
+                color: @gray-color-dep;
+            }
         }
     }
 }

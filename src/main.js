@@ -7,6 +7,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import Message from "./components/message"
 import Login from "./components/login"
+import util from "./assets/js/util"
 
 
 Vue.use(Login);
@@ -14,6 +15,8 @@ Vue.use(Message);
 Vue.use(ElementUI);
 Vue.use(Highlight);
 Vue.config.productionTip = false
+
+Vue.prototype.util = util
 
 window.vm = new Vue({
   render: h => h(App),

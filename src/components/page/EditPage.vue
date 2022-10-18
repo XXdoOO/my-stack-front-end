@@ -18,7 +18,7 @@
 
     <div class="content">
       <textarea class="edit" v-model="blog.content"></textarea>
-      <div class="markdown preview" v-html="markdownToHtml" v-highlight></div>
+      <div id="markdown" class="preview" v-html="markdownToHtml" v-highlight></div>
     </div>
   </div>
 </template>

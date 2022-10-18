@@ -3,6 +3,8 @@
     <div class="user-info">
       <img :src="userInfo.avatar" alt="个人头像" width="50" height="50">
       <span class="nickname">{{userInfo.nickname}}</span>
+      <router-link to="/edit" class="create-btn">开始创作</router-link>
+      <button>退出登录</button>
     </div>
     <nav>
       <router-link to="/my/pass" :class="{active:type === 'pass'}">已发布
@@ -115,6 +117,24 @@ export default {
 
   .nickname {
     margin-left: 20px;
+  }
+
+  .create-btn,
+  button {
+    border-radius: 5px;
+    display: block;
+    border: 1px solid @theme-color;
+    color: white;
+    background-color: @theme-color;
+    padding: 5px 20px;
+    margin-left: auto;
+  }
+
+  button {
+    color: red;
+    border-color: red;
+    background-color: white;
+    margin-left: 100px;
   }
 }
 
