@@ -176,6 +176,8 @@ export default {
             this.$axios.myRequest.postComments(data).then((res) => {
                 console.log(res)
 
+                this.content = ""
+
                 this.blog.commentsList.newComments.unshift({
                     authorInfo: this.blog.authorInfo,
                     authorUsername: this.blog.authorUsername,

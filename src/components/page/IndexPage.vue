@@ -32,7 +32,7 @@ export default {
       }
     },
     getBlogList() {
-      this.$axios.myRequest.getBlogList(10, 20).then((res) => {
+      this.$axios.myRequest.getBlogList(null, 10, 20).then((res) => {
         console.log(res)
 
         res.data.data.forEach((i) => {

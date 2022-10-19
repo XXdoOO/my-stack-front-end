@@ -1,12 +1,11 @@
 <template>
   <div class="search-input">
     <input type="text" placeholder="请输入搜索关键词" v-model="keywords" />
-    <i title="点击搜索" @click="search(keywords)"></i>
+    <i title="点击搜索" @click="search(keywords)" @keyup.enter="search(keywords)"></i>
   </div>
 </template>
 
 <script>
-import axios from "axios";
 export default {
   name: "SearchInput",
   data() {
@@ -16,10 +15,7 @@ export default {
   },
   methods: {
     search(keywords) {
-      axios.get(`http://localhost:8080/getBlogByKeywords?keywords=${keywords}`).then((res) =>{
-        console.log(res.data.data);
-        this.$store.state.blogList = res.data.data;
-      });
+      this.$router.push(`/search/${keywords}`)
     },
   },
 };

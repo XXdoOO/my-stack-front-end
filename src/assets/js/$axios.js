@@ -2,17 +2,7 @@ import axios from "axios"
 
 axios.defaults.baseURL = "http://localhost:8080"
 axios.defaults.withCredentials = true
-axios.defaults.timeout = 10000
-// axios.defaults.transformRequest = [function (data) {
-//   // Do whatever you want to transform the data
-//   let ret = ''
-//   for (let it in data) {
-//     ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-//   }
-//   return ret
-// }]
-// axios.defaults.headers = { 'Content-Type': 'application/x-www-form-urlencoded' }
-// axios.defaults.headers = { 'Content-Type': 'application/json' }
+// axios.defaults.timeout = 10000
 
 const $axios = axios;
 
@@ -20,12 +10,11 @@ const login = (username, password) => { return $axios.post(`/login?username=${us
 
 const logout = () => { return $axios.get("/user/logout") }
 
-const getBlogList = (startIndex, pageSize) => {
+const getBlogList = (keywords, startIndex, pageSize) => {
+  if (keywords !== null) {
+    return $axios.get(`/getBlogByKeywords?keywords=${keywords}&startIndex=${startIndex}&pageSize=${pageSize}`)
+  }
   return $axios.get(`/getBlogByKeywords?startIndex=${startIndex}&pageSize=${pageSize}`)
-}
-
-const getBlogByKeywords = (keywords, startIndex, pageSize) => {
-  return $axios.get(`/getBlogByKeywords?keywords=${keywords}&startIndex=${startIndex}&pageSize=${pageSize}`)
 }
 
 const getUserInfo = (username) => { return $axios.get(`/getUserInfo?username=${username}`) }
@@ -90,7 +79,7 @@ const downComments = (commentsId) => {
 
 $axios.myRequest = {
   login, logout,
-  getBlogList, getBlogByKeywords, getUserInfo, getUserPostBlogList, getUserUpBlogList, getUserDownBlogList, getMyInfo, getMyPostList, getMyStarList, getMyUpList, getMyDownList, getBlogDetails,
+  getBlogList, getUserInfo, getUserPostBlogList, getUserUpBlogList, getUserDownBlogList, getMyInfo, getMyPostList, getMyStarList, getMyUpList, getMyDownList, getBlogDetails,
   up, down, star, upComments, downComments,
   postComments
 }

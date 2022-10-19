@@ -38,6 +38,7 @@ const state = {
   myUpList: [],
   myDownList: [],
   progressWidth: 0,
+  searchResultList: []
 }
 
 const store = new Vuex.Store({

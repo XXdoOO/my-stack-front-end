@@ -6,9 +6,9 @@
         {{userInfo.nickname}}
       </span>
     </router-link>
-    <nav class="my">
+    <nav class="my-count">
       <router-link :to="`/user/${userInfo.username}/postBlogList`">
-        <span>{{userInfo.postCount}}</span>
+        <span>{{userInfo.passCount}}</span>
         <span>发布</span>
       </router-link>
       <router-link :to="`/user/${userInfo.username}/upBlogList`">
@@ -41,24 +41,6 @@ export default {
       },
       require: true
     }
-  },
-  methods: {
-    // logout() {
-    //   this.$axios.myRequest.logout().then((res) => {
-    //     console.log(res)
-
-    //     sessionStorage.clear();
-
-    //     this.$store.state.userInfo = {
-    //       isLogin: false,
-    //       username: null,
-    //       avatar: null,
-    //       nickname: "点击登录",
-    //       identity: false
-    //     }
-    //     window.location.reload();
-    //   })
-    // }
   },
 }
 </script>
@@ -160,7 +142,7 @@ export default {
   color: @theme-color;
 }
 
-.my {
+.my-count {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;

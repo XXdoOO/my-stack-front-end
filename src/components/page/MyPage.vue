@@ -3,12 +3,11 @@
     <div class="user-info">
       <img :src="userInfo.avatar" alt="个人头像" width="50" height="50">
       <span class="nickname">{{userInfo.nickname}}</span>
-      <router-link to="/edit" class="create-btn">开始创作</router-link>
       <button>退出登录</button>
     </div>
     <nav>
       <router-link to="/my/pass" :class="{active:type === 'pass'}">已发布
-        ({{userInfo.postCount}})
+        ({{userInfo.passCount}})
       </router-link>
       <router-link to="/my/auditing" :class="{active:type === 'auditing'}">审核中
         ({{userInfo.auditingCount}})
@@ -43,58 +42,55 @@ export default {
   },
   methods: {
     getMyInfo(path) {
-      this.$axios.myRequest.getMyInfo().then((res) => {
-        console.log(res)
-        this.userInfo = res.data.data
+      this.userInfo = this.$store.state.userInfo
 
-        const type = path.split("/")
-        this.type = type[type.length - 1]
+      const type = path.split("/")
+      this.type = type[type.length - 1]
 
-        if (this.type === "auditing") {
-          this.$axios.myRequest.getMyPostList(null, 0, 20).then((res) => {
-            console.log(res)
-            this.blogList = res.data.data
-          })
-        } else if (this.type === "pass") {
-          this.$axios.myRequest.getMyPostList(1, 0, 20).then((res) => {
-            console.log(res)
-            this.blogList = res.data.data
-          })
-        } else if (this.type === "noPass") {
-          this.$axios.myRequest.getMyPostList(0, 0, 20).then((res) => {
-            console.log(res)
-            this.blogList = res.data.data
-          })
-        } else if (this.type === "up") {
-          this.$axios.myRequest.getMyUpList(0, 20).then((res) => {
-            console.log(res)
-            this.blogList = res.data.data
-          })
-        }
-        else if (this.type === "down") {
-          this.$axios.myRequest.getMyDownList(0, 20).then((res) => {
-            console.log(res)
-            this.blogList = res.data.data
-          })
-        } else {
-          this.$axios.myRequest.getMyStarList(0, 20).then((res) => {
-            console.log(res)
-            this.blogList = res.data.data
-          })
-        }
-      })
+      console.log(this.type)
+
+      if (this.type === "auditing") {
+        this.$axios.myRequest.getMyPostList(null, 0, 20).then((res) => {
+          console.log(res)
+          this.blogList = res.data.data
+        })
+      } else if (this.type === "pass") {
+        this.$axios.myRequest.getMyPostList(1, 0, 20).then((res) => {
+          console.log(res)
+          this.blogList = res.data.data
+        })
+      } else if (this.type === "noPass") {
+        this.$axios.myRequest.getMyPostList(0, 0, 20).then((res) => {
+          console.log(res)
+          this.blogList = res.data.data
+        })
+      } else if (this.type === "up") {
+        this.$axios.myRequest.getMyUpList(0, 20).then((res) => {
+          console.log(res)
+          this.blogList = res.data.data
+        })
+      }
+      else if (this.type === "down") {
+        this.$axios.myRequest.getMyDownList(0, 20).then((res) => {
+          console.log(res)
+          this.blogList = res.data.data
+        })
+      } else {
+        this.$axios.myRequest.getMyStarList(0, 20).then((res) => {
+          console.log(res)
+          this.blogList = res.data.data
+        })
+      }
     }
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      if (vm.$store.state.userInfo.isLogin) {
-        vm.$store.dispatch("refresh").then((res) => {
-          vm.$store.commit("refresh", res)
+      vm.$store.dispatch("refresh").then((res) => {
+        vm.$store.commit("refresh", res)
 
 
-          vm.getMyInfo(to.path)
-        })
-      }
+        vm.getMyInfo(to.path)
+      })
     })
   }
 }
@@ -119,7 +115,6 @@ export default {
     margin-left: 20px;
   }
 
-  .create-btn,
   button {
     border-radius: 5px;
     display: block;
@@ -134,7 +129,14 @@ export default {
     color: red;
     border-color: red;
     background-color: white;
-    margin-left: 100px;
+    margin-left: auto;
+    transition: @transition-time;
+    cursor: pointer;
+  }
+
+  button:hover {
+    color: white;
+    background-color: red;
   }
 }
 
