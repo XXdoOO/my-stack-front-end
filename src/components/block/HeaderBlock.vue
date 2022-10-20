@@ -4,7 +4,7 @@
     'box-shadow':
       scroll === -70 ? 'none' : '0px 8px 25px 20px rgba(44, 16, 111, 0.06)',
       '--progress-width':$store.state.progressWidth + '%',
-      'transition':$store.state.progressWidth == 100? '0':'0.3'
+      'transition':$store.state.progressWidth == 100? '0s':'0.3s'
   }">
     <div class="container">
       <router-link class="logo" to="/">
@@ -27,7 +27,7 @@
         <div class="hover-popup">
           <span class="nickname">{{userInfo.nickname}}</span>
           <nav class="my-count">
-            <router-link :to="`/my/passt`">
+            <router-link :to="`/my/pass`">
               <span>{{userInfo.passCount}}</span>
               <span>已发布</span>
             </router-link>
@@ -219,14 +219,14 @@ export default {
 
       .hover-popup {
         position: absolute;
-        top: 30px;
+        top: 15px;
         left: -60px;
         display: flex;
         visibility: hidden;
         opacity: 0;
         flex-direction: column;
         background-color: white;
-        padding: 25px 0 10px 0;
+        padding: 35px 0 10px 0;
         border-radius: 5px;
         width: 180px;
         z-index: 999;
@@ -240,7 +240,7 @@ export default {
         .my-count {
           display: flex;
           justify-content: space-between;
-          margin-top: 20px;
+          margin-top: 15px;
           padding: 0 15px 12px 15px;
           border-bottom: 2px solid @gray-color;
 

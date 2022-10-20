@@ -33,7 +33,7 @@
             <div class="comments">
                 <div class="post-area">
                     <img class="face" :src="blog.authorInfo.avatar" alt="" width="40" height="40">
-                    <textarea name="" id="" cols="30" rows="10" v-model="content"></textarea>
+                    <textarea name="" id="" cols="30" rows="10" v-model="content" maxlength="100"></textarea>
                 </div>
 
                 <button @click="postComment(content)" :class="{active:$store.state.userInfo.isLogin}">发表评论</button>
@@ -56,6 +56,10 @@
                                     <li title="踩数" :class="{'down-hover': hot.isDown}">
                                         <i title="踩" @click="downComments('hot',index, hot.id)"></i>
                                         <span>{{hot.down}}</span>
+                                    </li>
+                                    <li title="删除这条评论">
+                                        <i v-if="hot.authorUsername === $store.state.userInfo.username"
+                                            @click="deleteComments('hotComments', index, hot.id)"></i>
                                     </li>
                                 </ul>
                             </div>
@@ -80,6 +84,10 @@
                                     <li title="踩数" :class="{'down-hover': item.isDown}">
                                         <i title="踩" @click="downComments('new',index,item.id)"></i>
                                         <span>{{item.down}}</span>
+                                    </li>
+                                    <li title="删除这条评论">
+                                        <i v-if="item.authorUsername === $store.state.userInfo.username"
+                                            @click="deleteComments('newComments', index, item.id)"></i>
                                     </li>
                                 </ul>
                             </div>
@@ -176,11 +184,10 @@ export default {
             this.$axios.myRequest.postComments(data).then((res) => {
                 console.log(res)
 
-                this.content = ""
-
                 this.blog.commentsList.newComments.unshift({
+                    id: res.data.data,
                     authorInfo: this.blog.authorInfo,
-                    authorUsername: this.blog.authorUsername,
+                    authorUsername: this.$store.state.userInfo.username,
                     blogId: this.blog.id,
                     content: this.content,
                     up: 0,
@@ -190,6 +197,22 @@ export default {
                     postTime: new Date().getTime(),
 
                 })
+                this.content = ""
+            })
+        },
+        deleteComments(type, index, commentsId) {
+            this.$axios.myRequest.deleteComments(commentsId).then((res) => {
+                console.log(res)
+                if (res.data.code === 200) {
+                    this.blog.commentsList[type].splice(index, 1)
+
+                    this.$xMessage.show({
+                        title: '删除成功！',
+                        message: "",
+                        type: 'success',
+                        duration: 3000
+                    });
+                }
             })
         },
         upComments(type, index, commentsId) {
@@ -432,8 +455,17 @@ export default {
 }
 
 .comment-menu {
-    width: 100px;
     padding: 0;
+    width: 150px;
+
+    li:nth-child(3) i {
+        background-image: url(../../assets/img/delete.png);
+    }
+
+    li:nth-child(3) i:hover,
+    li.star-hover i {
+        background-image: url(../../assets/img/delete-hover.png);
+    }
 }
 
 .comments {

@@ -73,15 +73,26 @@ const downComments = (commentsId) => {
   return $axios.put(`/user/downComments?id=${commentsId}`)
 }
 
-// const postBlog = (blog) => {
-//   return $axios.put(`/user/starBlog?id=${obj.blogId}`)
-// }
+const postBlog = (blog) => {
+  return $axios.post(`/user/postBlog`, blog)
+}
+
+const uploadCover = (data, onUploadProgress) => {
+  return $axios.post("/user/uploadCover", data, { onUploadProgress })
+}
+
+const deleteBlog = (blogId) => {
+  return $axios.delete(`/user/deleteMyBlog?id=${blogId}`)
+}
+const deleteComments = (commentsId) => {
+  return $axios.delete(`/user/deleteMyComments?id=${commentsId}`)
+}
 
 $axios.myRequest = {
   login, logout,
   getBlogList, getUserInfo, getUserPostBlogList, getUserUpBlogList, getUserDownBlogList, getMyInfo, getMyPostList, getMyStarList, getMyUpList, getMyDownList, getBlogDetails,
   up, down, star, upComments, downComments,
-  postComments
+  uploadCover, postBlog, postComments, deleteBlog, deleteComments
 }
 
 export default $axios

@@ -3,15 +3,16 @@
     <div class="info">
       <label class="title">
         <span>标题：</span>
-        <input type="text" v-model="blog.title" placeholder="请输入博客的标题">
+        <input type="text" v-model="blog.title" placeholder="请输入博客的标题" maxlength="50">
       </label>
       <label class="description">
         <span>描述：</span>
-        <input type="text" v-model="blog.description" placeholder="请输入博客的描述">
+        <input type="text" v-model="blog.description" placeholder="请输入博客的描述" maxlength="200">
       </label>
       <label>
         <span>封面：</span>
-        <input type="file" accept=".jpg,.png">
+        <input type="file" accept=".jpg,.png" ref="coverImg" @change="uploadCover">
+        <img :src="blog.cover" alt="" width="50" height="50">
       </label>
       <button @click="postBlog">发布</button>
     </div>
@@ -45,8 +46,50 @@ export default {
     }
   },
   methods: {
+    uploadCover() {
+      this.blog.cover = `http://localhost:8080/cover/${this.$store.state.userInfo.username}.jpg?${Date.now()}`
+    },
     postBlog() {
+      const title = this.blog.title.trim().length
+      const cover = this.blog.cover.trim().length
+      const description = this.blog.description.trim().length
+      const content = this.blog.content.trim().length
+      if (title < 5 || description < 10 || content < 20 || cover === "") {
+        this.$xMessage.show({
+          title: '请完善信息后提交！',
+          message: "信息未完善！",
+          type: 'error',
+          duration: 3000
+        });
+        return
+      }
 
+      let coverImg = this.$refs.coverImg.files[0]
+
+      if (!coverImg) {
+        return
+      }
+
+      let data = new FormData()
+      data.append("file", coverImg)
+      console.log("data:", data)
+
+      this.$axios.myRequest.uploadCover(data, (e) => {
+        console.log(e)
+      }).then((res) => {
+        console.log(res);
+
+        this.$axios.myRequest.postBlog(this.blog).then((r) => {
+          console.log(r)
+
+          this.$xMessage.show({
+            title: '发布成功！',
+            message: "快去看看吧！",
+            type: 'success',
+            duration: 3000
+          });
+        })
+      })
     }
   },
   beforeCreate() {

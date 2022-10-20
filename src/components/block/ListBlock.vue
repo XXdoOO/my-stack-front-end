@@ -27,6 +27,10 @@
             <i></i>
             <span>{{blog.views}}</span>
           </li>
+          <li class="delete-icon" title="删除此博客" v-if="blog.authorUsername === $store.state.userInfo.username"
+            @click.stop="deleteBlog(blog.id)">
+            <i></i>
+          </li>
         </ul>
       </div>
       <img v-if="blog.cover" :src="blog.cover" alt="" height="100">
@@ -43,15 +47,6 @@ export default {
     modifyList: Function
   },
   methods: {
-    goAnchor(id) {
-      var anchor = document.getElementById(id);
-      // chrome
-      document.body.scrollTop = anchor.offsetTop - 80;
-      // firefox
-      document.documentElement.scrollTop = anchor.offsetTop - 80;
-      // safari
-      window.pageYOffset = anchor.offsetTop - 80;
-    },
     getDetails(blogId) {
       this.$router.push(`/details/${blogId}`);
     },
@@ -82,6 +77,20 @@ export default {
         }
       })
     },
+    deleteBlog(blogId) {
+      this.$axios.myRequest.deleteBlog(blogId).then((res) => {
+        console.log(res)
+
+        if (res.data.code === 200) {
+          this.$xMessage.show({
+            title: '删除成功！',
+            message: "",
+            type: 'success',
+            duration: 3000
+          });
+        }
+      })
+    }
   },
 }
 </script>
@@ -90,11 +99,13 @@ export default {
 .articles {
   border-radius: 5px;
   overflow: hidden;
+  margin-bottom: 10px;
 
   article {
     display: flex;
     align-items: center;
-    padding: 15px 25px;
+    justify-content: space-between;
+    padding: 15px 30px;
     transition: 0.1s;
     cursor: pointer;
     background-color: white;
@@ -155,11 +166,9 @@ export default {
 .bottomContent {
   display: flex;
   margin-top: 10px;
-  width: 220px;
-  justify-content: space-between;
 
   li {
-    padding: 0 10px;
+    width: 70px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -210,6 +219,16 @@ export default {
 
   li:nth-child(4) i {
     background-image: url(../../assets/img/views.png);
+  }
+
+  .delete-icon i {
+    background-image: url(../../assets/img/delete.png);
+    transition: @transition-time;
+  }
+
+  .delete-icon i:hover {
+    background-image: url(../../assets/img/delete-hover.png);
+
   }
 }
 </style>

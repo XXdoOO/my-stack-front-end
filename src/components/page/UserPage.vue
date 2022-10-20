@@ -6,7 +6,7 @@
     </div>
     <nav>
       <router-link :to="`/user/${userInfo.username}/postBlogList`" :class="{active:type === 'postBlogList'}">发布
-        ({{userInfo.postCount}})
+        ({{userInfo.passCount}})
       </router-link>
       <router-link :to="`/user/${userInfo.username}/upBlogList`" :class="{active:type === 'upBlogList'}">顶过
         ({{userInfo.upCount}})</router-link>

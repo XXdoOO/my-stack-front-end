@@ -24,7 +24,6 @@ export default {
   width: 100%;
   padding: 2em;
   background-color: white;
-  margin-top: 10px;
 
   nav.container {
     display: flex;
