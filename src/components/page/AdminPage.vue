@@ -22,7 +22,7 @@
             <i class="el-icon-document"></i>
             <span>博客管理</span>
           </template>
-          <el-menu-item index="3-1">审核中</el-menu-item>
+          <el-menu-item index="3-1" @click="getAuditingBlogList">审核中</el-menu-item>
           <el-menu-item index="3-2">未通过</el-menu-item>
           <el-menu-item index="3-3">已通过</el-menu-item>
         </el-submenu>
@@ -36,17 +36,14 @@
       </el-menu>
     </el-aside>
     <el-container>
-      <ListBlock :blog-list="blogList"></ListBlock>
-
+      <router-view :blog-list="blogList"></router-view>
     </el-container>
   </main>
 </template>
 
 <script>
-import ListBlock from "../block/ListBlock.vue"
 export default {
   name: "AdminPage",
-  components: { ListBlock },
   data() {
     return {
       blogList: []
@@ -58,6 +55,11 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
+    },
+    getAuditingBlogList() {
+      this.$axios.myRequest.getPostBlogList(null, 0, 100).then((res) => {
+        console.log(res)
+      })
     }
   }
 }

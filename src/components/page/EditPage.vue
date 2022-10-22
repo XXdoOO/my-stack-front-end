@@ -11,10 +11,11 @@
       </label>
       <label>
         <span>封面：</span>
+        <img :src="blog.cover" alt="" width="50" height="50" />
         <input type="file" accept=".jpg,.png" ref="coverImg" @change="uploadCover">
-        <img :src="blog.cover" alt="" width="50" height="50">
       </label>
-      <button @click="postBlog">发布</button>
+      <button v-if="!$route.params.blogId" @click="postBlog">发布</button>
+      <button v-if="$route.params.blogId" @click="updateBlog">保存</button>
     </div>
 
     <div class="content">
@@ -38,6 +39,7 @@ export default {
   data() {
     return {
       blog: {
+        id: "",
         title: "",
         description: "",
         cover: "",
@@ -45,50 +47,82 @@ export default {
       }
     }
   },
+  watch: {
+    $route: {
+      immediate: true,
+      handler(to) {
+        if (to.params.blogId) {
+          this.$axios.myRequest.getBlogDetails(to.params.blogId).then((res) => {
+            if (res.data.data === null) {
+              this.$xMessage.show({
+                title: '权限不够！',
+                message: "这不是你的博客！",
+                type: 'error',
+                duration: 3000
+              });
+
+              this.$router.go(-1)
+            } else {
+              res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/")
+              const blog = {}
+              blog.id = res.data.data.id
+              blog.title = res.data.data.title
+              blog.description = res.data.data.description
+              blog.cover = "http://localhost:8080" + res.data.data.cover
+              blog.content = res.data.data.content
+
+              this.blog = blog
+            }
+            console.log(res)
+          });
+        }
+      }
+    }
+  },
   methods: {
     uploadCover() {
       this.blog.cover = `http://localhost:8080/cover/${this.$store.state.userInfo.username}.jpg?${Date.now()}`
     },
+    prepare() {
+      const coverImg = this.$refs.coverImg.files[0]
+      const data = new FormData()
+
+      data.append("coverImg", coverImg)
+      for (let i in this.blog) {
+        data.append(`${i}`, this.blog[i])
+      }
+      for (var [a, b] of data.entries()) {
+        console.log(a, b);
+      }
+
+      return data
+    },
     postBlog() {
-      const title = this.blog.title.trim().length
-      const cover = this.blog.cover.trim().length
-      const description = this.blog.description.trim().length
-      const content = this.blog.content.trim().length
-      if (title < 5 || description < 10 || content < 20 || cover === "") {
+      const data = this.prepare()
+
+      this.$axios.myRequest.postBlog(data).then((res) => {
+        console.log(res)
+
         this.$xMessage.show({
-          title: '请完善信息后提交！',
-          message: "信息未完善！",
-          type: 'error',
+          title: '发布成功！',
+          message: "快去看看吧！",
+          type: 'success',
           duration: 3000
         });
-        return
-      }
+      })
+    },
+    updateBlog() {
+      const data = this.prepare()
 
-      let coverImg = this.$refs.coverImg.files[0]
+      this.$axios.myRequest.updateBlog(data).then((res) => {
+        console.log(res)
 
-      if (!coverImg) {
-        return
-      }
-
-      let data = new FormData()
-      data.append("file", coverImg)
-      console.log("data:", data)
-
-      this.$axios.myRequest.uploadCover(data, (e) => {
-        console.log(e)
-      }).then((res) => {
-        console.log(res);
-
-        this.$axios.myRequest.postBlog(this.blog).then((r) => {
-          console.log(r)
-
-          this.$xMessage.show({
-            title: '发布成功！',
-            message: "快去看看吧！",
-            type: 'success',
-            duration: 3000
-          });
-        })
+        this.$xMessage.show({
+          title: '更新成功！',
+          message: "快去看看吧！",
+          type: 'success',
+          duration: 3000
+        });
       })
     }
   },
@@ -108,7 +142,7 @@ export default {
       smartypants: false,
       xhtml: false
     });
-  }
+  },
 }
 </script>
 
@@ -127,6 +161,7 @@ export default {
 
   .edit {
     width: 50%;
+    height: 100vh;
     border: none;
     outline: none;
     padding: 50px;
@@ -136,8 +171,10 @@ export default {
 
   .preview {
     width: 50%;
+    height: 100vh;
     position: relative;
     padding: 50px;
+    overflow: scroll;
   }
 
   .preview::after {

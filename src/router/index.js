@@ -7,7 +7,10 @@ import SearchPage from "../components/page/SearchPage";
 import EditPage from "../components/page/EditPage";
 import AdminPage from "../components/page/AdminPage";
 import UserPage from "../components/page/UserPage";
+import Login from "../components/login"
+import ListBlock from "../components/block/ListBlock.vue"
 
+Vue.use(Login);
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -23,10 +26,21 @@ const router = new VueRouter({
         { path: "/user/:username/postBlogList", meta: { title: "用户发布的博客" }, component: UserPage },
         { path: "/user/:username/upBlogList", meta: { title: "用户顶过的博客" }, component: UserPage },
         { path: "/user/:username/downBlogList", meta: { title: "用户踩过的博客" }, component: UserPage },
-        { path: "/details/:blogId", meta: { title: "详情" }, component: DetailPage },
-        { path: "/edit", meta: { title: "编辑" }, component: EditPage },
+        { path: "/user/edit", meta: { title: "发布博客" }, component: EditPage },
+        { path: "/user/edit/:blogId", meta: { title: "编辑博客" }, component: EditPage },
         { path: "/search/:keywords", meta: { title: "搜索" }, component: SearchPage },
-        { path: "/admin", meta: { title: "管理页面" }, component: AdminPage },
+        { path: "/details/:blogId", meta: { title: "详情" }, component: DetailPage },
+        {
+            path: "/admin", meta: { title: "管理后台" }, component: AdminPage, children: [
+                {
+                    path: "blog", children: [
+                        { path: "auditing", meta: { title: "审核中" }, component: ListBlock },
+                        { path: "pass", meta: { title: "已通过" }, component: ListBlock },
+                        { path: "noPass", meta: { title: "未通过" }, component: ListBlock },
+                    ]
+                },
+            ]
+        },
     ]
 });
 
@@ -35,7 +49,31 @@ router.beforeEach((to, from, next) => {
         document.title = to.meta.title;
     }
 
-    next()
+    const identity = to.path.split("/")[1]
+
+    console.log(identity)
+
+    if (identity === "my") {
+        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+        console.log(userInfo)
+
+        if (userInfo) {
+            next()
+        } else {
+            Vue.prototype.$loginRegister.showLoginRegister()
+        }
+    } else if (identity === "admin") {
+        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+        console.log(userInfo)
+
+        if (userInfo && userInfo.identity) {
+            next()
+        } else {
+            Vue.prototype.$loginRegister.showLoginRegister()
+        }
+    } else {
+        next()
+    }
 })
 
 export default router;

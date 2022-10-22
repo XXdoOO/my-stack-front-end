@@ -4,7 +4,7 @@
     'box-shadow':
       scroll === -70 ? 'none' : '0px 8px 25px 20px rgba(44, 16, 111, 0.06)',
       '--progress-width':$store.state.progressWidth + '%',
-      'transition':$store.state.progressWidth == 100? '0s':'0.3s'
+      '--transition-time':$store.state.progressWidth == 100? '0':'0.2s'
   }">
     <div class="container">
       <router-link class="logo" to="/">
@@ -42,14 +42,13 @@
           </nav>
           <router-link class="my-menu" to="/my/pass">个人中心</router-link>
           <router-link class="my-menu" to="/admin" v-if="userInfo.identity">管理后台</router-link>
-          <router-link class="create-btn" to="/edit">开始创作</router-link>
+          <router-link class="create-btn" to="/user/edit">开始创作</router-link>
           <button class="my-menu" @click="logout">退出登录</button>
         </div>
       </div>
 
     </div>
 
-    <div class="progress"></div>
   </header>
 </template>
 
@@ -340,5 +339,6 @@ export default {
   width: var(--progress-width);
   height: 5px;
   background-color: @theme-color;
+  transition: var(--transition-time);
 }
 </style>

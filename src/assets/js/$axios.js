@@ -77,8 +77,8 @@ const postBlog = (blog) => {
   return $axios.post(`/user/postBlog`, blog)
 }
 
-const uploadCover = (data, onUploadProgress) => {
-  return $axios.post("/user/uploadCover", data, { onUploadProgress })
+const updateBlog = (blog) => {
+  return $axios.put(`/user/updateMyBlog`, blog)
 }
 
 const deleteBlog = (blogId) => {
@@ -88,11 +88,19 @@ const deleteComments = (commentsId) => {
   return $axios.delete(`/user/deleteMyComments?id=${commentsId}`)
 }
 
+const getPostBlogList = (status, startIndex, pageSize) => {
+  if (status === null) {
+    return $axios.get(`/admin/getPostBlogList?startIndex=${startIndex}&pageSize=${pageSize}`)
+  }
+  return $axios.get(`/admin/getPostBlogList?status=${status}&startIndex=${startIndex}&pageSize=${pageSize}`)
+}
+
 $axios.myRequest = {
   login, logout,
   getBlogList, getUserInfo, getUserPostBlogList, getUserUpBlogList, getUserDownBlogList, getMyInfo, getMyPostList, getMyStarList, getMyUpList, getMyDownList, getBlogDetails,
   up, down, star, upComments, downComments,
-  uploadCover, postBlog, postComments, deleteBlog, deleteComments
+  postBlog, updateBlog, postComments, deleteBlog, deleteComments,
+  getPostBlogList
 }
 
 export default $axios

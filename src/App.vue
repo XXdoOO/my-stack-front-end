@@ -18,25 +18,14 @@ export default {
     }
   },
   created() {
-    const CancelToken = this.$axios.CancelToken;
-    const source = CancelToken.source();
-
     this.$axios.interceptors.request.use((req) => {
       console.log("请求信息：", req.url);
-      if (req.url.split("/")[1] === "user" || req.url.split("/")[1] === "admin") {
-        if (!this.$store.state.userInfo.isLogin) {
-          req.cancelToken = source.token;
-          source.cancel(this.$loginRegister.showLoginRegister());
+      clearInterval(this.timer);
+      this.timer = setInterval(() => {
+        if (this.$store.state.progressWidth < 70) {
+          this.$store.state.progressWidth++;
         }
-      } else {
-        clearInterval(this.timer);
-        this.timer = setInterval(() => {
-          if (this.$store.state.progressWidth < 60) {
-            this.$store.state.progressWidth++;
-          }
-        }, 100);
-        console.log("定时器", this.timer)
-      }
+      }, 100);
       return req;
     }, (error) => {
       console.log("error");

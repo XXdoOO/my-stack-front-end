@@ -330,29 +330,6 @@ export default {
                 res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/")
 
                 this.blog = res.data.data
-                this.blog.isUp = false
-                this.blog.isDown = false
-                this.blog.isStar = false
-
-                console.log(this.blog)
-
-                for (const item of this.$store.state.myStarList) {
-                    if (item.id === this.blog.id) {
-                        this.blog.isStar = true
-                    }
-                }
-
-                for (const item of this.$store.state.myUpList) {
-                    if (item.id === this.blog.id) {
-                        this.blog.isUp = true
-                    }
-                }
-
-                for (const item of this.$store.state.myDownList) {
-                    if (item.id === this.blog.id) {
-                        this.blog.isDown = true
-                    }
-                }
             });
         }
     },

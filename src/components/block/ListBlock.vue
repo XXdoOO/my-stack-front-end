@@ -4,7 +4,7 @@
       <div>
         <ul class="topContent">
           <li>
-            <router-link :to="`/user/${blog.authorUsername}/postBlogList`">{{blog.authorUsername}}</router-link>
+            <router-link :to="`/user/${blog.authorUsername}/postBlogList`">{{blog.authorNickname}}</router-link>
           </li>
           <li>{{util.formatTime(blog.postTime)}}</li>
         </ul>
@@ -29,6 +29,10 @@
           </li>
           <li class="delete-icon" title="删除此博客" v-if="blog.authorUsername === $store.state.userInfo.username"
             @click.stop="deleteBlog(blog.id)">
+            <i></i>
+          </li>
+          <li class="edit-icon" title="编辑此博客" v-if="blog.authorUsername === $store.state.userInfo.username"
+            @click.stop="updateBlog(blog.id)">
             <i></i>
           </li>
         </ul>
@@ -90,6 +94,9 @@ export default {
           });
         }
       })
+    },
+    updateBlog(blogId) {
+      this.$router.push(`/user/edit/${blogId}`)
     }
   },
 }
@@ -228,7 +235,15 @@ export default {
 
   .delete-icon i:hover {
     background-image: url(../../assets/img/delete-hover.png);
+  }
 
+  .edit-icon i {
+    background-image: url(../../assets/img/edit.png);
+    transition: @transition-time;
+  }
+
+  .edit-icon i:hover {
+    background-image: url(../../assets/img/edit-hover.png);
   }
 }
 </style>
