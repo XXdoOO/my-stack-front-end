@@ -45,7 +45,7 @@ export default {
 
       setTimeout(() => {
         this.$store.state.progressWidth = 0;
-      }, 100);
+      }, 500);
       return res;
     }, (error) => {
       console.log(error);
@@ -66,7 +66,6 @@ export default {
         });
       }
     });
-
 
     const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
 

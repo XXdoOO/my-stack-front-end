@@ -28,7 +28,7 @@
             <span>{{blog.views}}</span>
           </li>
           <li class="delete-icon" title="删除此博客" v-if="blog.authorUsername === $store.state.userInfo.username"
-            @click.stop="deleteBlog(blog.id)">
+            @click.stop="deleteBlog(index, blog.id)">
             <i></i>
           </li>
           <li class="edit-icon" title="编辑此博客" v-if="blog.authorUsername === $store.state.userInfo.username"
@@ -43,12 +43,11 @@
 </template>
 
 <script>
-
+import { mapState, mapActions } from "vuex"
 export default {
   name: "ListBlock",
-  props: {
-    blogList: Array,
-    modifyList: Function
+  computed: {
+    ...mapState(["blogList"])
   },
   methods: {
     getDetails(blogId) {
@@ -58,8 +57,15 @@ export default {
       this.$axios.myRequest.up(blogId).then((res) => {
         console.log(res)
 
-        if (res) {
-          this.modifyList(index, "isUp")
+        if (res.data.code === 200) {
+          this.modifyList({ index: index, opt: "isUp" })
+        } else {
+          this.$xMessage.show({
+            title: '顶失败！',
+            message: "不能顶未通过审核博客！",
+            type: 'error',
+            duration: 3000
+          });
         }
       })
     },
@@ -67,8 +73,15 @@ export default {
       this.$axios.myRequest.down(blogId).then((res) => {
         console.log(res)
 
-        if (res) {
-          this.modifyList(index, "isDown")
+        if (res.data.code === 200) {
+          this.modifyList({ index: index, opt: "isDown" })
+        } else {
+          this.$xMessage.show({
+            title: '踩失败！',
+            message: "不能踩未通过审核博客！",
+            type: 'error',
+            duration: 3000
+          });
         }
       })
     },
@@ -76,16 +89,25 @@ export default {
       this.$axios.myRequest.star(blogId).then((res) => {
         console.log(res)
 
-        if (res) {
-          this.modifyList(index, "isStar")
+        if (res.data.code === 200) {
+          this.modifyList({ index: index, opt: "isStar" })
+        } else {
+          this.$xMessage.show({
+            title: '收藏失败！',
+            message: "不能收藏未通过审核博客！",
+            type: 'error',
+            duration: 3000
+          });
         }
       })
     },
-    deleteBlog(blogId) {
+    deleteBlog(index, blogId) {
       this.$axios.myRequest.deleteBlog(blogId).then((res) => {
         console.log(res)
 
         if (res.data.code === 200) {
+          this.modifyList({ index: index, opt: "delete" })
+
           this.$xMessage.show({
             title: '删除成功！',
             message: "",
@@ -97,7 +119,8 @@ export default {
     },
     updateBlog(blogId) {
       this.$router.push(`/user/edit/${blogId}`)
-    }
+    },
+    ...mapActions(["modifyList"])
   },
 }
 </script>

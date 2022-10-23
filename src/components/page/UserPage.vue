@@ -60,16 +60,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      if (vm.$store.state.userInfo.isLogin) {
-        vm.$store.dispatch("refresh").then((res) => {
-          vm.$store.commit("refresh", res)
-
-
-          vm.getUserInfo(to.path, to.params.username)
-        })
-      } else {
-        vm.getUserInfo(to.path, to.params.username)
-      }
+      vm.getUserInfo(to.path, to.params.username)
     })
   }
 }

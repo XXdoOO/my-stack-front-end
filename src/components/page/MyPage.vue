@@ -24,75 +24,70 @@
         ({{userInfo.starCount}})
       </router-link>
     </nav>
-    <ListBlock :blog-list="blogList" />
+    <ListBlock :blog-list="blogList" :modify-list="modifyList" />
   </main>
 </template>
 
 <script>
 import ListBlock from "../block/ListBlock.vue"
+import { mapState } from "vuex"
 export default {
   name: "MyPage",
   components: { ListBlock },
   data() {
     return {
-      userInfo: {},
       blogList: [],
       type: null
     }
   },
+  computed: {
+    ...mapState(["userInfo"]),
+  },
+  watch: {
+    $route: {
+      immediate: true,
+      handler(to) {
+        this.getMyInfo(to.path)
+      }
+    }
+  },
   methods: {
     getMyInfo(path) {
-      this.userInfo = this.$store.state.userInfo
-
       const type = path.split("/")
       this.type = type[type.length - 1]
 
       console.log(this.type)
 
+      this.$store.dispatch("setMyInfo")
+
       if (this.type === "auditing") {
         this.$axios.myRequest.getMyPostList(null, 0, 20).then((res) => {
-          console.log(res)
-          this.blogList = res.data.data
+          this.$store.state.blogList = res.data.data
         })
       } else if (this.type === "pass") {
         this.$axios.myRequest.getMyPostList(1, 0, 20).then((res) => {
-          console.log(res)
-          this.blogList = res.data.data
+          this.$store.state.blogList = res.data.data
         })
       } else if (this.type === "noPass") {
         this.$axios.myRequest.getMyPostList(0, 0, 20).then((res) => {
-          console.log(res)
-          this.blogList = res.data.data
+          this.$store.state.blogList = res.data.data
         })
       } else if (this.type === "up") {
         this.$axios.myRequest.getMyUpList(0, 20).then((res) => {
-          console.log(res)
-          this.blogList = res.data.data
+          this.$store.state.blogList = res.data.data
         })
       }
       else if (this.type === "down") {
         this.$axios.myRequest.getMyDownList(0, 20).then((res) => {
-          console.log(res)
-          this.blogList = res.data.data
+          this.$store.state.blogList = res.data.data
         })
       } else {
         this.$axios.myRequest.getMyStarList(0, 20).then((res) => {
-          console.log(res)
-          this.blogList = res.data.data
+          this.$store.state.blogList = res.data.data
         })
       }
     }
   },
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.dispatch("refresh").then((res) => {
-        vm.$store.commit("refresh", res)
-
-
-        vm.getMyInfo(to.path)
-      })
-    })
-  }
 }
 </script>
 

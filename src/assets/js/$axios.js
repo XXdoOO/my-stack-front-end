@@ -2,7 +2,7 @@ import axios from "axios"
 
 axios.defaults.baseURL = "http://localhost:8080"
 axios.defaults.withCredentials = true
-// axios.defaults.timeout = 10000
+axios.defaults.timeout = 10000
 
 const $axios = axios;
 

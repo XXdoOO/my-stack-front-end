@@ -4,7 +4,7 @@
     'box-shadow':
       scroll === -70 ? 'none' : '0px 8px 25px 20px rgba(44, 16, 111, 0.06)',
       '--progress-width':$store.state.progressWidth + '%',
-      '--transition-time':$store.state.progressWidth == 100? '0':'0.2s'
+      '--transition-time':$store.state.progressWidth == 100 || $store.state.progressWidth == 0? '0s':'1s'
   }">
     <div class="container">
       <router-link class="logo" to="/">
@@ -225,7 +225,7 @@ export default {
         opacity: 0;
         flex-direction: column;
         background-color: white;
-        padding: 35px 0 10px 0;
+        padding: 35px 0 15px 0;
         border-radius: 5px;
         width: 180px;
         z-index: 999;

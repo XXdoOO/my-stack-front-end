@@ -338,15 +338,7 @@ export default {
     },
     beforeRouteEnter(to, from, next) {
         next((vm) => {
-            if (vm.$store.state.userInfo.isLogin) {
-                vm.$store.dispatch("refresh").then((res) => {
-                    vm.$store.commit("refresh", res)
-
-                    vm.getBlogDetails(to.params.blogId)
-                });
-            } else {
-                vm.getBlogDetails(to.params.blogId)
-            }
+            vm.getBlogDetails(to.params.blogId)
         });
     }
 }

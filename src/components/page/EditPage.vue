@@ -68,7 +68,7 @@ export default {
               blog.id = res.data.data.id
               blog.title = res.data.data.title
               blog.description = res.data.data.description
-              blog.cover = "http://localhost:8080" + res.data.data.cover
+              blog.cover = res.data.data.cover
               blog.content = res.data.data.content
 
               this.blog = blog
@@ -84,10 +84,13 @@ export default {
       this.blog.cover = `http://localhost:8080/cover/${this.$store.state.userInfo.username}.jpg?${Date.now()}`
     },
     prepare() {
-      const coverImg = this.$refs.coverImg.files[0]
+      let coverImg = this.$refs.coverImg.files[0]
       const data = new FormData()
 
-      data.append("coverImg", coverImg)
+      if (coverImg) {
+        data.append("coverImg", coverImg)
+      }
+
       for (let i in this.blog) {
         data.append(`${i}`, this.blog[i])
       }

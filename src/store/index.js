@@ -6,24 +6,40 @@ Vue.prototype.$axios = $axios;
 Vue.use(Vuex)
 
 const actions = {
-  refresh() {
-    const getMyStarList = $axios.myRequest.getMyStarList(0, 20)
-    const getMyUpList = $axios.myRequest.getMyUpList(0, 20)
-    const getMyDownList = $axios.myRequest.getMyDownList(0, 20)
+  modifyList(context, obj) {
+    const opt = obj.opt
+    const index = obj.index
 
-    return Promise.all([getMyStarList, getMyUpList, getMyDownList])
+    console.log(index, opt)
+
+    if (opt === "delete") {
+      context.state.blogList.splice(index, 1)
+
+      context.dispatch("setMyInfo")
+    } else {
+      const item = context.state.blogList[index]
+      const key = opt.slice(2, opt.lenght).toLowerCase()
+
+      item[opt] = !item[opt]
+
+      if (item[opt]) {
+        item[key]++
+      } else {
+        item[key]--
+      }
+    }
   },
+  setMyInfo(context) {
+    $axios.myRequest.getMyInfo().then((res) => {
+      console.log(res)
+      context.state.userInfo = res.data.data
+      context.state.userInfo.isLogin = true
+    })
+  }
 }
 
 const mutations = {
-  refresh(state, res) {
-    state.myStarList = res[0].data.data;
-    state.myUpList = res[1].data.data;
-    state.myDownList = res[2].data.data;
-  },
-  togglePopup(state) {
-    state.isShowPopup = !state.isShowPopup;
-  }
+
 }
 
 const state = {
@@ -34,11 +50,8 @@ const state = {
     nickname: "登录/注册",
     identity: false
   },
-  myStarList: [],
-  myUpList: [],
-  myDownList: [],
+  blogList: [],
   progressWidth: 0,
-  searchResultList: []
 }
 
 const store = new Vuex.Store({
