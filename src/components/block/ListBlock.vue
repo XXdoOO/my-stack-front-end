@@ -4,28 +4,28 @@
       <div>
         <ul class="topContent">
           <li>
-            <router-link :to="`/user/${blog.authorUsername}/postBlogList`">{{blog.authorNickname}}</router-link>
+            <router-link :to="`/user/${blog.authorUsername}/postBlogList`">{{ blog.authorNickname }}</router-link>
           </li>
-          <li>{{util.formatTime(blog.postTime)}}</li>
+          <li>{{ util.formatTime(blog.postTime) }}</li>
         </ul>
-        <h2>{{blog.title}}</h2>
-        <p>{{blog.description}}</p>
+        <h2>{{ blog.title }}</h2>
+        <p>{{ blog.description }}</p>
         <ul class="bottomContent">
-          <li :class="{'up-hover':blog.isUp}" title="顶数">
+          <li :class="{ 'up-hover': blog.isUp }" title="顶数">
             <i title="顶" @click.stop="up(index, blog.id)"></i>
-            <span>{{blog.up}}</span>
+            <span>{{ blog.up }}</span>
           </li>
-          <li :class="{'down-hover':blog.isDown}" title="踩数">
+          <li :class="{ 'down-hover': blog.isDown }" title="踩数">
             <i title="踩" @click.stop="down(index, blog.id)"></i>
-            <span>{{blog.down}}</span>
+            <span>{{ blog.down }}</span>
           </li>
-          <li :class="{'star-hover':blog.isStar}" title="收藏数">
+          <li :class="{ 'star-hover': blog.isStar }" title="收藏数">
             <i title="收藏" @click.stop="star(index, blog.id)"></i>
-            <span>{{blog.star}}</span>
+            <span>{{ blog.star }}</span>
           </li>
           <li title="浏览数">
             <i></i>
-            <span>{{blog.views}}</span>
+            <span>{{ blog.views }}</span>
           </li>
           <li class="delete-icon" title="删除此博客" v-if="blog.authorUsername === $store.state.userInfo.username"
             @click.stop="deleteBlog(index, blog.id)">
@@ -231,11 +231,19 @@ export default {
     transform: rotate(180deg);
   }
 
+  li:first-child i:hover {
+    transform: scale(1.3);
+  }
+
   li:first-child i:hover,
   li:nth-child(2) i:hover,
   li.up-hover i,
   li.down-hover i {
     background-image: url(../../assets/img/up-hover.png);
+  }
+
+    li:nth-child(2) i:hover {
+    transform: scale(1.3);
   }
 
   li:nth-child(3) i {
@@ -245,6 +253,7 @@ export default {
   li:nth-child(3) i:hover,
   li.star-hover i {
     background-image: url(../../assets/img/star-hover.png);
+    transform: scale(1.3);
   }
 
   li:nth-child(4) i {
@@ -258,6 +267,7 @@ export default {
 
   .delete-icon i:hover {
     background-image: url(../../assets/img/delete-hover.png);
+    transform: scale(1.3);
   }
 
   .edit-icon i {
@@ -267,6 +277,7 @@ export default {
 
   .edit-icon i:hover {
     background-image: url(../../assets/img/edit-hover.png);
+    transform: scale(1.3);
   }
 }
 </style>
