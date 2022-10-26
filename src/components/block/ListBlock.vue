@@ -130,6 +130,7 @@ export default {
   border-radius: 5px;
   overflow: hidden;
   margin-bottom: 10px;
+  width: 100%;
 
   article {
     display: flex;
@@ -242,8 +243,8 @@ export default {
     background-image: url(../../assets/img/up-hover.png);
   }
 
-    li:nth-child(2) i:hover {
-    transform: scale(1.3);
+  li:nth-child(2) i:hover {
+    transform: scale(1.3) rotate(180deg);
   }
 
   li:nth-child(3) i {

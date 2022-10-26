@@ -36,7 +36,7 @@
       </el-menu>
     </el-aside>
     <el-container>
-      <router-view :blog-list="blogList"></router-view>
+      <router-view></router-view>
     </el-container>
   </main>
 </template>
@@ -57,8 +57,10 @@ export default {
       console.log(key, keyPath);
     },
     getAuditingBlogList() {
+      this.$router.push("/admin/blog/auditing")
       this.$axios.myRequest.getPostBlogList(null, 0, 100).then((res) => {
         console.log(res)
+        this.$store.state.blogList = res.data.data
       })
     }
   }

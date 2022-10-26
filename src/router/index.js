@@ -32,13 +32,9 @@ const router = new VueRouter({
         { path: "/details/:blogId", meta: { title: "详情" }, component: DetailPage },
         {
             path: "/admin", meta: { title: "管理后台" }, component: AdminPage, children: [
-                {
-                    path: "blog", children: [
-                        { path: "auditing", meta: { title: "审核中" }, component: ListBlock },
-                        { path: "pass", meta: { title: "已通过" }, component: ListBlock },
-                        { path: "noPass", meta: { title: "未通过" }, component: ListBlock },
-                    ]
-                },
+                { path: "blog/auditing", meta: { title: "审核中" }, component: ListBlock },
+                { path: "blog/pass", meta: { title: "已通过" }, component: ListBlock },
+                { path: "blog/noPass", meta: { title: "未通过" }, component: ListBlock },
             ]
         },
     ]
