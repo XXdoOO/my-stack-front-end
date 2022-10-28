@@ -3,8 +3,8 @@
     top: scroll + 'px',
     'box-shadow':
       scroll === -70 ? 'none' : '0px 8px 25px 20px rgba(44, 16, 111, 0.06)',
-      '--progress-width':$store.state.progressWidth + '%',
-      '--transition-time':$store.state.progressWidth == 100 || $store.state.progressWidth == 0? '0s':'1s'
+    '--progress-width': $store.state.progressWidth + '%',
+    '--transition-time': $store.state.progressWidth == 100 || $store.state.progressWidth == 0 ? '0s' : '1s'
   }">
     <div class="container">
       <router-link class="logo" to="/">
@@ -13,9 +13,9 @@
       </router-link>
 
       <nav>
-        <router-link to="/" :class="{active: $route.path == '/'}">首页</router-link>
-        <router-link to="/top" :class="{active: $route.path == '/top'}">热门</router-link>
-        <router-link to="/my/pass" :class="{active: $route.path.split('/')[1] == 'my'}">我的</router-link>
+        <router-link to="/" :class="{ active: $route.path == '/' }">首页</router-link>
+        <router-link to="/top" :class="{ active: $route.path == '/top' }">热门</router-link>
+        <router-link to="/my/pass" :class="{ active: $route.path.split('/')[1] == 'my' }">我的</router-link>
       </nav>
 
       <SearchInput />
@@ -25,18 +25,18 @@
         <img :src="userInfo.avatar" alt="" width="50" height="50">
 
         <div class="hover-popup">
-          <span class="nickname">{{userInfo.nickname}}</span>
+          <span class="nickname">{{ userInfo.nickname }}</span>
           <nav class="my-count">
             <router-link :to="`/my/pass`">
-              <span>{{userInfo.passCount}}</span>
+              <span>{{ userInfo.passCount }}</span>
               <span>已发布</span>
             </router-link>
             <router-link :to="`/my/up`">
-              <span>{{userInfo.upCount}}</span>
+              <span>{{ userInfo.upCount }}</span>
               <span>顶过</span>
             </router-link>
             <router-link :to="`/my/down`">
-              <span>{{userInfo.downCount}}</span>
+              <span>{{ userInfo.downCount }}</span>
               <span>踩过</span>
             </router-link>
           </nav>
@@ -337,8 +337,9 @@ export default {
   content: "";
   display: block;
   width: var(--progress-width);
-  height: 5px;
+  height: 3px;
   background-color: @theme-color;
   transition: var(--transition-time);
+  box-shadow: 0 5px 10px @theme-color;
 }
 </style>

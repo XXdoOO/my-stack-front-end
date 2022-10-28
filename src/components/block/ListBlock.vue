@@ -10,7 +10,7 @@
         </ul>
         <h2>{{ blog.title }}</h2>
         <p>{{ blog.description }}</p>
-        <ul class="bottomContent">
+        <ul class="bottomContent" v-if="!isAdmin">
           <li :class="{ 'up-hover': blog.isUp }" title="顶数">
             <i title="顶" @click.stop="up(index, blog.id)"></i>
             <span>{{ blog.up }}</span>
@@ -46,6 +46,14 @@
 import { mapState, mapActions } from "vuex"
 export default {
   name: "ListBlock",
+  props: {
+    isAdmin: {
+      type: Boolean,
+      default() {
+        return false
+      }
+    }
+  },
   computed: {
     ...mapState(["blogList"])
   },

@@ -36,14 +36,18 @@
       </el-menu>
     </el-aside>
     <el-container>
-      <router-view></router-view>
+      <router-view :isAdmin="true"></router-view>
+
+      <AuditCard></AuditCard>
     </el-container>
   </main>
 </template>
 
 <script>
+import AuditCard from '../block/AuditCard.vue';
 export default {
   name: "AdminPage",
+  components: { AuditCard },
   data() {
     return {
       blogList: []
