@@ -59,7 +59,11 @@ export default {
   },
   methods: {
     getDetails(blogId) {
-      this.$router.push(`/details/${blogId}`);
+      if (this.isAdmin) {
+        this.$router.push(`/admin/blog/details/${blogId}`)
+      } else {
+        this.$router.push(`/details/${blogId}`);
+      }
     },
     up(index, blogId) {
       this.$axios.myRequest.up(blogId).then((res) => {
@@ -136,7 +140,6 @@ export default {
 <style lang="less" scoped>
 .articles {
   border-radius: 5px;
-  overflow: hidden;
   margin-bottom: 10px;
   width: 100%;
 
@@ -184,6 +187,16 @@ export default {
 
   article:hover p {
     color: @theme-color;
+  }
+
+  article:first-child {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  article:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
   }
 }
 

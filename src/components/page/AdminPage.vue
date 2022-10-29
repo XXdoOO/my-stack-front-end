@@ -35,19 +35,15 @@
         </el-submenu>
       </el-menu>
     </el-aside>
-    <el-container>
+    <el-container class="content">
       <router-view :isAdmin="true"></router-view>
-
-      <AuditCard></AuditCard>
     </el-container>
   </main>
 </template>
 
 <script>
-import AuditCard from '../block/AuditCard.vue';
 export default {
   name: "AdminPage",
-  components: { AuditCard },
   data() {
     return {
       blogList: []
@@ -75,6 +71,7 @@ export default {
 .admin-page {
   margin-top: 70px;
   display: flex;
+  height: calc(100vh - 80px);
 }
 
 .el-aside {
@@ -87,5 +84,10 @@ export default {
   background-color: #E9EEF3;
   color: #333;
   text-align: center;
+}
+
+.content {
+  margin: 0 0.5em;
+  overflow: auto;
 }
 </style>

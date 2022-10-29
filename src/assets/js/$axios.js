@@ -95,12 +95,20 @@ const getPostBlogList = (status, startIndex, pageSize) => {
   return $axios.get(`/admin/getPostBlogList?status=${status}&startIndex=${startIndex}&pageSize=${pageSize}`)
 }
 
+const getAuditPostDetails = (blogId) => {
+  return $axios.get(`/admin/getAuditBlogDetails?id=${blogId}`)
+}
+
+const getNearBlogDetails = (blogId, isNext) => {
+  return $axios.get(`/admin/getNearAuditBlogDetails?id=${blogId}&isNext=${isNext}`)
+}
+
 $axios.myRequest = {
   login, logout,
   getBlogList, getUserInfo, getUserPostBlogList, getUserUpBlogList, getUserDownBlogList, getMyInfo, getMyPostList, getMyStarList, getMyUpList, getMyDownList, getBlogDetails,
   up, down, star, upComments, downComments,
   postBlog, updateBlog, postComments, deleteBlog, deleteComments,
-  getPostBlogList
+  getPostBlogList, getAuditPostDetails,getNearBlogDetails
 }
 
 export default $axios

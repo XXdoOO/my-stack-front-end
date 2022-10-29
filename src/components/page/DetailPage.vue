@@ -4,21 +4,21 @@
             <MyBlock :user-info="blog.authorInfo" />
 
             <ul class="menu">
-                <li title="顶数" :class="{'up-hover': blog.isUp}">
+                <li title="顶数" :class="{ 'up-hover': blog.isUp }">
                     <i title="顶" @click="up(blog.id)"></i>
-                    <span>{{blog.up}}</span>
+                    <span>{{ blog.up }}</span>
                 </li>
-                <li title="踩数" :class="{'down-hover': blog.isDown}">
+                <li title="踩数" :class="{ 'down-hover': blog.isDown }">
                     <i title="踩" @click="down(blog.id)"></i>
-                    <span>{{blog.down}}</span>
+                    <span>{{ blog.down }}</span>
                 </li>
-                <li title="收藏数" :class="{'star-hover': blog.isStar}">
+                <li title="收藏数" :class="{ 'star-hover': blog.isStar }">
                     <i title="收藏" @click="star(blog.id)"></i>
-                    <span>{{blog.star}}</span>
+                    <span>{{ blog.star }}</span>
                 </li>
                 <li title="浏览数">
                     <i></i>
-                    <span>{{blog.views}}</span>
+                    <span>{{ blog.views }}</span>
                 </li>
             </ul>
 
@@ -36,26 +36,26 @@
                     <textarea name="" id="" cols="30" rows="10" v-model="content" maxlength="100"></textarea>
                 </div>
 
-                <button @click="postComment(content)" :class="{active:$store.state.userInfo.isLogin}">发表评论</button>
+                <button @click="postComment(content)" :class="{ active: $store.state.userInfo.isLogin }">发表评论</button>
 
                 <div class="comments-area">
                     <div class="hot-comments">热门评论</div>
-                    <div class="comment" v-for="(hot,index) in blog.commentsList.hotComments" :key="hot.id">
+                    <div class="comment" v-for="(hot, index) in blog.commentsList.hotComments" :key="hot.id">
                         <img :src="hot.authorInfo.avatar" alt="" width="40" height="40" />
                         <div class="content">
-                            <router-link :to="`/user/${hot.authorUsername}/postBlogList`">{{hot.authorInfo.nickname}}
+                            <router-link :to="`/user/${hot.authorUsername}/postBlogList`">{{ hot.authorInfo.nickname }}
                             </router-link>
-                            <p>{{hot.content}}</p>
+                            <p>{{ hot.content }}</p>
                             <div class="bottom-content">
-                                <time>{{util.formatTime(hot.postTime)}}</time>
+                                <time>{{ util.formatTime(hot.postTime) }}</time>
                                 <ul class="menu comment-menu">
-                                    <li title="顶数" :class="{'up-hover': hot.isUp}">
-                                        <i title="顶" @click="upComments('hot',index, hot.id)"></i>
-                                        <span>{{hot.up}}</span>
+                                    <li title="顶数" :class="{ 'up-hover': hot.isUp }">
+                                        <i title="顶" @click="upComments('hot', index, hot.id)"></i>
+                                        <span>{{ hot.up }}</span>
                                     </li>
-                                    <li title="踩数" :class="{'down-hover': hot.isDown}">
-                                        <i title="踩" @click="downComments('hot',index, hot.id)"></i>
-                                        <span>{{hot.down}}</span>
+                                    <li title="踩数" :class="{ 'down-hover': hot.isDown }">
+                                        <i title="踩" @click="downComments('hot', index, hot.id)"></i>
+                                        <span>{{ hot.down }}</span>
                                     </li>
                                     <li title="删除这条评论">
                                         <i v-if="hot.authorUsername === $store.state.userInfo.username"
@@ -71,19 +71,19 @@
                     <div class="comment" v-for="(item, index) in blog.commentsList.newComments" :key="index">
                         <img :src="item.authorInfo.avatar" alt="" width="40" height="40" />
                         <div class="content">
-                            <router-link :to="`/user/${item.authorUsername}/postBlogList`">{{item.authorInfo.nickname}}
+                            <router-link :to="`/user/${item.authorUsername}/postBlogList`">{{ item.authorInfo.nickname }}
                             </router-link>
-                            <p>{{item.content}}</p>
+                            <p>{{ item.content }}</p>
                             <div class="bottom-content">
-                                <time>{{util.formatTime(item.postTime)}}</time>
+                                <time>{{ util.formatTime(item.postTime) }}</time>
                                 <ul class="menu comment-menu">
-                                    <li title="顶数" :class="{'up-hover': item.isUp}">
-                                        <i title="顶" @click="upComments('new',index, item.id)"></i>
-                                        <span>{{item.up}}</span>
+                                    <li title="顶数" :class="{ 'up-hover': item.isUp }">
+                                        <i title="顶" @click="upComments('new', index, item.id)"></i>
+                                        <span>{{ item.up }}</span>
                                     </li>
-                                    <li title="踩数" :class="{'down-hover': item.isDown}">
-                                        <i title="踩" @click="downComments('new',index,item.id)"></i>
-                                        <span>{{item.down}}</span>
+                                    <li title="踩数" :class="{ 'down-hover': item.isDown }">
+                                        <i title="踩" @click="downComments('new', index, item.id)"></i>
+                                        <span>{{ item.down }}</span>
                                     </li>
                                     <li title="删除这条评论">
                                         <i v-if="item.authorUsername === $store.state.userInfo.username"
@@ -343,7 +343,7 @@ export default {
     }
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .details {
     margin: 80px auto 30px auto;
 
@@ -351,7 +351,6 @@ export default {
         margin-left: 217px;
         background-color: white;
         border-radius: 5px;
-        min-height: 100vh;
         padding: 30px;
     }
 }
