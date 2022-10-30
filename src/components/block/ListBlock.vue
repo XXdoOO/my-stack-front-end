@@ -28,11 +28,11 @@
             <span>{{ blog.views }}</span>
           </li>
           <li class="delete-icon" title="删除此博客" v-if="blog.authorUsername === $store.state.userInfo.username"
-            @click.stop="deleteBlog(index, blog.id)">
+              @click.stop="deleteBlog(index, blog.id)">
             <i></i>
           </li>
           <li class="edit-icon" title="编辑此博客" v-if="blog.authorUsername === $store.state.userInfo.username"
-            @click.stop="updateBlog(blog.id)">
+              @click.stop="updateBlog(blog.id)">
             <i></i>
           </li>
         </ul>
@@ -43,7 +43,8 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex"
+import {mapState, mapActions} from "vuex"
+
 export default {
   name: "ListBlock",
   props: {
@@ -70,7 +71,7 @@ export default {
         console.log(res)
 
         if (res.data.code === 200) {
-          this.modifyList({ index: index, opt: "isUp" })
+          this.modifyList({index: index, opt: "isUp"})
         } else {
           this.$xMessage.show({
             title: '顶失败！',
@@ -86,7 +87,7 @@ export default {
         console.log(res)
 
         if (res.data.code === 200) {
-          this.modifyList({ index: index, opt: "isDown" })
+          this.modifyList({index: index, opt: "isDown"})
         } else {
           this.$xMessage.show({
             title: '踩失败！',
@@ -102,7 +103,7 @@ export default {
         console.log(res)
 
         if (res.data.code === 200) {
-          this.modifyList({ index: index, opt: "isStar" })
+          this.modifyList({index: index, opt: "isStar"})
         } else {
           this.$xMessage.show({
             title: '收藏失败！',
@@ -118,7 +119,7 @@ export default {
         console.log(res)
 
         if (res.data.code === 200) {
-          this.modifyList({ index: index, opt: "delete" })
+          this.modifyList({index: index, opt: "delete"})
 
           this.$xMessage.show({
             title: '删除成功！',
@@ -153,7 +154,7 @@ export default {
     background-color: white;
     position: relative;
 
-    >img {
+    > img {
       object-fit: cover;
       margin-left: 20px;
     }

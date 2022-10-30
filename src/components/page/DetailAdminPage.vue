@@ -129,7 +129,7 @@ export default {
             });
         },
         getNearBlogDetails(isNext) {
-            this.$axios.myRequest.  (this.blog.id, isNext).then((res) => {
+            this.$axios.myRequest.getNearBlogDetails(this.blog.id, isNext).then((res) => {
                 this.blog = res.data.data
             })
         }
