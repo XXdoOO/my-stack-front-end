@@ -50,8 +50,8 @@ export default {
         registerTip: "",
       },
       loginFrom: {
-        username: "",
-        password: "",
+        username: "admin",
+        password: "admin",
       },
       registerFrom: {
         username: "",

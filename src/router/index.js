@@ -9,8 +9,8 @@ import AdminPage from "../components/page/AdminPage";
 import UserPage from "../components/page/UserPage";
 import DetailAdminPage from "../components/page/DetailAdminPage";
 import Login from "../components/login"
-import ListBlock from "../components/block/ListBlock.vue"
 import AuditList from "../components/block/AuditList.vue"
+import UserList from "../components/block/UserList.vue"
 
 Vue.use(Login);
 Vue.use(VueRouter);
@@ -36,8 +36,7 @@ const router = new VueRouter({
             path: "/admin", meta: { title: "管理后台" }, component: AdminPage, children: [
                 { path: "blog/details/:blogId", meta: { title: "审核的博客详情" }, component: DetailAdminPage },
                 { path: "blog/auditing", meta: { title: "审核中" }, component: AuditList },
-                { path: "blog/pass", meta: { title: "已通过" }, component: ListBlock },
-                { path: "blog/noPass", meta: { title: "未通过" }, component: ListBlock },
+                { path: "userList", meta: { title: "用户列表" }, component: UserList },
             ]
         },
     ]
