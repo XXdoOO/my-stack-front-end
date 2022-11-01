@@ -1,7 +1,7 @@
 <template>
   <main class="admin-page">
     <el-aside width="200px">
-      <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+      <el-menu :router="true" default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
                background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
         <el-menu-item index="1">
           <template slot="title">
@@ -14,7 +14,7 @@
             <i class="el-icon-user"></i>
             <span>用户管理</span>
           </template>
-          <el-menu-item index="2-1" @click="getUserList">用户列表</el-menu-item>
+          <el-menu-item index="/admin/userList">用户列表</el-menu-item>
           <el-menu-item index="2-2">小黑屋</el-menu-item>
         </el-submenu>
         <el-submenu index="3">
@@ -22,7 +22,7 @@
             <i class="el-icon-document"></i>
             <span>博客管理</span>
           </template>
-          <el-menu-item index="3-1" @click="getAuditingBlogList">审核博客</el-menu-item>
+          <el-menu-item index="/admin/blogList">审核博客</el-menu-item>
         </el-submenu>
         <el-submenu index="4">
           <template slot="title">
@@ -61,9 +61,6 @@ export default {
         this.$store.state.blogList = res.data.data
       })
     },
-    getUserList() {
-      this.$router.push("/admin/userList")
-    }
   }
 }
 </script>

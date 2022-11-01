@@ -104,11 +104,11 @@ const deleteComments = (commentsId) => {
     return $axios.delete(`/user/deleteMyComments?id=${commentsId}`)
 }
 
-const getPostBlogList = (status, startIndex, pageSize) => {
-    if (status === null) {
-        return $axios.get(`/admin/getPostBlogList?startIndex=${startIndex}&pageSize=${pageSize}`)
+const getPostBlogList = (keywords, startIndex, pageSize) => {
+    if (keywords === null) {
+        return $axios.get(`/admin/getBlogByKeywords?startIndex=${startIndex}&pageSize=${pageSize}`)
     }
-    return $axios.get(`/admin/getPostBlogList?status=${status}&startIndex=${startIndex}&pageSize=${pageSize}`)
+    return $axios.get(`/admin/getBlogByKeywords?keywords=${keywords}&startIndex=${startIndex}&pageSize=${pageSize}`)
 }
 
 const getAuditPostDetails = (blogId) => {

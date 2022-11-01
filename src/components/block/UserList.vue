@@ -28,7 +28,7 @@
         <template slot-scope="scope">
           <el-tag v-if="scope.row.registerTime > scope.row.disableTime" type="success">正常</el-tag>
           <el-tag v-if="scope.row.registerTime < scope.row.disableTime" type="danger" @click="dialogFormVisible = true">
-            小黑屋悔改
+            小黑屋悔改中
           </el-tag>
         </template>
       </el-table-column>
@@ -51,21 +51,21 @@
 
     <el-dialog title="关押设置" :visible.sync="dialogFormVisible">
       <el-form :model="form">
-        <el-form-item label="关押时间" :label-width="formLabelWidth">
+        <el-form-item label="关押时间（小时）">
           <el-time-select
               v-model="form.time"
               :picker-options="{
-        start: '15',
-        step: '15',
-        end: '18:30'
-        }"
+          start: '00:30',
+          step: '00:30',
+          end: '24:00'
+          }"
               placeholder="选择时间">
           </el-time-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary">确 定</el-button>
+        <el-button type="primary" @click="confirm">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -77,8 +77,7 @@ export default {
   data() {
     return {
       userList: [],
-      dialogFormVisible: true,
-      formLabelWidth: '120px',
+      dialogFormVisible: false,
       form: {time: ""}
     }
   },
@@ -89,7 +88,10 @@ export default {
     },
     release(msg) {
       console.log(msg)
-    }
+    },
+    confirm() {
+      console.log(this.form.time)
+    },
   }, beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$axios.myRequest.getUserList().then((res) => {

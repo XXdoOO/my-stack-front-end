@@ -35,7 +35,7 @@ const router = new VueRouter({
         {
             path: "/admin", meta: { title: "管理后台" }, component: AdminPage, children: [
                 { path: "blog/details/:blogId", meta: { title: "审核的博客详情" }, component: DetailAdminPage },
-                { path: "blog/auditing", meta: { title: "审核中" }, component: AuditList },
+                { path: "blogList", meta: { title: "博客列表" }, component: AuditList },
                 { path: "userList", meta: { title: "用户列表" }, component: UserList },
             ]
         },
