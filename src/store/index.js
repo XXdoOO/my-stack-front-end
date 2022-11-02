@@ -51,6 +51,8 @@ const state = {
     identity: false
   },
   blogList: [],
+  total: 100,
+  
   progressWidth: 0,
 }
 

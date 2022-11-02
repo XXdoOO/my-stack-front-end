@@ -39,14 +39,27 @@ export default {
 
     this.$axios.interceptors.response.use((res) => {
       console.log("清除定时器", res);
-      clearInterval(this.timer);
 
-      this.$store.state.progressWidth = 100;
+      const code = res.data.code
 
-      setTimeout(() => {
-        this.$store.state.progressWidth = 0;
-      }, 500);
-      return res;
+      if (code === 200) {
+        clearInterval(this.timer);
+
+        this.$store.state.progressWidth = 100;
+
+        setTimeout(() => {
+          this.$store.state.progressWidth = 0;
+        }, 500);
+
+        return res.data.data;
+      } else if (code === 401) {
+        this.$xMessage.show({
+          title: '您的权限不足！',
+          message: res.data.message,
+          type: 'error',
+          duration: 3000
+        });
+      }
     }, (error) => {
       console.log(error);
 

@@ -10,7 +10,7 @@
         </ul>
         <h2>{{ blog.title }}</h2>
         <p>{{ blog.description }}</p>
-        <ul class="bottomContent" v-if="!isAdmin">
+        <ul class="bottomContent">
           <li :class="{ 'up-hover': blog.isUp }" title="顶数">
             <i title="顶" @click.stop="up(index, blog.id)"></i>
             <span>{{ blog.up }}</span>
@@ -28,33 +28,32 @@
             <span>{{ blog.views }}</span>
           </li>
           <li class="delete-icon" title="删除此博客" v-if="blog.authorUsername === $store.state.userInfo.username"
-              @click.stop="deleteBlog(index, blog.id)">
+            @click.stop="deleteBlog(index, blog.id)">
             <i></i>
           </li>
           <li class="edit-icon" title="编辑此博客" v-if="blog.authorUsername === $store.state.userInfo.username"
-              @click.stop="updateBlog(blog.id)">
+            @click.stop="updateBlog(blog.id)">
             <i></i>
           </li>
         </ul>
       </div>
       <img v-if="blog.cover" :src="blog.cover" alt="" height="100">
     </article>
+
+    <div id="pagination">
+      <div>总共{{ $store.state.total }}页</div>
+      <div>&lt;</div>
+      <div>{{ $store.state.currentPage }}</div>
+      <div>></div>
+    </div>
   </div>
 </template>
 
 <script>
-import {mapState, mapActions} from "vuex"
+import { mapState, mapActions } from "vuex"
 
 export default {
   name: "ListBlock",
-  props: {
-    isAdmin: {
-      type: Boolean,
-      default() {
-        return false
-      }
-    }
-  },
   computed: {
     ...mapState(["blogList"])
   },
@@ -71,7 +70,7 @@ export default {
         console.log(res)
 
         if (res.data.code === 200) {
-          this.modifyList({index: index, opt: "isUp"})
+          this.modifyList({ index: index, opt: "isUp" })
         } else {
           this.$xMessage.show({
             title: '顶失败！',
@@ -87,7 +86,7 @@ export default {
         console.log(res)
 
         if (res.data.code === 200) {
-          this.modifyList({index: index, opt: "isDown"})
+          this.modifyList({ index: index, opt: "isDown" })
         } else {
           this.$xMessage.show({
             title: '踩失败！',
@@ -103,7 +102,7 @@ export default {
         console.log(res)
 
         if (res.data.code === 200) {
-          this.modifyList({index: index, opt: "isStar"})
+          this.modifyList({ index: index, opt: "isStar" })
         } else {
           this.$xMessage.show({
             title: '收藏失败！',
@@ -119,7 +118,7 @@ export default {
         console.log(res)
 
         if (res.data.code === 200) {
-          this.modifyList({index: index, opt: "delete"})
+          this.modifyList({ index: index, opt: "delete" })
 
           this.$xMessage.show({
             title: '删除成功！',
@@ -143,6 +142,7 @@ export default {
   border-radius: 5px;
   margin-bottom: 10px;
   width: 100%;
+  background-color: white;
 
   article {
     display: flex;
@@ -151,10 +151,9 @@ export default {
     padding: 15px 30px;
     transition: 0.1s;
     cursor: pointer;
-    background-color: white;
     position: relative;
 
-    > img {
+    >img {
       object-fit: cover;
       margin-left: 20px;
     }
@@ -302,5 +301,9 @@ export default {
     background-image: url(../../assets/img/edit-hover.png);
     transform: scale(1.3);
   }
+}
+
+#pagination {
+  display: flex;
 }
 </style>

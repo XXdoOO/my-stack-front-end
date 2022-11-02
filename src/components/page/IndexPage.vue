@@ -20,7 +20,7 @@ export default {
     getBlogList() {
       this.$axios.myRequest.getBlogList(null, 0, 100).then((res) => {
         console.log(res)
-        this.$store.state.blogList = res.data.data
+        this.$store.state.blogList = res.data
       })
     }
   },

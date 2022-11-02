@@ -326,10 +326,10 @@ export default {
             console.log(arr)
         },
         getBlogDetails(blogId) {
-            this.$axios.myRequest.getBlogDetails(blogId).then((res) => {
-                res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/")
+            this.$axios.myRequest.getBlogDetails(blogId).then((data) => {
+                data.content = data.content.replace(/\\u002F/g, "/")
 
-                this.blog = res.data.data
+                this.blog = data
             });
         }
     },
