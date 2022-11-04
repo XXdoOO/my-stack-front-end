@@ -42,24 +42,24 @@ export default {
 
       const code = res.data.code
 
-      if (code === 200) {
-        clearInterval(this.timer);
+      clearInterval(this.timer);
 
-        this.$store.state.progressWidth = 100;
+      this.$store.state.progressWidth = 100;
 
-        setTimeout(() => {
-          this.$store.state.progressWidth = 0;
-        }, 500);
+      setTimeout(() => {
+        this.$store.state.progressWidth = 0;
+      }, 500);
 
-        return res.data.data;
-      } else if (code === 401) {
+      if (code === 612) {
         this.$xMessage.show({
           title: '您的权限不足！',
-          message: res.data.message,
+          message: res.data.msg,
           type: 'error',
           duration: 3000
-        });
+        })
       }
+
+      return res.data
     }, (error) => {
       console.log(error);
 
@@ -80,10 +80,9 @@ export default {
       }
     });
 
-    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"))
 
     if (userInfo !== null) {
-      userInfo.isLogin = true;
       this.$store.state.userInfo = userInfo;
     }
   }

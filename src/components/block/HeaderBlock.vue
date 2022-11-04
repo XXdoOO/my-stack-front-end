@@ -20,8 +20,8 @@
 
       <SearchInput />
 
-      <span class="login" v-if="!userInfo.isLogin" @click="$loginRegister.showLoginRegister()">登录/注册</span>
-      <div class="my" v-if="userInfo.isLogin">
+      <span class="login" v-if="!userInfo" @click="$loginRegister.showLoginRegister()">登录/注册</span>
+      <div class="my" v-if="userInfo">
         <img :src="userInfo.avatar" alt="" width="50" height="50">
 
         <div class="hover-popup">
@@ -68,9 +68,6 @@ export default {
     };
   },
   computed: {
-    loginMsg() {
-      return this.$store.state.isLogin ? "退出登录" : "登录/注册";
-    },
     ...mapState(["userInfo"])
   },
   methods: {
@@ -78,16 +75,7 @@ export default {
       this.$axios.myRequest.logout().then((res) => {
         console.log(res)
 
-        sessionStorage.clear();
-
-        this.$store.state.userInfo = {
-          isLogin: false,
-          username: null,
-          avatar: null,
-          nickname: "点击登录",
-          identity: false
-        }
-
+        sessionStorage.removeItem("userInfo");
         this.$router.push("/")
         window.location.reload();
       })

@@ -18,9 +18,8 @@ export default {
   },
   methods: {
     getBlogList() {
-      this.$axios.myRequest.getBlogList(null, 0, 100).then((res) => {
-        console.log(res)
-        this.$store.state.blogList = res.data
+      this.$axios.myRequest.getBlogList(null, this.$store.state.currentPage * 10, 10).then((res) => {
+        this.$store.state.blogList = res.data.list
       })
     }
   },
@@ -33,6 +32,6 @@ export default {
 </script>
 <style lang="less" scoped>
 // main {
-  //   margin: ;
-  // }
+//   margin: ;
+// }
 </style>

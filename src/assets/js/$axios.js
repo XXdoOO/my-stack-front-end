@@ -10,9 +10,14 @@ const login = (username, password) => {
     return $axios.post(`/login?username=${username}&password=${password}`)
 }
 
+const register = (username, password) => {
+    return $axios.post(`/register?username=${username}&password=${password}`)
+}
+
 const logout = () => {
     return $axios.get("/user/logout")
 }
+
 
 const getBlogList = (keywords, startIndex, pageSize) => {
     if (keywords !== null) {
@@ -125,6 +130,7 @@ const getUserList = () => {
 
 $axios.myRequest = {
     login,
+    register,
     logout,
     getBlogList,
     getUserInfo,

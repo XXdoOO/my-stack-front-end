@@ -39,13 +39,6 @@
       </div>
       <img v-if="blog.cover" :src="blog.cover" alt="" height="100">
     </article>
-
-    <div id="pagination">
-      <div>总共{{ $store.state.total }}页</div>
-      <div>&lt;</div>
-      <div>{{ $store.state.currentPage }}</div>
-      <div>></div>
-    </div>
   </div>
 </template>
 
@@ -54,6 +47,14 @@ import { mapState, mapActions } from "vuex"
 
 export default {
   name: "ListBlock",
+  props: {
+    nextPage: {
+      type: Function,
+      default() {
+        console.log("next")
+      }
+    }
+  },
   computed: {
     ...mapState(["blogList"])
   },
@@ -132,8 +133,25 @@ export default {
     updateBlog(blogId) {
       this.$router.push(`/user/edit/${blogId}`)
     },
+    scrollToTop() {
+      let doc = document.documentElement
+
+      // console.log(doc.scrollHeight, doc.scrollTop, doc.clientHeight)
+
+      if (doc.scrollHeight - doc.scrollTop - doc.clientHeight < 1 && (this.$store.state.currentPage + 1) * 10 < this.$store.state.total) {
+        console.log(22222)
+        this.$store.state.currentPage++
+        this.nextPage()
+      }
+    },
     ...mapActions(["modifyList"])
   },
+  mounted() {
+    window.addEventListener("scroll", this.scrollToTop)
+  },
+  destroyed() {
+    window.removeEventListener('scroll', this.scrollToTop)
+  }
 }
 </script>
 
@@ -301,9 +319,5 @@ export default {
     background-image: url(../../assets/img/edit-hover.png);
     transform: scale(1.3);
   }
-}
-
-#pagination {
-  display: flex;
 }
 </style>

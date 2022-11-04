@@ -73,15 +73,13 @@ export default {
         console.log(this.$store);
 
         this.$axios.myRequest.login(username, password).then((res) => {
-          console.log(res)
-          if (res.data.code !== 200) {
-            this.tip.loginTip = res.data.msg;
-            this.tip.tipClass = true;
-          } else {
-            console.log(res.data.data);
-            sessionStorage.setItem("userInfo", JSON.stringify(res.data.data));
+          if (res.code == 600) {
+            sessionStorage.setItem("userInfo", JSON.stringify(res.data));
 
             window.location.reload();
+          } else {
+            this.tip.loginTip = res.msg;
+            this.tip.tipClass = true;
           }
         })
       }
@@ -97,27 +95,9 @@ export default {
         this.tip.registerTip = "两次密码不一致！";
         this.tip.tipClass = true;
       } else {
-        this.axios
-          .post(
-            `/register?username=${username}&password=${password}`
-          )
-          .then(
-            (response) => {
-              console.log(response);
-              if (response.data.code !== 200) {
-                this.tip.registerTip = "用户已存在！";
-                this.tip.loginTip = response.data.msg;
-                this.tip.tipClass = true;
-              } else {
-                this.active = true;
-              }
-            },
-            (error) => {
-              console.log(error);
-              this.tip.loginTip = error.message;
-              this.tip.tipClass = true;
-            }
-          );
+        this.$axios.myRequest.register(username, password).then((res) => {
+          this.tip.registerTip = res.msg;
+        })
       }
     },
   },

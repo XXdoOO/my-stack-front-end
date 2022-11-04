@@ -51,19 +51,15 @@ router.beforeEach((to, from, next) => {
 
     console.log(identity)
 
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    console.log(userInfo)
     if (identity === "my") {
-        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-        console.log(userInfo)
-
         if (userInfo) {
             next()
         } else {
             Vue.prototype.$loginRegister.showLoginRegister()
         }
     } else if (identity === "admin") {
-        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-        console.log(userInfo)
-
         if (userInfo && userInfo.identity) {
             next()
         } else {

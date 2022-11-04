@@ -83,6 +83,18 @@ export default {
     uploadCover() {
       this.blog.cover = `http://localhost:8080/cover/${this.$store.state.userInfo.username}.jpg?${Date.now()}`
     },
+    vertify() {
+      if (this.blog.title.trim().length != 0 && this.blog.description.trim().length != 0 && this.blog.content.trim().length != 0) {
+        return true
+      }
+      this.$xMessage.show({
+        title: '请完善信息后再提交哦！',
+        message: "请完善信息后再提交哦！",
+        type: 'error',
+        duration: 3000
+      });
+      return false
+    },
     prepare() {
       let coverImg = this.$refs.coverImg.files[0]
       const data = new FormData()
@@ -101,20 +113,31 @@ export default {
       return data
     },
     postBlog() {
+      if (!this.vertify()) {
+        return
+      }
+
       const data = this.prepare()
 
       this.$axios.myRequest.postBlog(data).then((res) => {
         console.log(res)
 
-        this.$xMessage.show({
-          title: '发布成功！',
-          message: "快去看看吧！",
-          type: 'success',
-          duration: 3000
-        });
+        if (res.code === 600) {
+          this.$xMessage.show({
+            title: '发布成功！',
+            message: "快去看看吧！",
+            type: 'success',
+            duration: 3000
+          });
+        }
+
       })
     },
     updateBlog() {
+      if (!this.vertify()) {
+        return
+      }
+
       const data = this.prepare()
 
       this.$axios.myRequest.updateBlog(data).then((res) => {

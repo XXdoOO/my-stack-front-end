@@ -2,29 +2,29 @@
   <main class="container">
     <div class="user-info">
       <img :src="userInfo.avatar" alt="个人头像" width="50" height="50">
-      <span class="nickname">{{userInfo.nickname}}</span>
+      <span class="nickname">{{ userInfo.nickname }}</span>
       <button>退出登录</button>
     </div>
     <nav>
-      <router-link to="/my/pass" :class="{active:type === 'pass'}">已发布
-        ({{userInfo.passCount}})
+      <router-link to="/my/pass" :class="{ active: type === 'pass' }">已发布
+        ({{ userInfo.passCount }})
       </router-link>
-      <router-link to="/my/auditing" :class="{active:type === 'auditing'}">审核中
-        ({{userInfo.auditingCount}})
+      <router-link to="/my/auditing" :class="{ active: type === 'auditing' }">审核中
+        ({{ userInfo.auditingCount }})
       </router-link>
-      <router-link to="/my/noPass" :class="{active:type === 'noPass'}">未通过
-        ({{userInfo.noPassCount}})
+      <router-link to="/my/noPass" :class="{ active: type === 'noPass' }">未通过
+        ({{ userInfo.noPassCount }})
       </router-link>
-      <router-link to="/my/up" :class="{active:type === 'up'}">顶过
-        ({{userInfo.upCount}})</router-link>
-      <router-link to="/my/down" :class="{active:type === 'down'}">踩过
-        ({{userInfo.downCount}})
+      <router-link to="/my/up" :class="{ active: type === 'up' }">顶过
+        ({{ userInfo.upCount }})</router-link>
+      <router-link to="/my/down" :class="{ active: type === 'down' }">踩过
+        ({{ userInfo.downCount }})
       </router-link>
-      <router-link to="/my/star" :class="{active:type === 'star'}">收藏
-        ({{userInfo.starCount}})
+      <router-link to="/my/star" :class="{ active: type === 'star' }">收藏
+        ({{ userInfo.starCount }})
       </router-link>
     </nav>
-    <ListBlock :blog-list="blogList" :modify-list="modifyList" />
+    <ListBlock :next-page="getMyInfo" />
   </main>
 </template>
 
@@ -46,14 +46,14 @@ export default {
   watch: {
     $route: {
       immediate: true,
-      handler(to) {
-        this.getMyInfo(to.path)
+      handler() {
+        this.getMyInfo()
       }
     }
   },
   methods: {
-    getMyInfo(path) {
-      const type = path.split("/")
+    getMyInfo() {
+      const type = this.$route.path.split("/")
       this.type = type[type.length - 1]
 
       console.log(this.type)
@@ -61,29 +61,35 @@ export default {
       this.$store.dispatch("setMyInfo")
 
       if (this.type === "auditing") {
-        this.$axios.myRequest.getMyPostList(null, 0, 20).then((res) => {
-          this.$store.state.blogList = res.data.data
+        this.$axios.myRequest.getMyPostList(null, this.$store.state.currentPage * 10, 10).then((res) => {
+          this.$store.state.blogList = res.data.list
+          this.$store.state.total = res.data.total
         })
       } else if (this.type === "pass") {
-        this.$axios.myRequest.getMyPostList(1, 0, 20).then((res) => {
-          this.$store.state.blogList = res.data.data
+        this.$axios.myRequest.getMyPostList(1, this.$store.state.currentPage * 10, 10).then((res) => {
+          this.$store.state.blogList = res.data.list
+          this.$store.state.total = res.data.total
         })
       } else if (this.type === "noPass") {
-        this.$axios.myRequest.getMyPostList(0, 0, 20).then((res) => {
-          this.$store.state.blogList = res.data.data
+        this.$axios.myRequest.getMyPostList(0, this.$store.state.currentPage * 10, 10).then((res) => {
+          this.$store.state.blogList = res.data.list
+          this.$store.state.total = res.data.total
         })
       } else if (this.type === "up") {
-        this.$axios.myRequest.getMyUpList(0, 20).then((res) => {
-          this.$store.state.blogList = res.data.data
+        this.$axios.myRequest.getMyUpList(this.$store.state.currentPage * 10, 10).then((res) => {
+          this.$store.state.blogList = res.data.list
+          this.$store.state.total = res.data.total
         })
       }
       else if (this.type === "down") {
-        this.$axios.myRequest.getMyDownList(0, 20).then((res) => {
-          this.$store.state.blogList = res.data.data
+        this.$axios.myRequest.getMyDownList(this.$store.state.currentPage * 10, 10).then((res) => {
+          this.$store.state.blogList = res.data.list
+          this.$store.state.total = res.data.total
         })
       } else {
-        this.$axios.myRequest.getMyStarList(0, 20).then((res) => {
-          this.$store.state.blogList = res.data.data
+        this.$axios.myRequest.getMyStarList(this.$store.state.currentPage * 10, 10).then((res) => {
+          this.$store.state.blogList = res.data.list
+          this.$store.state.total = res.data.total
         })
       }
     }

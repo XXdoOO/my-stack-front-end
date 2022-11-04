@@ -32,8 +32,7 @@ const actions = {
   setMyInfo(context) {
     $axios.myRequest.getMyInfo().then((res) => {
       console.log(res)
-      context.state.userInfo = res.data.data
-      context.state.userInfo.isLogin = true
+      context.state.userInfo = res.data
     })
   }
 }
@@ -43,16 +42,10 @@ const mutations = {
 }
 
 const state = {
-  userInfo: {
-    isLogin: false,
-    username: null,
-    avatar: null,
-    nickname: "登录/注册",
-    identity: false
-  },
+  userInfo: null,
   blogList: [],
+  currentPage: 0,
   total: 100,
-  
   progressWidth: 0,
 }
 

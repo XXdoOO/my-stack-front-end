@@ -101,8 +101,6 @@ export default {
 .message-warning {
   background-color: #fdf6ec;
   border: 1px solid #E6A23C;
-  ;
-
 }
 
 .message-error .message-title,
