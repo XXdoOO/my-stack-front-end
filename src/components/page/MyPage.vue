@@ -24,7 +24,7 @@
         ({{ userInfo.starCount }})
       </router-link>
     </nav>
-    <ListBlock :next-page="getMyInfo" />
+    <ListBlock :next-page="getMyInfo" :is-my="true" />
   </main>
 </template>
 

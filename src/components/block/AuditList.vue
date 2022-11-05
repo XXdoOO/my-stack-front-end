@@ -29,16 +29,19 @@
           <el-tag v-if="scope.row.status == false" type="danger">未通过</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="address" label="操作">
+      <el-table-column prop="address" label="操作" width="250px">
         <template slot-scope="scope">
-          <el-button plain @click="handleClick(scope.row)" type="primary" size="small">
-            {{ scope.row.status == null ? "审核" : "重新审核" }}
+          <el-button plain @click="handleClick(scope.row, true)" type="success" size="small">
+            通过
+          </el-button>
+          <el-button plain @click="handleClick(scope.row, false)" type="danger" size="small">
+            不通过
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-pagination background layout="prev, pager, next" :total="1000"
+    <el-pagination background layout="prev, pager, next" :total="total" @current-change="getPostBlogList"
       style="display:flex;justify-content:center;padding:1.5em 0;">
     </el-pagination>
   </div>
@@ -49,19 +52,35 @@ export default {
   name: "AuditList",
   data() {
     return {
-      auditList: []
+      auditList: [],
+      total: 0
     }
   },
   methods: {
-    handleClick(msg) {
-      console.log(msg)
+    handleClick(blog, isPass) {
+      this.$axios.myRequest.auditBlog(blog.id, isPass).then((res) => {
+        console.log(res)
+
+        if (res.code === 600) {
+          if (isPass) {
+            blog.status = true
+          } else {
+            blog.status = false
+          }
+        }
+      })
+    },
+    getPostBlogList(currentPage) {
+      this.$axios.myRequest.getPostBlogList(null, currentPage * 10, 10).then((res) => {
+        console.log(res)
+        this.auditList = res.data.list
+        this.total = res.data.total
+      })
     }
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      vm.$axios.myRequest.getPostBlogList(null, 0, 100).then((res) => {
-        vm.auditList = res.data.data
-      })
+      vm.getPostBlogList(0)
     })
   }
 
@@ -69,5 +88,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+.el-table::before {
+  background-color: white;
+}
 </style>

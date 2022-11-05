@@ -41,7 +41,7 @@
             </router-link>
           </nav>
           <router-link class="my-menu" to="/my/pass">个人中心</router-link>
-          <router-link class="my-menu" to="/admin" v-if="userInfo.identity">管理后台</router-link>
+          <router-link class="my-menu" to="/admin/blogList" v-if="userInfo.identity">管理后台</router-link>
           <router-link class="create-btn" to="/user/edit">开始创作</router-link>
           <button class="my-menu" @click="logout">退出登录</button>
         </div>

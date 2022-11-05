@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%;max-height: calc(100vh - 80px);">
+  <div class="user-list" style="width: 100%;max-height: calc(100vh - 80px);">
     <el-table :data="userList" style="width: 100%;padding: 1em 2em; max-height: calc(100vh - 80px);overflow: auto">
       <el-table-column label="注册时间" width="180">
         <template slot-scope="scope">
@@ -22,18 +22,16 @@
       </el-table-column>
       <el-table-column prop="status" label="状态">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.registerTime > scope.row.disableTime" type="success">正常</el-tag>
-          <el-tag v-if="scope.row.registerTime < scope.row.disableTime" type="danger">小黑屋悔改中</el-tag>
+          <el-tag v-if="!scope.row.status" type="success">正常</el-tag>
+          <el-tag v-if="scope.row.status" type="danger">小黑屋悔改中</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="address" label="操作">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.registerTime > scope.row.disableTime" plain @click="held(scope.row)" type="primary"
-            size="small">
+          <el-button v-if="!scope.row.status" plain @click="held(scope.row)" type="primary" size="small">
             关进小黑屋
           </el-button>
-          <el-button v-if="scope.row.registerTime < scope.row.disableTime" plain @click="release(scope.row)"
-            type="primary" size="small">
+          <el-button v-if="scope.row.status" plain @click="release(scope.row)" type="primary" size="small">
             从小黑屋释放
           </el-button>
           <!--<el-button plain icon="el-icon-success" @click="handleClick(scope.row)" type="success" size="small">通过
@@ -43,9 +41,13 @@
       </el-table-column>
     </el-table>
 
+    <el-pagination background layout="prev, pager, next" :total="total"
+      style="display:flex;justify-content:center;padding:1.5em 0;">
+    </el-pagination>
+
     <el-dialog title="关押设置" :visible.sync="dialogFormVisible" width="420px">
-      <el-form :model="form" label-width="100px">
-        <el-form-item label="关押时间：">
+      <el-form :model="form" label-width="100px" :rules="rules" ref="form">
+        <el-form-item label="关押时间：" prop="time">
           <el-time-select v-model="form.time" :picker-options="{
             start: '00:30',
             step: '00:30',
@@ -54,8 +56,8 @@
           </el-time-select>
           <span>（小时）</span>
         </el-form-item>
-        <el-form-item label="关押原因：" style="margin-bottom:0">
-          <el-input type="textarea" :rows="3" resize="none" placeholder="请输入关押原因" v-model="form.reson" clearable
+        <el-form-item label="关押原因：" style="margin-bottom:0" prop="reason">
+          <el-input type="textarea" :rows="3" resize="none" placeholder="请输入关押原因" v-model="form.reason" clearable
             maxlength="50" show-word-limit>
           </el-input>
         </el-form-item>
@@ -75,7 +77,18 @@ export default {
     return {
       userList: [],
       dialogFormVisible: false,
-      form: { time: "", reson: "" }
+      form: { time: "", reason: "" },
+      total: 1,
+      rules: {
+        time: {
+          required: true,
+          message: "关押时间不能为空！"
+        },
+        reason: {
+          required: true,
+          message: "关押原因不能为空！"
+        }
+      }
     }
   },
   methods: {
@@ -85,15 +98,41 @@ export default {
     },
     release(msg) {
       console.log(msg)
+
+      this.$confirm('此操作将该用户从小黑屋释放, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '释放成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消释放'
+        });
+      });
     },
     confirm() {
       console.log(this.form.time)
-    },
-  }, beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$axios.myRequest.getUserList().then((res) => {
-        vm.userList = res.data.data
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          alert('submit!');
+        }
       })
+    },
+    getUserList(currentPage) {
+      this.$axios.myRequest.getUserList(currentPage * 10, 10).then((res) => {
+        this.userList = res.data.list
+        this.total = res.data.total
+      })
+    },
+  },
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      vm.getUserList(0)
     })
   }
 
@@ -101,5 +140,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.user-list {
+  background-color: white;
 
+  .el-table::before {
+    background-color: white;
+  }
+}
 </style>

@@ -27,11 +27,13 @@
             <i></i>
             <span>{{ blog.views }}</span>
           </li>
-          <li class="delete-icon" title="删除此博客" v-if="blog.authorUsername === $store.state.userInfo.username"
+          <li class="delete-icon" title="删除此博客"
+            v-if="isMy && blog.authorUsername === $store.state.userInfo.username"
             @click.stop="deleteBlog(index, blog.id)">
             <i></i>
           </li>
-          <li class="edit-icon" title="编辑此博客" v-if="blog.authorUsername === $store.state.userInfo.username"
+          <li class="edit-icon" title="编辑此博客"
+            v-if="isMy && blog.authorUsername === $store.state.userInfo.username"
             @click.stop="updateBlog(blog.id)">
             <i></i>
           </li>
@@ -53,6 +55,10 @@ export default {
       default() {
         console.log("next")
       }
+    },
+    isMy: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -70,7 +76,7 @@ export default {
       this.$axios.myRequest.up(blogId).then((res) => {
         console.log(res)
 
-        if (res.data.code === 200) {
+        if (res.code === 600) {
           this.modifyList({ index: index, opt: "isUp" })
         } else {
           this.$xMessage.show({
@@ -86,7 +92,7 @@ export default {
       this.$axios.myRequest.down(blogId).then((res) => {
         console.log(res)
 
-        if (res.data.code === 200) {
+        if (res.code === 600) {
           this.modifyList({ index: index, opt: "isDown" })
         } else {
           this.$xMessage.show({
@@ -102,7 +108,7 @@ export default {
       this.$axios.myRequest.star(blogId).then((res) => {
         console.log(res)
 
-        if (res.data.code === 200) {
+        if (res.code === 600) {
           this.modifyList({ index: index, opt: "isStar" })
         } else {
           this.$xMessage.show({
@@ -118,7 +124,7 @@ export default {
       this.$axios.myRequest.deleteBlog(blogId).then((res) => {
         console.log(res)
 
-        if (res.data.code === 200) {
+        if (res.code === 600) {
           this.modifyList({ index: index, opt: "delete" })
 
           this.$xMessage.show({
@@ -139,7 +145,6 @@ export default {
       // console.log(doc.scrollHeight, doc.scrollTop, doc.clientHeight)
 
       if (doc.scrollHeight - doc.scrollTop - doc.clientHeight < 1 && (this.$store.state.currentPage + 1) * 10 < this.$store.state.total) {
-        console.log(22222)
         this.$store.state.currentPage++
         this.nextPage()
       }
