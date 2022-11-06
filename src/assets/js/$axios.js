@@ -22,7 +22,7 @@ axios.myRequest = {
         return axios.get(`/getBlogByKeywords?startIndex=${startIndex}&pageSize=${pageSize}`)
     },
     getUserInfo(username) {
-        return axios.get(`/getUserInfo?username=${username},`)
+        return axios.get(`/getUserInfo?username=${username}`)
     },
     getUserPostBlogList(username, startIndex, pageSize) {
         return axios.get(`/getUserPostBlogList?username=${username}&startIndex=${startIndex}&pageSize=${pageSize}`)

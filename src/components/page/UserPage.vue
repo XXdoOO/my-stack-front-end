@@ -2,19 +2,19 @@
   <main class="container">
     <div class="user-info">
       <img :src="userInfo.avatar" alt="个人头像" width="50" height="50">
-      <span class="nickname">{{userInfo.nickname}}</span>
+      <span class="nickname">{{ userInfo.nickname }}</span>
     </div>
     <nav>
-      <router-link :to="`/user/${userInfo.username}/postBlogList`" :class="{active:type === 'postBlogList'}">发布
-        ({{userInfo.passCount}})
+      <router-link :to="`/user/${userInfo.username}/postBlogList`" :class="{ active: type === 'postBlogList' }">发布
+        ({{ userInfo.passCount }})
       </router-link>
-      <router-link :to="`/user/${userInfo.username}/upBlogList`" :class="{active:type === 'upBlogList'}">顶过
-        ({{userInfo.upCount}})</router-link>
-      <router-link :to="`/user/${userInfo.username}/downBlogList`" :class="{active:type === 'downBlogList'}">踩过
-        ({{userInfo.downCount}})
+      <router-link :to="`/user/${userInfo.username}/upBlogList`" :class="{ active: type === 'upBlogList' }">顶过
+        ({{ userInfo.upCount }})</router-link>
+      <router-link :to="`/user/${userInfo.username}/downBlogList`" :class="{ active: type === 'downBlogList' }">踩过
+        ({{ userInfo.downCount }})
       </router-link>
     </nav>
-    <ListBlock :blog-list="blogList" />
+    <ListBlock />
   </main>
 </template>
 
@@ -34,25 +34,25 @@ export default {
     getUserInfo(path, username) {
       this.$axios.myRequest.getUserInfo(username).then((res) => {
         console.log(res)
-        this.userInfo = res.data.data
+        this.userInfo = res.data
 
         const type = path.split("/")
         this.type = type[type.length - 1]
 
         if (this.type === "postBlogList") {
-          this.$axios.myRequest.getUserPostBlogList(username, 0, 20).then((res) => {
-            console.log(res)
-            this.blogList = res.data.data
+          this.$axios.myRequest.getUserPostBlogList(username, 0, 10).then((res) => {
+            this.$store.state.blogList = res.data.list
+            this.$store.state.total = res.data.total
           })
         } else if (this.type === "upBlogList") {
-          this.$axios.myRequest.getUserUpBlogList(username, 0, 20).then((res) => {
-            console.log(res)
-            this.blogList = res.data.data
+          this.$axios.myRequest.getUserUpBlogList(username, 0, 10).then((res) => {
+            this.$store.state.blogList = res.data.list
+            this.$store.state.total = res.data.total
           })
         } else {
-          this.$axios.myRequest.getUserDownBlogList(username, 0, 20).then((res) => {
-            console.log(res)
-            this.blogList = res.data.data
+          this.$axios.myRequest.getUserDownBlogList(username, 0, 10).then((res) => {
+            this.$store.state.blogList = res.data.list
+            this.$store.state.total = res.data.total
           })
         }
       })

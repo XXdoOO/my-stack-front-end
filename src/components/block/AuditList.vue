@@ -16,7 +16,7 @@
       </el-table-column>
       <el-table-column prop="authorInfo" label="作者">
         <template slot-scope="scope">
-          <el-link type="primary" :href="`/user/${scope.row.authorUsername}/postBlogList`">{{
+          <el-link type="primary" :href="`#/user/${scope.row.authorUsername}/postBlogList`">{{
               scope.row.authorNickname
           }}
           </el-link>
@@ -29,13 +29,16 @@
           <el-tag v-if="scope.row.status == false" type="danger">未通过</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="address" label="操作" width="250px">
+      <el-table-column prop="address" label="操作" width="330px">
         <template slot-scope="scope">
-          <el-button plain @click="handleClick(scope.row, true)" type="success" size="small">
-            通过
+          <el-button plain type="primary" size="small" @click="getBlogDetails(scope.row.id)">
+            查看详情
           </el-button>
-          <el-button plain @click="handleClick(scope.row, false)" type="danger" size="small">
-            不通过
+          <el-button icon="el-icon-close" plain @click="handleClick(scope.row, false)" type="danger" size="small">
+            驳回
+          </el-button>
+          <el-button icon="el-icon-check" plain @click="handleClick(scope.row, true)" type="success" size="small">
+            通过
           </el-button>
         </template>
       </el-table-column>
@@ -44,24 +47,53 @@
     <el-pagination background layout="prev, pager, next" :total="total" @current-change="getPostBlogList"
       style="display:flex;justify-content:center;padding:1.5em 0;">
     </el-pagination>
+
+    <el-dialog title="博客详情" :visible.sync="dialogVisible" width="900px">
+      <MarkdownPreview :initialValue="blog.content" theme="gitHub"></MarkdownPreview>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button icon="el-icon-arrow-left" plain @click="jumpBlog(-1)" type="primary" size="small">
+          上一篇
+        </el-button>
+        <el-button plain @click="jumpBlog(1)" type="primary" size="small">
+          下一篇<el-icon class="el-icon-arrow-right el-icon--right"></el-icon>
+        </el-button>
+        <el-button icon="el-icon-close" plain @click="handleClick(blog, false)" type="danger" size="small">
+          驳回
+        </el-button>
+        <el-button icon="el-icon-check" plain @click="handleClick(blog, true)" type="success" size="small">
+          通过
+        </el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { MarkdownPreview } from 'vue-meditor'
 export default {
   name: "AuditList",
+  components: { MarkdownPreview },
   data() {
     return {
       auditList: [],
-      total: 0
+      total: 0,
+      blog: {},
+      dialogVisible: false
     }
   },
   methods: {
     handleClick(blog, isPass) {
+      this.dialogVisible = false
+
       this.$axios.myRequest.auditBlog(blog.id, isPass).then((res) => {
         console.log(res)
 
         if (res.code === 600) {
+          this.$message({
+            type: 'success',
+            message: '操作成功!'
+          });
           if (isPass) {
             blog.status = true
           } else {
@@ -76,6 +108,27 @@ export default {
         this.auditList = res.data.list
         this.total = res.data.total
       })
+    },
+    getBlogDetails(blogId) {
+      this.$axios.myRequest.getBlogDetails(blogId).then((res) => {
+        res.data.content = res.data.content.replace(/\\u002F/g, "/")
+
+        this.blog = res.data
+
+        this.dialogVisible = true
+      });
+    },
+    jumpBlog(go) {
+      for (let index = 0; index < this.auditList.length; index++) {
+        if (this.auditList[index].id === this.blog.id) {
+          if (index + go >= 0 && index + go < this.auditList.length) {
+            this.getBlogDetails(this.auditList[index + go].id)
+          } else {
+            this.$message('已经到顶/底了!');
+          }
+          break
+        }
+      }
     }
   },
   beforeRouteEnter(to, from, next) {

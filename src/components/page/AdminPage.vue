@@ -36,7 +36,7 @@ export default {
 
 <style lang="less" scoped>
 .admin-page {
-  margin-top: 70px;
+  margin-top: 70px !important;
   display: flex;
   height: calc(100vh - 80px);
 }

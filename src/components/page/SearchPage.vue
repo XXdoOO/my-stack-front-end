@@ -1,6 +1,6 @@
 <template>
   <main class="container">
-    <ListBlock :blogList=blogList />
+    <ListBlock :nextPage="getBlogListByKeywords" />
 
     <GoTop></GoTop>
   </main>
@@ -19,15 +19,20 @@ export default {
   watch: {
     $route: {
       immediate: true,
-      handler(to) {
-        this.$axios.myRequest.getBlogList(to.params.keywords, 0, 100).then((res) => {
-          console.log(res.data.data);
-          this.blogList = res.data.data;
-
-        })
+      handler() {
+        this.getBlogListByKeywords()
       }
     }
   },
+  methods: {
+    getBlogListByKeywords() {
+      this.$axios.myRequest.getBlogList(this.$route.params.keywords, this.$store.state.currentPage * 10, 10).then((res) => {
+        console.log(res.data.list);
+        this.$store.state.blogList = res.data.list;
+        this.$store.state.total = res.data.total
+      })
+    }
+  }
 };
 </script>
 <style lang="less" scoped>

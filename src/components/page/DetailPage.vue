@@ -28,15 +28,18 @@
         </div>
 
         <div>
-            <div v-html="markdownToHtml" id="markdown" ref="markdown"></div>
 
-            <div class="comments">
+            <MarkdownPreview :initialValue="blog.content" theme="gitHub" v-highlight
+                style="margin-left: 217px;border-radius: 5px;overflow: hidden;">
+            </MarkdownPreview>
+
+            <div v-if="blog.status == 1" class="comments">
                 <div class="post-area">
                     <img class="face" :src="blog.authorInfo.avatar" alt="" width="40" height="40">
-                    <textarea name="" id="" cols="30" rows="10" v-model="content" maxlength="100"></textarea>
+                    <textarea cols="30" rows="10" v-model="content" maxlength="100" placeholder="说说你此刻的想法"></textarea>
                 </div>
 
-                <button @click="postComment(content)" :class="{ active: $store.state.userInfo.isLogin }">发表评论</button>
+                <button @click="postComment(content)" :class="{ active: $store.state.userInfo }">发表评论</button>
 
                 <div class="comments-area">
                     <div class="hot-comments">热门评论</div>
@@ -58,7 +61,7 @@
                                         <span>{{ hot.down }}</span>
                                     </li>
                                     <li title="删除这条评论">
-                                        <i v-if="hot.authorUsername === $store.state.userInfo.username"
+                                        <i v-if="$store.state.userInfo && hot.authorUsername === $store.state.userInfo.username"
                                             @click="deleteComments('hotComments', index, hot.id)"></i>
                                     </li>
                                 </ul>
@@ -71,7 +74,8 @@
                     <div class="comment" v-for="(item, index) in blog.commentsList.newComments" :key="index">
                         <img :src="item.authorInfo.avatar" alt="" width="40" height="40" />
                         <div class="content">
-                            <router-link :to="`/user/${item.authorUsername}/postBlogList`">{{ item.authorInfo.nickname }}
+                            <router-link :to="`/user/${item.authorUsername}/postBlogList`">{{ item.authorInfo.nickname
+                            }}
                             </router-link>
                             <p>{{ item.content }}</p>
                             <div class="bottom-content">
@@ -86,7 +90,7 @@
                                         <span>{{ item.down }}</span>
                                     </li>
                                     <li title="删除这条评论">
-                                        <i v-if="item.authorUsername === $store.state.userInfo.username"
+                                        <i v-if="$store.state.userInfo && item.authorUsername === $store.state.userInfo.username"
                                             @click="deleteComments('newComments', index, item.id)"></i>
                                     </li>
                                 </ul>
@@ -101,13 +105,13 @@
     </main>
 </template>
 <script>
-import { marked } from 'marked';
 import MyBlock from "../block/MyBlock.vue"
 import GoTop from "../block/GoTop.vue"
+import { MarkdownPreview } from 'vue-meditor'
 
 export default {
     name: "DetailPage",
-    components: { MyBlock, GoTop },
+    components: { MyBlock, GoTop, MarkdownPreview },
     data() {
         return {
             blog: {
@@ -135,12 +139,6 @@ export default {
             },
             directory: null,
             content: ""
-        }
-    },
-    computed: {
-        markdownToHtml() {
-            console.log(4444)
-            return marked(this.blog.content);
         }
     },
     methods: {
@@ -185,7 +183,7 @@ export default {
                 console.log(res)
 
                 this.blog.commentsList.newComments.unshift({
-                    id: res.data.data,
+                    id: res.data,
                     authorInfo: this.blog.authorInfo,
                     authorUsername: this.$store.state.userInfo.username,
                     blogId: this.blog.id,
@@ -194,7 +192,7 @@ export default {
                     down: 0,
                     isUp: false,
                     isDown: false,
-                    postTime: new Date().getTime(),
+                    postTime: "刚刚",
 
                 })
                 this.content = ""
@@ -203,7 +201,7 @@ export default {
         deleteComments(type, index, commentsId) {
             this.$axios.myRequest.deleteComments(commentsId).then((res) => {
                 console.log(res)
-                if (res.data.code === 200) {
+                if (res.code === 600) {
                     this.blog.commentsList[type].splice(index, 1)
 
                     this.$xMessage.show({
@@ -218,7 +216,7 @@ export default {
         upComments(type, index, commentsId) {
             this.$axios.myRequest.upComments(commentsId).then((res) => {
                 console.log(res)
-                if (res.data.code === 200) {
+                if (res.code === 600) {
                     if (type === "hot") {
                         this.blog.commentsList.hotComments[index].isUp = !this.blog.commentsList.hotComments[index].isUp
 
@@ -243,7 +241,7 @@ export default {
         downComments(type, index, commentsId) {
             this.$axios.myRequest.downComments(commentsId).then((res) => {
                 console.log(res)
-                if (res.data.code === 200) {
+                if (res.code === 600) {
                     if (type === "hot") {
                         this.blog.commentsList.hotComments[index].isDown = !this.blog.commentsList.hotComments[index].isDown
 
@@ -326,10 +324,10 @@ export default {
             console.log(arr)
         },
         getBlogDetails(blogId) {
-            this.$axios.myRequest.getBlogDetails(blogId).then((data) => {
-                data.content = data.content.replace(/\\u002F/g, "/")
+            this.$axios.myRequest.getBlogDetails(blogId).then((res) => {
+                res.data.content = res.data.content.replace(/\\u002F/g, "/")
 
-                this.blog = data
+                this.blog = res.data
             });
         }
     },

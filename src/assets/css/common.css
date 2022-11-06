@@ -7,76 +7,17 @@
   max-width: 1200px;
   margin: 0 auto;
 }
-#markdown hr {
-  height: 1px;
-  border: none;
-  border-top: 1px dashed #40a0ff;
+#app .markdown-preview {
+  padding: 10px 25px !important;
 }
-#markdown h1 {
-  font-size: 2em;
+#app .markdown-preview ul li {
+  list-style: disc !important;
+  font-size: 16px !important;
+  padding-left: 0 !important;
 }
-#markdown h2 {
-  font-size: 1.8em;
+#app .markdown-preview ul li li {
+  list-style: circle !important;
 }
-#markdown h3 {
-  font-size: 1.6em;
-}
-#markdown h4 {
-  font-size: 1.4em;
-}
-#markdown h5 {
-  font-size: 1.2em;
-}
-#markdown h6 {
-  font-size: 1em;
-}
-#markdown h1,
-#markdown h2,
-#markdown h3,
-#markdown h4,
-#markdown h5,
-#markdown h6 {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  font-weight: bold;
-  padding: 0.15em 0 0.15em 0.5em;
-  background-color: #f5f5f5;
-  border-left: 0.15em solid #40a0ff;
-}
-#markdown img {
-  margin-top: 1rem;
-  width: 100%;
-}
-#markdown li {
-  list-style: inherit;
-  margin-left: 3em;
-}
-#markdown a {
-  color: #40a0ff;
-}
-#markdown a:hover {
-  font-weight: 600;
-}
-#markdown pre code {
-  border-radius: 0 5px 5px 0;
-  flex-grow: 1;
-}
-#markdown pre {
-  position: relative;
-  display: flex;
-  flex-direction: row-reverse;
-}
-#markdown .pre-numbering {
-  width: 30px;
-  border-right: 1px solid #C3CCD0;
-  background-color: #1C1D21;
-  text-align: center;
-  padding: 1em 0;
-  border-radius: 5px 0 0 5px;
-}
-#markdown .pre-numbering li {
-  list-style: none;
-  color: #AAA;
-  font-size: 1em;
-  margin-left: 0;
+#app .markdown-preview ul li:after {
+  display: none !important;
 }

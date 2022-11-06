@@ -11,26 +11,32 @@
       </label>
       <label>
         <span>封面：</span>
-        <img :src="blog.cover" alt="" width="50" height="50" />
-        <input type="file" accept=".jpg,.png" ref="coverImg" @change="uploadCover">
+        <img v-if="blog.cover" :src="blog.cover" alt="封面" width="50" height="50" />
+        <input style="display:none" type="file" accept=".jpg,.png" ref="coverImg" @change="uploadCover">
+        <button @click="$refs.coverImg.click()" style="padding:5px 20px;margin-left:20px">{{ blog.cover ?
+            "重新选择" : "选择文件"
+        }}</button>
       </label>
       <button v-if="!$route.params.blogId" @click="postBlog">发布</button>
       <button v-if="$route.params.blogId" @click="updateBlog">保存</button>
     </div>
 
-    <div class="content">
+    <!-- <div class="content">
       <textarea class="edit" v-model="blog.content"></textarea>
       <div id="markdown" class="preview" v-html="markdownToHtml" v-highlight></div>
-    </div>
+    </div> -->
+
+    <MarkdownPro :value="blog.content" theme="gitHub" :bordered="false"></MarkdownPro>
   </div>
 </template>
 
 <script>
 import { marked } from 'marked';
 import hljs from "highlight.js";
-
+import { MarkdownPro } from 'vue-meditor'
 export default {
   name: "EditPage",
+  components: { MarkdownPro },
   computed: {
     markdownToHtml() {
       return marked(this.blog.content);
@@ -53,7 +59,7 @@ export default {
       handler(to) {
         if (to.params.blogId) {
           this.$axios.myRequest.getBlogDetails(to.params.blogId).then((res) => {
-            if (res.data.data === null) {
+            if (res.data === null) {
               this.$xMessage.show({
                 title: '权限不够！',
                 message: "这不是你的博客！",
@@ -61,15 +67,15 @@ export default {
                 duration: 3000
               });
 
-              this.$router.go(-1)
+              // this.$router.go(-1)
             } else {
-              res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/")
+              res.data.content = res.data.content.replace(/\\u002F/g, "/")
               const blog = {}
-              blog.id = res.data.data.id
-              blog.title = res.data.data.title
-              blog.description = res.data.data.description
-              blog.cover = res.data.data.cover
-              blog.content = res.data.data.content
+              blog.id = res.data.id
+              blog.title = res.data.title
+              blog.description = res.data.description
+              blog.cover = res.data.cover
+              blog.content = res.data.content
 
               this.blog = blog
             }
@@ -80,8 +86,10 @@ export default {
     }
   },
   methods: {
-    uploadCover() {
-      this.blog.cover = `http://localhost:8080/cover/${this.$store.state.userInfo.username}.jpg?${Date.now()}`
+    uploadCover(e) {
+      console.log(e.target.files[0])
+
+      this.blog.cover = URL.createObjectURL(e.target.files[0])
     },
     vertify() {
       if (this.blog.title.trim().length != 0 && this.blog.description.trim().length != 0 && this.blog.content.trim().length != 0) {
@@ -172,61 +180,9 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .edit-page {
   background-color: white;
-}
-
-.content {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  position: relative;
-  border-top: 2px dashed @theme-color;
-  border-bottom: 2px dashed @theme-color;
-
-  .edit {
-    width: 50%;
-    height: 100vh;
-    border: none;
-    outline: none;
-    padding: 50px;
-    border-right: 2px dashed @theme-color;
-    resize: none;
-  }
-
-  .preview {
-    width: 50%;
-    height: 100vh;
-    position: relative;
-    padding: 50px;
-    overflow: scroll;
-  }
-
-  .preview::after {
-    content: "预览区";
-    position: absolute;
-    display: block;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -40%);
-    font-size: 5vw;
-    opacity: 0.1;
-    z-index: 999;
-  }
-}
-
-.content:after {
-  content: "编辑区";
-  position: absolute;
-  display: block;
-  top: 40%;
-  left: 20%;
-  transform: translate(-20%, -40%);
-  font-size: 5vw;
-  opacity: 0.1;
-  user-select: none;
-  z-index: 999;
 }
 
 .info {

@@ -48,13 +48,7 @@
     <el-dialog title="关押设置" :visible.sync="dialogFormVisible" width="420px">
       <el-form :model="form" label-width="100px" :rules="rules" ref="form">
         <el-form-item label="关押时间：" prop="time">
-          <el-time-select v-model="form.time" :picker-options="{
-            start: '00:30',
-            step: '00:30',
-            end: '24:00'
-          }" placeholder="选择时间">
-          </el-time-select>
-          <span>（小时）</span>
+          <el-cascader v-model="form.time" :options="options"></el-cascader>
         </el-form-item>
         <el-form-item label="关押原因：" style="margin-bottom:0" prop="reason">
           <el-input type="textarea" :rows="3" resize="none" placeholder="请输入关押原因" v-model="form.reason" clearable
@@ -71,12 +65,40 @@
 </template>
 
 <script>
+const minutes = [{
+  value: 1,
+  label: '1分钟',
+}, {
+  value: 30,
+  label: '30分钟',
+}]
+const hours = [{
+  value: 0,
+  label: "0小时",
+  children: minutes
+}, {
+  value: 1,
+  label: "1小时",
+  children: minutes
+}]
+
+const day = [{
+  value: 0,
+  label: "0天",
+  children: hours
+}, {
+  value: 1,
+  label: "1天",
+  children: hours
+}
+]
 export default {
   name: "UserList",
   data() {
     return {
+      username: null,
       userList: [],
-      dialogFormVisible: false,
+      dialogFormVisible: true,
       form: { time: "", reason: "" },
       total: 1,
       rules: {
@@ -88,38 +110,64 @@ export default {
           required: true,
           message: "关押原因不能为空！"
         }
-      }
+      },
+      options: day
     }
   },
   methods: {
-    held(msg) {
-      console.log(msg)
+    held(user) {
+      console.log(user)
       this.dialogFormVisible = true
+      this.username = user.username
     },
-    release(msg) {
-      console.log(msg)
+    release(user) {
+      console.log(user)
 
       this.$confirm('此操作将该用户从小黑屋释放, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '释放成功!'
-        });
+        this.$axios.myRequest.cancelDisable(user.username).then((res) => {
+          console.log(res)
+
+          user.status = false
+          this.$message({
+            type: 'success',
+            message: '释放成功!'
+          })
+        })
       }).catch(() => {
         this.$message({
           type: 'info',
           message: '已取消释放'
-        });
-      });
+        })
+      })
     },
     confirm() {
       console.log(this.form.time)
       this.$refs.form.validate((valid) => {
         if (valid) {
-          alert('submit!');
+          const time = this.form.time[0] * 3600 * 24 + this.form.time[1] * 3600 + this.form.time[2] * 60
+          console.log(time)
+
+          this.$axios.myRequest.disableUser(this.username, time, this.form.reason).then((res) => {
+            console.log(res)
+
+            if (res.code === 600) {
+              this.$message({
+                message: '拉进小黑屋成功！',
+                type: 'success'
+              })
+            } else {
+              this.$message({
+                message: '拉进小黑屋失败！',
+                type: 'error'
+              })
+            }
+
+            this.dialogFormVisible = false
+          })
         }
       })
     },

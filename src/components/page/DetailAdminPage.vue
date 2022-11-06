@@ -19,7 +19,7 @@
         </div>
 
         <div>
-            <div v-html="markdownToHtml" id="markdown" ref="markdown"></div>
+            <div v-html="markdownToHtml" id="markdown" ref="markdown" v-highlight></div>
         </div>
 
         <GoTop></GoTop>
@@ -123,16 +123,12 @@ export default {
         },
         getBlogDetails(blogId) {
             this.$axios.myRequest.getAuditPostDetails(blogId).then((res) => {
-                res.data.data.content = res.data.data.content.replace(/\\u002F/g, "/")
+                console.log(res)
+                res.data.content = res.data.content.replace(/\\u002F/g, "/")
 
-                this.blog = res.data.data
+                this.blog = res.data
             });
         },
-        getNearBlogDetails(isNext) {
-            this.$axios.myRequest.getNearBlogDetails(this.blog.id, isNext).then((res) => {
-                this.blog = res.data.data
-            })
-        }
     },
     mounted() {
         // this.createDirectory()
