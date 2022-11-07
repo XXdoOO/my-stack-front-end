@@ -98,7 +98,7 @@ export default {
     return {
       username: null,
       userList: [],
-      dialogFormVisible: true,
+      dialogFormVisible: false,
       form: { time: "", reason: "" },
       total: 1,
       rules: {

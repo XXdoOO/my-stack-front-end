@@ -3,6 +3,12 @@
     <el-aside width="200px">
       <el-menu :router="true" :default-active="$route.path" class="el-menu-vertical-demo" background-color="#545c64"
         text-color="#fff" active-text-color="#ffd04b">
+        <el-menu-item index="/admin/index">
+          <template slot="title">
+            <i class="el-icon-s-platform"></i>
+            <span>数据监控</span>
+          </template>
+        </el-menu-item>
         <el-menu-item index="/admin/blogList">
           <template slot="title">
             <i class="el-icon-document"></i>

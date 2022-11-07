@@ -11,6 +11,7 @@ import DetailAdminPage from "../components/page/DetailAdminPage";
 import Login from "../components/login"
 import AuditList from "../components/block/AuditList.vue"
 import UserList from "../components/block/UserList.vue"
+import AdminIndex from "../components/page/AdminIndex.vue"
 
 Vue.use(Login);
 Vue.use(VueRouter);
@@ -34,6 +35,7 @@ const router = new VueRouter({
         { path: "/details/:blogId", meta: { title: "详情" }, component: DetailPage },
         {
             path: "/admin", meta: { title: "管理后台" }, component: AdminPage, children: [
+                { path: "index", meta: { title: "数据监控" }, component: AdminIndex },
                 { path: "blog/details/:blogId", meta: { title: "审核的博客详情" }, component: DetailAdminPage },
                 { path: "blogList", meta: { title: "博客列表" }, component: AuditList },
                 { path: "userList", meta: { title: "用户列表" }, component: UserList },
