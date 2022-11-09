@@ -38,6 +38,7 @@ export default defineComponent({
       title: {
         text: '博客情况',
         left: 'center',
+        padding: 60,
       },
       tooltip: {
         trigger: 'item',
@@ -47,6 +48,7 @@ export default defineComponent({
         orient: 'vertical',
         left: 'left',
         data: ['已发布', '待审核', '不通过', '已删除'],
+        padding: 40,
       },
       series: [
         {
@@ -55,11 +57,27 @@ export default defineComponent({
           radius: '55%',
           center: ['50%', '60%'],
           data: [
-            { value: 335, name: '已发布' },
-            { value: 310, name: '待审核' },
-            { value: 135, name: '不通过' },
-            { value: 135, name: '已删除' },
+            { value: 222, name: '已发布' },
+            { value: 87, name: '待审核' },
+            { value: 21, name: '不通过' },
+            { value: 232, name: '已删除' },
           ],
+          label: {
+            normal: {
+              formatter: '{b} {c}',
+              textStyle: {
+                fontWeight: 'normal',
+                fontSize: 15
+              }
+            }
+          },
+          itemStyle: {
+            emphasis: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          },
           emphasis: {
             itemStyle: {
               shadowBlur: 10,
@@ -75,6 +93,7 @@ export default defineComponent({
       title: {
         text: '用户情况',
         left: 'center',
+        padding: 60,
       },
       tooltip: {
         trigger: 'item',
@@ -84,6 +103,7 @@ export default defineComponent({
         orient: 'vertical',
         left: 'left',
         data: ['在线', '离线（正常）', '离线（小黑屋）', '已注销'],
+        padding: 40,
       },
       series: [
         {
@@ -97,6 +117,22 @@ export default defineComponent({
             { value: 310, name: '离线（小黑屋）' },
             { value: 135, name: '已注销' },
           ],
+          label: {
+            normal: {
+              formatter: '{b} {c}',
+              textStyle: {
+                fontWeight: 'normal',
+                fontSize: 15
+              }
+            }
+          },
+          itemStyle: {
+            emphasis: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          },
           emphasis: {
             itemStyle: {
               shadowBlur: 10,
@@ -110,16 +146,32 @@ export default defineComponent({
 
     return { option, option2 };
   },
+  created() {
+    this.$axios.myRequest.getWatchData().then((res) => {
+      console.log(res)
+      console.log(this.option)
+      this.option.series[0].data[0].value = res.data.blogStatus.passCount
+      this.option.series[0].data[1].value = res.data.blogStatus.auditingCount
+      this.option.series[0].data[2].value = res.data.blogStatus.noPassCount
+      this.option.series[0].data[3].value = res.data.blogStatus.deletedCount
+
+      this.option2.series[0].data[0].value = res.data.userStatus.onlineCount
+      this.option2.series[0].data[1].value = res.data.userStatus.offlineCount
+      this.option2.series[0].data[2].value = res.data.userStatus.offlineCount2
+      this.option2.series[0].data[3].value = res.data.userStatus.deletedCount
+    })
+  }
 });
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .charts {
   display: flex;
+  width: 100%;
 }
 
 .chart {
-  width: 600px;
-  height: 500px;
+  width: 100%;
+  height: 100%;
 }
 </style>

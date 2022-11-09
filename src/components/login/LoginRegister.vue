@@ -51,7 +51,7 @@ export default {
       },
       loginFrom: {
         username: "admin",
-        password: "admin",
+        password: "xx",
       },
       registerFrom: {
         username: "",

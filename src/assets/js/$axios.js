@@ -105,6 +105,9 @@ axios.myRequest = {
     },
     cancelDisable(username) {
         return axios.put(`/admin/cancelDisable?username=${username}`)
+    },
+    getWatchData(){
+        return axios.get(`/admin/getWatchData`)
     }
 }
 
