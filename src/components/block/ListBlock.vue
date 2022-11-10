@@ -4,6 +4,7 @@
       <div>
         <ul class="topContent">
           <li>
+            {{blog.id}}
             <router-link :to="`/user/${blog.authorUsername}/postBlogList`">{{ blog.authorNickname }}</router-link>
           </li>
           <li>{{ util.formatTime(blog.postTime) }}</li>
@@ -13,27 +14,25 @@
         <ul class="bottomContent">
           <li :class="{ 'up-hover': blog.isUp }" title="顶数">
             <i title="顶" @click.stop="up(index, blog.id)"></i>
-            <span>{{ blog.up }}</span>
+            <span>{{ util.formatNum(blog.up) }}</span>
           </li>
           <li :class="{ 'down-hover': blog.isDown }" title="踩数">
             <i title="踩" @click.stop="down(index, blog.id)"></i>
-            <span>{{ blog.down }}</span>
+            <span>{{ util.formatNum(blog.down) }}</span>
           </li>
           <li :class="{ 'star-hover': blog.isStar }" title="收藏数">
             <i title="收藏" @click.stop="star(index, blog.id)"></i>
-            <span>{{ blog.star }}</span>
+            <span>{{ util.formatNum(blog.star) }}</span>
           </li>
           <li title="浏览数">
             <i></i>
-            <span>{{ blog.views }}</span>
+            <span>{{ util.formatNum(blog.views) }}</span>
           </li>
-          <li class="delete-icon" title="删除此博客"
-            v-if="isMy && blog.authorUsername === $store.state.userInfo.username"
+          <li class="delete-icon" title="删除此博客" v-if="isMy && blog.authorUsername === $store.state.userInfo.username"
             @click.stop="deleteBlog(index, blog.id)">
             <i></i>
           </li>
-          <li class="edit-icon" title="编辑此博客"
-            v-if="isMy && blog.authorUsername === $store.state.userInfo.username"
+          <li class="edit-icon" title="编辑此博客" v-if="isMy && blog.authorUsername === $store.state.userInfo.username"
             @click.stop="updateBlog(blog.id)">
             <i></i>
           </li>
@@ -46,7 +45,6 @@
 
 <script>
 import { mapState, mapActions } from "vuex"
-
 export default {
   name: "ListBlock",
   props: {

@@ -1,7 +1,7 @@
 <template>
   <div class="search-input">
-    <input type="text" placeholder="请输入搜索关键词" v-model="keywords" />
-    <i title="点击搜索" @click="search(keywords)" @keyup.enter="search(keywords)"></i>
+    <input type="text" placeholder="请输入搜索关键词" v-model="keywords" @keyup.enter="search(keywords)" />
+    <i title="点击搜索" @click="search(keywords)"></i>
   </div>
 </template>
 

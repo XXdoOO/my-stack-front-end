@@ -1,6 +1,6 @@
 <template>
   <main class="container">
-    <ListBlock />
+    <ListBlock :nextPage="getBlogList" />
 
     <GoTop></GoTop>
   </main>
@@ -19,7 +19,7 @@ export default {
   methods: {
     getBlogList() {
       this.$axios.myRequest.getBlogList(null, this.$store.state.currentPage * 10, 10).then((res) => {
-        this.$store.state.blogList = res.data.list
+        this.$store.state.blogList = this.$store.state.blogList.concat(res.data.list)
       })
     }
   },

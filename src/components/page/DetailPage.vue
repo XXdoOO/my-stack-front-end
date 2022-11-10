@@ -6,19 +6,19 @@
             <ul class="menu">
                 <li title="顶数" :class="{ 'up-hover': blog.isUp }">
                     <i title="顶" @click="up(blog.id)"></i>
-                    <span>{{ blog.up }}</span>
+                    <span>{{ util.formatNum(blog.up) }}</span>
                 </li>
                 <li title="踩数" :class="{ 'down-hover': blog.isDown }">
                     <i title="踩" @click="down(blog.id)"></i>
-                    <span>{{ blog.down }}</span>
+                    <span>{{ util.formatNum(blog.down) }}</span>
                 </li>
                 <li title="收藏数" :class="{ 'star-hover': blog.isStar }">
                     <i title="收藏" @click="star(blog.id)"></i>
-                    <span>{{ blog.star }}</span>
+                    <span>{{ util.formatNum(blog.star) }}</span>
                 </li>
                 <li title="浏览数">
                     <i></i>
-                    <span>{{ blog.views }}</span>
+                    <span>{{ util.formatNum(blog.views) }}</span>
                 </li>
             </ul>
 
@@ -175,6 +175,8 @@ export default {
             })
         },
         postComment(content) {
+            
+            
             const data = {
                 blogId: this.blog.id,
                 content: content
@@ -325,7 +327,7 @@ export default {
         },
         getBlogDetails(blogId) {
             this.$axios.myRequest.getBlogDetails(blogId).then((res) => {
-                res.data.content = res.data.content.replace(/\\u002F/g, "/")
+                res.data.content = res.data.content.replace(/u002F/g, "/")
 
                 this.blog = res.data
             });
