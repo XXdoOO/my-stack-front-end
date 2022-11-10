@@ -325,8 +325,9 @@ export default {
         },
         getBlogDetails(blogId) {
             this.$axios.myRequest.getBlogDetails(blogId).then((res) => {
-                res.data.content = res.data.content.replace(/\\u002F/g, "/")
+                res.data.content = res.data.content.replace(/u002F/g, "/")
 
+                // console.log(res.data.content)
                 this.blog = res.data
             });
         }

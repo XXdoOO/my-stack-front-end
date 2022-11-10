@@ -107,7 +107,7 @@ export default defineComponent({
       },
       series: [
         {
-          name: '博客数量',
+          name: '用户数量',
           type: 'pie',
           radius: '55%',
           center: ['50%', '60%'],
@@ -156,8 +156,8 @@ export default defineComponent({
       this.option.series[0].data[3].value = res.data.blogStatus.deletedCount
 
       this.option2.series[0].data[0].value = res.data.userStatus.onlineCount
-      this.option2.series[0].data[1].value = res.data.userStatus.offlineCount
-      this.option2.series[0].data[2].value = res.data.userStatus.offlineCount2
+      this.option2.series[0].data[1].value = res.data.userStatus.offlineCount2
+      this.option2.series[0].data[2].value = res.data.userStatus.offlineCount
       this.option2.series[0].data[3].value = res.data.userStatus.deletedCount
     })
   }
