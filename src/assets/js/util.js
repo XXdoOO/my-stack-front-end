@@ -24,4 +24,12 @@ const formatTime = (timestamp) => {
   return `${year}-${month}-${strDate} ${hours}:${seconds}:${minutes}`;
 }
 
-export default { formatTime }
+export default {
+  formatTime,
+  formatNum(num) {
+    if (num >= 10000) {
+      return `${num.toString()[0]}.${num.toString()[1]}万`
+    }
+    return num
+  }
+}

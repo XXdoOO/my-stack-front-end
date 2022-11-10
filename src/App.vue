@@ -19,11 +19,16 @@ export default {
   },
   created() {
     this.$axios.interceptors.request.use((req) => {
-      console.log("请求信息：", req.url);
+      console.log("请求：", req.url);
+
+      // if (this.$store.state.userInfo === null) {
+      //   this.$loginRegister.showLoginRegister()
+      // }
+
       clearInterval(this.timer);
       this.timer = setInterval(() => {
         if (this.$store.state.progressWidth < 70) {
-          this.$store.state.progressWidth++;
+          this.$store.state.progressWidth += Math.random() * 5
         }
       }, 100);
       return req;
@@ -38,7 +43,7 @@ export default {
     });
 
     this.$axios.interceptors.response.use((res) => {
-      console.log("清除定时器", res);
+      console.log("响应", res);
 
       const code = res.data.code
 

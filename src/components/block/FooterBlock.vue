@@ -1,11 +1,10 @@
 <template>
   <footer class="footer-block">
     <nav class="container">
-      <router-link to="">
+      <a href="https://github.com/XXdoOO/graduation-design2" target="_blank">
         GitHub地址：https://github.com/XXdoOO/graduation-design2
-      </router-link>
+      </a>
       <a href="https://beian.miit.gov.cn/" target="_blank">湘ICP备2022006790号</a>
-      <span>作者邮箱：1972524359@qq.com</span>
     </nav>
   </footer>
 </template>
