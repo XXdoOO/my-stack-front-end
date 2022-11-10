@@ -20,6 +20,7 @@ export default {
     getBlogList() {
       this.$axios.myRequest.getBlogList(null, this.$store.state.currentPage * 10, 10).then((res) => {
         this.$store.state.blogList = this.$store.state.blogList.concat(res.data.list)
+        this.$store.state.total = res.data.total
       })
     }
   },

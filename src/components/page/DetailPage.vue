@@ -175,8 +175,8 @@ export default {
             })
         },
         postComment(content) {
-            
-            
+
+
             const data = {
                 blogId: this.blog.id,
                 content: content

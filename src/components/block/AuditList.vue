@@ -1,6 +1,6 @@
 <template>
   <div style="width:100%;max-height: calc(100vh - 80px);overflow: auto;background-color: white;">
-    <el-table :data="auditList" style="width: 100%;padding: 1em 2em; max-height: calc(100vh - 45px);">
+    <el-table :data="auditList" style="width: 100%;padding: 1em 2em;">
       <el-table-column prop="postTime" label="发布时间" width="180">
         <template slot-scope="scope">
           {{ util.formatTime(scope.row.postTime) }}
