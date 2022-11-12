@@ -9,7 +9,7 @@
     <div class="container">
       <router-link class="logo" to="/">
         <img src="../../assets/img/logo.png" alt="" width="35" />
-        <span>煤土挖矿</span>
+        <span>小破栈</span>
       </router-link>
 
       <nav>

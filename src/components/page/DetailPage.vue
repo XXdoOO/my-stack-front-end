@@ -327,9 +327,16 @@ export default {
         },
         getBlogDetails(blogId) {
             this.$axios.myRequest.getBlogDetails(blogId).then((res) => {
-                res.data.content = res.data.content.replace(/u002F/g, "/")
+                res.data.content = res.data.content.replace(/\\n/g, " \n")
+                res.data.content = res.data.content.replace(/\\u.{4}/g, function (e) {
+                    return unescape(e.replace(/\\/g, '%'))
+                })
+                // res.data.content = res.data.content.replace(/<strong.*?>/g, "**")
+                // res.data.content = res.data.content.replace(/<\/strong>/g, "**")
+                res.data.content = res.data.content.replace(/\\"/g, '"')
+                res.data.content = res.data.content.replace(/\\'/g, "'")
 
-                // console.log(res.data.content)
+                console.log(res.data.content)
                 this.blog = res.data
             });
         }

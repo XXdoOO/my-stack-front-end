@@ -4,7 +4,6 @@
       <div>
         <ul class="topContent">
           <li>
-            {{blog.id}}
             <router-link :to="`/user/${blog.authorUsername}/postBlogList`">{{ blog.authorNickname }}</router-link>
           </li>
           <li>{{ util.formatTime(blog.postTime) }}</li>
@@ -293,10 +292,13 @@ export default {
     background-image: url(../../assets/img/star.png);
   }
 
-  li:nth-child(3) i:hover,
-  li.star-hover i {
+  li:nth-child(3) i:hover {
     background-image: url(../../assets/img/star-hover.png);
     transform: scale(1.3);
+  }
+
+  li.star-hover i {
+    background-image: url(../../assets/img/star-hover.png);
   }
 
   li:nth-child(4) i {

@@ -64,6 +64,10 @@ export default {
         })
       }
 
+      if (res.data.data !== null && res.data.data.total !== undefined) {
+        res.data.data.total = parseInt(res.data.data.total)
+      }
+
       return res.data
     }, (error) => {
       console.log(error);

@@ -21,3 +21,17 @@
 #app .markdown-preview ul li:after {
   display: none !important;
 }
+#app .markdown-preview ol li {
+  list-style: decimal !important;
+}
+#app .markdown-preview img {
+  border-radius: 5px;
+}
+#app .markdown-preview strong {
+  font-size: 14px !important;
+}
+#app .markdown-preview code {
+  background-color: unset !important;
+  color: unset !important;
+  font-size: 12px !important;
+}

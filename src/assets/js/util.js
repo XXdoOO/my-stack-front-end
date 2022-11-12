@@ -1,5 +1,5 @@
 const formatTime = (timestamp) => {
-  let date = new Date(timestamp);
+  let date = new Date(parseInt(timestamp));
   let year = date.getFullYear();
   let month = date.getMonth() + 1;
   let strDate = date.getDate();
