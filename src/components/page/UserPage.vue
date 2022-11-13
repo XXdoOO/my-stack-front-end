@@ -3,6 +3,7 @@
     <div class="user-info">
       <img :src="userInfo.avatar" alt="个人头像" width="50" height="50">
       <span class="nickname">{{ userInfo.nickname }}</span>
+      <time class="register-time">入栈天数：{{ new Date(parseInt(userInfo.registerTime)).getDay() }}天</time>
     </div>
     <nav>
       <router-link :to="`/user/${userInfo.username}/postBlogList`" :class="{ active: type === 'postBlogList' }">发布
@@ -83,6 +84,12 @@ export default {
 
   .nickname {
     margin-left: 20px;
+  }
+
+  .register-time {
+    margin-left: 50px;
+    color: @theme-color;
+    font-size: 14px;
   }
 }
 

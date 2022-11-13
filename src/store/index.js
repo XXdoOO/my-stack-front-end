@@ -34,7 +34,7 @@ const actions = {
       console.log(res)
       context.state.userInfo = res.data
     })
-  }
+  },
 }
 
 const mutations = {

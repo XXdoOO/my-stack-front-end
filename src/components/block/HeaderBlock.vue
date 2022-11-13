@@ -72,12 +72,17 @@ export default {
   },
   methods: {
     logout() {
-      this.$axios.myRequest.logout().then((res) => {
-        console.log(res)
+      this.$xConfirm.show({
+        msg: "此操作将会退出该账号，确定继续吗？",
+        success: () => {
+          this.$axios.myRequest.logout().then((res) => {
+            console.log(res)
 
-        sessionStorage.removeItem("userInfo");
-        this.$router.push("/")
-        window.location.reload();
+            sessionStorage.removeItem("userInfo");
+            this.$router.push("/")
+            window.location.reload();
+          })
+        }
       })
     }
   },
@@ -271,8 +276,8 @@ export default {
           width: 80%;
           margin: 0 auto;
           border-radius: 5px;
-          border: 1px solid red;
-          color: red;
+          border: 1px solid @danger-color;
+          color: @danger-color;
           background-color: white;
           transition: @transition-time;
           padding: 5px;
@@ -281,7 +286,7 @@ export default {
         }
 
         button.my-menu:hover {
-          background-color: red;
+          background-color: @danger-color;
           color: white;
         }
 

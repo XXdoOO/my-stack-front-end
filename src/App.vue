@@ -18,20 +18,25 @@ export default {
     }
   },
   created() {
+    let CancelToken = this.$axios.CancelToken;
+    let source = CancelToken.source();
+
     this.$axios.interceptors.request.use((req) => {
       console.log("请求：", req.url);
+      console.log(req)
 
-      // if (this.$store.state.userInfo === null) {
-      //   this.$loginRegister.showLoginRegister()
-      // }
-
-      clearInterval(this.timer);
-      this.timer = setInterval(() => {
-        if (this.$store.state.progressWidth < 70) {
-          this.$store.state.progressWidth += Math.random() * 5
-        }
-      }, 100);
-      return req;
+      if ((req.url.includes("/user/") || req.url.includes("/admin/")) && this.$store.state.userInfo === null) {
+        console.log("cancel")
+        source.cancel(this.$loginRegister.showLoginRegister())
+      } else {
+        clearInterval(this.timer);
+        this.timer = setInterval(() => {
+          if (this.$store.state.progressWidth < 70) {
+            this.$store.state.progressWidth += Math.random() * 5
+          }
+        }, 100);
+        return req;
+      }
     }, (error) => {
       console.log("error");
       this.$xMessage.show({
@@ -79,15 +84,8 @@ export default {
           type: 'error',
           duration: 3000
         });
-      } else {
-        this.$xMessage.show({
-          title: '请求或相应错误！',
-          message: error.message,
-          type: 'error',
-          duration: 3000
-        });
       }
-    });
+    })
 
     const userInfo = JSON.parse(sessionStorage.getItem("userInfo"))
 

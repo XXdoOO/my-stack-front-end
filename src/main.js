@@ -6,9 +6,11 @@ import Highlight from './assets/js/highlight'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import Message from "./components/message"
+import Confirm from "./components/confirm"
 import util from "./assets/js/util"
 
 
+Vue.use(Confirm);
 Vue.use(Message);
 Vue.use(ElementUI);
 Vue.use(Highlight);

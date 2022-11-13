@@ -1,6 +1,6 @@
 <template>
-  <div class="user-list" style="width: 100%;max-height: calc(100vh - 80px);">
-    <el-table :data="userList" style="width: 100%;padding: 1em 2em; max-height: calc(100vh - 80px);overflow: auto">
+  <div class="user-list">
+    <el-table :data="userList" style="width: 100%;padding: 1em 2em;">
       <el-table-column label="注册时间" width="180">
         <template slot-scope="scope">
           {{ util.formatTime(scope.row.registerTime) }}
@@ -189,6 +189,9 @@ export default {
 
 <style lang="less" scoped>
 .user-list {
+  width: 100%;
+  max-height: calc(100vh - 80px);
+  overflow: auto;
   background-color: white;
 
   .el-table::before {

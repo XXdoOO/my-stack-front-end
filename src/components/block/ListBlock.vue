@@ -66,14 +66,14 @@ export default {
       if (this.isAdmin) {
         this.$router.push(`/admin/blog/details/${blogId}`)
       } else {
-        this.$router.push(`/details/${blogId}`);
+        this.$router.push(`/details/${blogId}`)
       }
     },
     up(index, blogId) {
       this.$axios.myRequest.up(blogId).then((res) => {
         console.log(res)
 
-        if (res.code === 600) {
+        if (res && res.code === 600) {
           this.modifyList({ index: index, opt: "isUp" })
         } else {
           this.$xMessage.show({
@@ -81,7 +81,7 @@ export default {
             message: "不能顶未通过审核博客！",
             type: 'error',
             duration: 3000
-          });
+          })
         }
       })
     },
@@ -89,7 +89,7 @@ export default {
       this.$axios.myRequest.down(blogId).then((res) => {
         console.log(res)
 
-        if (res.code === 600) {
+        if (res && res.code === 600) {
           this.modifyList({ index: index, opt: "isDown" })
         } else {
           this.$xMessage.show({
@@ -105,7 +105,7 @@ export default {
       this.$axios.myRequest.star(blogId).then((res) => {
         console.log(res)
 
-        if (res.code === 600) {
+        if (res && res.code === 600) {
           this.modifyList({ index: index, opt: "isStar" })
         } else {
           this.$xMessage.show({
@@ -121,7 +121,7 @@ export default {
       this.$axios.myRequest.deleteBlog(blogId).then((res) => {
         console.log(res)
 
-        if (res.code === 600) {
+        if (res && res.code === 600) {
           this.modifyList({ index: index, opt: "delete" })
 
           this.$xMessage.show({

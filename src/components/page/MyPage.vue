@@ -1,10 +1,14 @@
 <template>
   <main class="container">
     <div class="user-info">
-      <img :src="userInfo.avatar" alt="个人头像" width="50" height="50">
+      <div>
+        <img :src="userInfo.avatar" alt="个人头像" width="50" height="50" />
+      </div>
       <span class="nickname">{{ userInfo.nickname }}</span>
-      <time class="register-time">陪伴天数：{{ new Date(parseInt(userInfo.registerTime)).getDay() }}天</time>
-      <button>退出登录</button>
+      <time class="register-time">入栈天数：{{ new Date(parseInt(userInfo.registerTime)).getDay() }}天</time>
+      <button class="edit-btn" @click="edit">编辑</button>
+      <button class="delete-btn" @click="deleteAccount">注销账号</button>
+      <button class="logout" @click="logout">退出登录</button>
     </div>
     <nav>
       <router-link to="/my/pass" :class="{ active: type === 'pass' }">已发布
@@ -93,7 +97,30 @@ export default {
           this.$store.state.total = res.data.total
         })
       }
-    }
+    },
+    logout() {
+      this.$xConfirm.show({
+        msg: "此操作将会退出该账号，确定继续吗？",
+        success: () => {
+          this.$axios.myRequest.logout().then((res) => {
+            console.log(res)
+
+            sessionStorage.removeItem("userInfo");
+            this.$router.push("/")
+            window.location.reload();
+          })
+        }
+      })
+    },
+    deleteAccount() {
+      this.$xConfirm.show({
+        msg: "此操作将会删除该账号，确定继续吗？",
+        success: () => {
+
+        }
+      })
+    },
+    edit() { },
   },
 }
 </script>
@@ -130,21 +157,44 @@ export default {
     color: white;
     background-color: @theme-color;
     padding: 5px 20px;
-    margin-left: auto;
+    cursor: pointer;
+    transition: @transition-time;
   }
 
-  button {
-    color: red;
-    border-color: red;
+  .edit-btn {
+    margin-left: 50px;
+    background-color: white;
+    color: @theme-color;
+  }
+
+  .edit-btn:hover {
+    background-color: @theme-color;
+    color: white;
+  }
+
+  .logout {
+    color: @danger-color;
+    border-color: @danger-color;
     background-color: white;
     margin-left: auto;
-    transition: @transition-time;
-    cursor: pointer;
   }
 
-  button:hover {
+  .logout:hover {
     color: white;
-    background-color: red;
+    background-color: @danger-color;
+  }
+
+  .delete-btn {
+    border: none;
+    color: @warning-color;
+    border-color: @warning-color;
+    background-color: white;
+    margin-left: 50px;
+    transition: @transition-time;
+  }
+
+  .delete-btn:hover {
+    color: @danger-color;
   }
 }
 
