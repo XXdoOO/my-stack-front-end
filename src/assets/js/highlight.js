@@ -3,12 +3,14 @@ import 'highlight.js/styles/agate.css'
 let Highlight = function (Vue) {
     Vue.directive('highlight', function (el) {
         let blocks = el.querySelectorAll('pre code'); // querySelectorAll可以根据自己的富文本生成的代码做调整 我这里默认刚好
+        console.log(el)
+        console.log(blocks)
         blocks.forEach((block) => { // 在forEach中做一些操作
             let uls = block.parentNode.querySelectorAll("ul");
             uls.forEach((ul) => {
                 block.parentNode.removeChild(ul);
             });
-            // console.log(uls);
+            console.log(uls);
             // block.parentNode.removeChild(ul);
 
             // 1.创建ul节点

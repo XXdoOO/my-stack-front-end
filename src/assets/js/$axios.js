@@ -64,7 +64,6 @@ axios.myRequest = {
         return axios.put(`/user/starBlog?id=${blogId}`)
     },
     postComments(data) {
-        console.log(data)
         return axios.post("/user/postComments", data)
     },
     upComments(commentsId) {
@@ -106,8 +105,14 @@ axios.myRequest = {
     cancelDisable(username) {
         return axios.put(`/admin/cancelDisable?username=${username}`)
     },
-    getWatchData(){
+    getWatchData() {
         return axios.get(`/admin/getWatchData`)
+    },
+    updateMyInfo(myInfo) {
+        return axios.put(`/user/updateMyInfo`, myInfo)
+    },
+    deleteMy() {
+        return axios.delete(`/user/deleteMy`)
     }
 }
 

@@ -336,7 +336,7 @@ export default {
                 res.data.content = res.data.content.replace(/\\"/g, '"')
                 res.data.content = res.data.content.replace(/\\'/g, "'")
 
-                console.log(res.data.content)
+                // console.log(res.data.content)
                 this.blog = res.data
             });
         }

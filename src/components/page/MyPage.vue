@@ -1,12 +1,15 @@
 <template>
   <main class="container">
     <div class="user-info">
-      <div>
+      <div class="avatar">
         <img :src="userInfo.avatar" alt="个人头像" width="50" height="50" />
+        <input style="display:none" type="file" accept=".jpg,.png" ref="avatar" @change="uploadAvatar" />
+        <i class="update" @click="$refs.avatar.click()"></i>
       </div>
-      <span class="nickname">{{ userInfo.nickname }}</span>
+      <input class="nickname" type="text" v-model="userInfo.nickname">
+      <button class="edit-btn" v-if="isChange" @click="save">保存</button>
+
       <time class="register-time">入栈天数：{{ new Date(parseInt(userInfo.registerTime)).getDay() }}天</time>
-      <button class="edit-btn" @click="edit">编辑</button>
       <button class="delete-btn" @click="deleteAccount">注销账号</button>
       <button class="logout" @click="logout">退出登录</button>
     </div>
@@ -42,7 +45,8 @@ export default {
   data() {
     return {
       blogList: [],
-      type: null
+      type: null,
+      isChange: false
     }
   },
   computed: {
@@ -54,7 +58,12 @@ export default {
       handler() {
         this.getMyInfo()
       }
-    }
+    },
+    "userInfo.nickname": {
+      handler() {
+        this.isChange = true
+      }
+    },
   },
   methods: {
     getMyInfo() {
@@ -120,7 +129,11 @@ export default {
         }
       })
     },
-    edit() { },
+    save() { },
+    uploadAvatar(e) {
+      this.userInfo.avatar = URL.createObjectURL(e.target.files[0])
+      this.isChange = true
+    }
   },
 }
 </script>
@@ -136,12 +149,42 @@ export default {
   align-items: center;
   padding: 10px 30px;
 
-  img {
-    border-radius: 50%;
+  .avatar {
+    position: relative;
+
+    img {
+      border-radius: 50%;
+      border: 1px solid @border-color;
+    }
+
+    i {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50px;
+      height: 50px;
+      background-color: @gray-color;
+      border-radius: 50%;
+      background-image: url(../../assets/img/upload.png);
+      background-repeat: no-repeat;
+      background-position: 10px 10px;
+      opacity: 0;
+      cursor: pointer;
+      transition: @transition-time;
+    }
+
+    img:hover+i,
+    i:hover {
+      opacity: 0.7;
+    }
   }
 
   .nickname {
     margin-left: 20px;
+    border: none;
+    border-bottom: 1px solid @border-color;
+    padding: 5px;
+    outline: none;
   }
 
   .register-time {

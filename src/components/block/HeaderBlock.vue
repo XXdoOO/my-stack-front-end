@@ -207,6 +207,7 @@ export default {
         border-radius: 100%;
         transition: @transition-time;
         z-index: 1000;
+        border: 1px solid @border-color;
       }
 
       .hover-popup {
