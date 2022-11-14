@@ -6,7 +6,8 @@
         <input style="display:none" type="file" accept=".jpg,.png" ref="avatar" @change="uploadAvatar" />
         <i class="update" @click="$refs.avatar.click()"></i>
       </div>
-      <input class="nickname" type="text" v-model="userInfo.nickname">
+      <input class="nickname" type="text" v-model="userInfo.nickname"
+        @input="isChange = true; nickname = userInfo.nickname">
       <button class="edit-btn" v-if="isChange" @click="save">保存</button>
 
       <time class="register-time">入栈天数：{{ new Date(parseInt(userInfo.registerTime)).getDay() }}天</time>
@@ -46,7 +47,8 @@ export default {
     return {
       blogList: [],
       type: null,
-      isChange: false
+      isChange: false,
+      nickname: undefined
     }
   },
   computed: {
@@ -58,12 +60,7 @@ export default {
       handler() {
         this.getMyInfo()
       }
-    },
-    "userInfo.nickname": {
-      handler() {
-        this.isChange = true
-      }
-    },
+    }
   },
   methods: {
     getMyInfo() {
@@ -129,7 +126,32 @@ export default {
         }
       })
     },
-    save() { },
+    save() {
+      console.log(this.$refs.avatar.files[0])
+      console.log(this.nickname)
+
+      const data = new FormData()
+
+      if (this.$refs.avatar.files[0] != null) {
+        data.append("avatar", this.$refs.avatar.files[0])
+      } else if (this.nickname != null) {
+        data.append("nickname", this.nickname)
+      }
+
+      this.$axios.myRequest.updateMyInfo(data).then((res) => {
+        console.log(res)
+        if (res && res.code === 600) {
+          this.$store.state.userInfo = res.data
+
+          this.$xMessage.show({
+            title: '保存成功！',
+            message: res.msg,
+            type: 'success',
+            duration: 3000
+          })
+        }
+      })
+    },
     uploadAvatar(e) {
       this.userInfo.avatar = URL.createObjectURL(e.target.files[0])
       this.isChange = true
@@ -182,7 +204,7 @@ export default {
   .nickname {
     margin-left: 20px;
     border: none;
-    border-bottom: 1px solid @border-color;
+    border-bottom: 1px solid @gray-color-dep;
     padding: 5px;
     outline: none;
   }
