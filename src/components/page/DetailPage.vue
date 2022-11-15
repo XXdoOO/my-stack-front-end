@@ -22,15 +22,15 @@
                 </li>
             </ul>
 
-            <div id="directory" v-html="directory">
-
+            <div id="directory">
+                <template v-for="(d, index) in directory" :key="index" v-html="d">{{d}}</template>
             </div>
         </div>
 
         <div>
 
             <MarkdownPreview :initialValue="blog.content" theme="gitHub" v-highlight
-                style="margin-left: 217px;border-radius: 5px;overflow: hidden;">
+                style="margin-left: 217px;border-radius: 5px;overflow: hidden;" ref="markdown">
             </MarkdownPreview>
 
             <div v-if="blog.status == 1" class="comments">
@@ -74,7 +74,8 @@
                     <div class="comment" v-for="(item, index) in blog.commentsList.newComments" :key="index">
                         <img :src="item.authorInfo.avatar" alt="" width="40" height="40" />
                         <div class="content">
-                            <router-link :to="`/user/${item.authorUsername}/postBlogList`">{{ item.authorInfo.nickname
+                            <router-link :to="`/user/${item.authorUsername}/postBlogList`">{{
+                                    item.authorInfo.nickname
                             }}
                             </router-link>
                             <p>{{ item.content }}</p>
@@ -266,64 +267,18 @@ export default {
             })
         },
         createDirectory() {
-            const content = this.$refs.markdown.children
-            console.log(content[0])
-            var arr = [{
-                content: '',
-                children: []
-            }]
-            let h1 = 0
-            let h2 = 0
-            let h3 = 0
-            let h4 = 0
-            let h5 = 0
-            let element
+            const content = this.$refs.markdown.$el.querySelector('div:first-child').children
+            console.log(content)
             let localName
+            let titles = []
             for (let i = 0; i < content.length; i++) {
-                element = { content: '', children: [] }
                 localName = content[i].localName
-
                 if (localName === "h1" || localName === "h2" || localName === "h3" || localName === "h4" || localName === "h5" || localName === "h6") {
-                    element.content = content[i].innerHTML
-                }
-
-                console.log(localName, arr)
-
-                if (localName === 'h1') {
-                    if (h1 === 0) {
-                        arr[0] = element
-                    } else {
-                        arr.push(element)
-                    }
-                    h1++
-                    h2 = 0
-                    h3 = 0
-                    h4 = 0
-                    h5 = 0
-                } else if (localName === 'h2') {
-                    arr[h1 - 1].children.push(element)
-                    h2++
-                    h3 = 0
-                    h4 = 0
-                    h5 = 0
-                } else if (localName === 'h3') {
-                    arr[h1 - 1].children[h2 - 1].children.push(element)
-                    h3++
-                    h4 = 0
-                    h5 = 0
-                } else if (localName === 'h4') {
-                    arr[h1 - 1].children[h2 - 1].children[h3 - 1].children.push(element)
-                    h4++
-                    h5 = 0
-                } else if (localName === 'h5') {
-                    arr[h1 - 1].children[h2 - 1].children[h3 - 1].children[h4 - 1].children.push(element)
-                    h5++
-                } else if (localName === 'h6') {
-                    arr[h1 - 1].children[h2 - 1].children[h3 - 1].children[h4 - 1].children[h5 - 1].children.push(element)
+                    titles.push(content[i])
                 }
             }
-
-            console.log(arr)
+            console.log(titles)
+            // this.directory = titles
         },
         getBlogDetails(blogId) {
             this.$axios.myRequest.getBlogDetails(blogId).then((res) => {
@@ -337,9 +292,13 @@ export default {
                 res.data.content = res.data.content.replace(/\\'/g, "'")
 
                 // console.log(res.data.content)
+                console.log(222)
                 this.blog = res.data
             });
         }
+    },
+    updated() {
+        this.createDirectory()
     },
     mounted() {
         // this.createDirectory()
