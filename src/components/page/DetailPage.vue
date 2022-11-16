@@ -30,7 +30,7 @@
         <div>
 
             <MarkdownPreview :initialValue="blog.content" theme="gitHub" v-highlight
-                style="margin-left: 217px;border-radius: 5px;overflow: hidden;" ref="markdown">
+                style="margin-left: 217px;border-radius: 5px;overflow: hidden;" ref="markdown" :on-ready="onReady">
             </MarkdownPreview>
 
             <div v-if="blog.status == 1" class="comments">
@@ -109,7 +109,6 @@
 import MyBlock from "../block/MyBlock.vue"
 import GoTop from "../block/GoTop.vue"
 import { MarkdownPreview } from 'vue-meditor'
-
 export default {
     name: "DetailPage",
     components: { MyBlock, GoTop, MarkdownPreview },
@@ -266,9 +265,12 @@ export default {
                 }
             })
         },
+        onReady(obj) {
+            console.log(obj)
+        },
         createDirectory() {
             const content = this.$refs.markdown.$el.querySelector('div:first-child').children
-            console.log(content)
+            // console.log(content)
             let localName
             let titles = []
             for (let i = 0; i < content.length; i++) {
@@ -277,7 +279,7 @@ export default {
                     titles.push(content[i])
                 }
             }
-            console.log(titles)
+            // console.log(titles)
             // this.directory = titles
         },
         getBlogDetails(blogId) {
@@ -292,7 +294,6 @@ export default {
                 res.data.content = res.data.content.replace(/\\'/g, "'")
 
                 // console.log(res.data.content)
-                console.log(222)
                 this.blog = res.data
             });
         }

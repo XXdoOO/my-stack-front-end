@@ -49,7 +49,14 @@
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     },
-    "rules": {}
+    "rules": {
+      "linebreak-style": [
+        0,
+        "error",
+        "windows"
+      ],
+      "no-useless-escape": 0
+    }
   },
   "browserslist": [
     "> 1%",
