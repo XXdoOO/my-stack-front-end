@@ -41,7 +41,7 @@
       </el-table-column>
     </el-table>
 
-    <el-pagination background layout="prev, pager, next" :total="total"
+    <el-pagination background layout="prev, pager, next" :total="total" @current-change="getUserList"
       style="display:flex;justify-content:center;padding:1.5em 0;">
     </el-pagination>
 
@@ -172,7 +172,7 @@ export default {
       })
     },
     getUserList(currentPage) {
-      this.$axios.myRequest.getUserList(currentPage * 10, 10).then((res) => {
+      this.$axios.myRequest.getUserList(--currentPage * 10, 10).then((res) => {
         this.userList = res.data.list
         this.total = res.data.total
       })
@@ -180,7 +180,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      vm.getUserList(0)
+      vm.getUserList(1)
     })
   }
 

@@ -2,7 +2,7 @@
   <main class="container">
     <div class="user-info">
       <div class="avatar">
-        <img :src="userInfo.avatar" alt="个人头像" width="50" height="50" />
+        <img :src="userInfo.avatar" width="50" height="50" />
         <input style="display:none" type="file" accept=".jpg,.png" ref="avatar" @change="uploadAvatar" />
         <i class="update" @click="$refs.avatar.click()"></i>
       </div>
@@ -204,7 +204,7 @@ export default {
   .nickname {
     margin-left: 20px;
     border: none;
-    border-bottom: 1px solid @gray-color-dep;
+    border-bottom: 1px solid @border-color;
     padding: 5px;
     outline: none;
   }

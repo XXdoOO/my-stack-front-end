@@ -103,7 +103,8 @@ export default {
       })
     },
     getPostBlogList(currentPage) {
-      this.$axios.myRequest.getPostBlogList(null, currentPage * 10, 10).then((res) => {
+      console.log(currentPage)
+      this.$axios.myRequest.getPostBlogList(null, --currentPage * 10, 10).then((res) => {
         console.log(res)
         this.auditList = res.data.list
         this.total = res.data.total
@@ -133,7 +134,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      vm.getPostBlogList(0)
+      vm.getPostBlogList(1)
     })
   }
 

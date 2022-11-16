@@ -24,7 +24,7 @@ export default {
 <style lang="less" scoped>
 .search-input {
   position: relative;
-  width: 200px;
+  width: 220px;
   height: 40px;
   border-radius: 5px;
   border: 1px solid @gray-color;

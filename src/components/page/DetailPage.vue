@@ -23,7 +23,7 @@
             </ul>
 
             <div id="directory">
-                <template v-for="(d, index) in directory" :key="index" v-html="d">{{d}}</template>
+                <!-- <template v-for="(d, index) in directory" :key="index" v-html="d">{{d}}</template> -->
             </div>
         </div>
 
