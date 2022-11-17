@@ -75,7 +75,7 @@
                         <img :src="item.authorInfo.avatar" alt="" width="40" height="40" />
                         <div class="content">
                             <router-link :to="`/user/${item.authorUsername}/postBlogList`">{{
-                                    item.authorInfo.nickname
+                            item.authorInfo.nickname
                             }}
                             </router-link>
                             <p>{{ item.content }}</p>
@@ -175,8 +175,6 @@ export default {
             })
         },
         postComment(content) {
-
-
             const data = {
                 blogId: this.blog.id,
                 content: content
@@ -184,19 +182,7 @@ export default {
             this.$axios.myRequest.postComments(data).then((res) => {
                 console.log(res)
 
-                this.blog.commentsList.newComments.unshift({
-                    id: res.data,
-                    authorInfo: this.blog.authorInfo,
-                    authorUsername: this.$store.state.userInfo.username,
-                    blogId: this.blog.id,
-                    content: this.content,
-                    up: 0,
-                    down: 0,
-                    isUp: false,
-                    isDown: false,
-                    postTime: "刚刚",
-
-                })
+                this.blog.commentsList.newComments.unshift(res.data)
                 this.content = ""
             })
         },
@@ -299,7 +285,7 @@ export default {
         }
     },
     updated() {
-        this.createDirectory()
+        // this.createDirectory()
     },
     mounted() {
         // this.createDirectory()
