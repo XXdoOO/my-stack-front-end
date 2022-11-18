@@ -28,8 +28,7 @@
         </div>
 
         <div>
-
-            <MarkdownPreview :initialValue="blog.content" theme="gitHub" v-highlight
+            <MarkdownPreview :initialValue="blog.content" theme="gitHub"
                 style="margin-left: 217px;border-radius: 5px;overflow: hidden;" ref="markdown" :on-ready="onReady">
             </MarkdownPreview>
 
@@ -75,7 +74,7 @@
                         <img :src="item.authorInfo.avatar" alt="" width="40" height="40" />
                         <div class="content">
                             <router-link :to="`/user/${item.authorUsername}/postBlogList`">{{
-                            item.authorInfo.nickname
+                                    item.authorInfo.nickname
                             }}
                             </router-link>
                             <p>{{ item.content }}</p>

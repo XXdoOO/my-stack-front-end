@@ -24,10 +24,8 @@ export default {
       })
     }
   },
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.getBlogList()
-    });
+  created() {
+    this.getBlogList()
   }
 };
 </script>

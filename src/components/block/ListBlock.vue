@@ -163,6 +163,22 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@keyframes plusOne {
+  0% {
+    opacity: 0;
+    top: 0;
+  }
+
+  50% {
+    opacity: 1;
+    top: -15px;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
 .articles {
   border-radius: 5px;
   margin-bottom: 10px;
@@ -256,6 +272,16 @@ export default {
       display: block;
       background-size: cover;
       transition: @transition-time;
+      position: relative;
+    }
+
+    i::before {
+      content: "+1";
+      position: absolute;
+      top: 0;
+      color: @theme-color;
+      opacity: 0;
+      font-size: 12px;
     }
 
     span {
@@ -274,8 +300,7 @@ export default {
   }
 
   li:nth-child(2) i {
-    background-image: url(../../assets/img/up.png);
-    transform: rotate(180deg);
+    background-image: url(../../assets/img/down.png);
   }
 
   li:first-child i:hover {
@@ -283,14 +308,17 @@ export default {
   }
 
   li:first-child i:hover,
-  li:nth-child(2) i:hover,
-  li.up-hover i,
-  li.down-hover i {
+  li.up-hover i {
     background-image: url(../../assets/img/up-hover.png);
   }
 
+  li:nth-child(2) i:hover,
+  li.down-hover i {
+    background-image: url(../../assets/img/down-hover.png);
+  }
+
   li:nth-child(2) i:hover {
-    transform: scale(1.3) rotate(180deg);
+    transform: scale(1.3);
   }
 
   li:nth-child(3) i {
@@ -304,6 +332,12 @@ export default {
 
   li.star-hover i {
     background-image: url(../../assets/img/star-hover.png);
+  }
+
+  li.up-hover i::before,
+  li.down-hover i::before,
+  li.star-hover i::before {
+    animation: plusOne 1s;
   }
 
   li:nth-child(4) i {
