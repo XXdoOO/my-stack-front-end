@@ -1,7 +1,37 @@
 <template>
   <div class="user-list">
-    <el-table :data="userList" style="width: 100%;padding: 1em 2em;">
-      <el-table-column label="注册时间" width="180">
+    <el-form inline :model="form" ref="form">
+      <el-form-item label="注册时间" prop="postTime">
+        <el-date-picker v-model="form.postTime" type="datetimerange" range-separator="至" start-placeholder="开始日期"
+          end-placeholder="结束日期" :pickerOptions="pickerOptions">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="用户名" prop="username">
+        <el-input v-model="form.title" placeholder="请输入标题"></el-input>
+      </el-form-item>
+      <el-form-item label="用户昵称" pro="nickname">
+        <el-input v-model="form.description" placeholder="请输入描述"></el-input>
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="form.status" placeholder="请选择状态">
+          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="info" icon="el-icon-refresh" @click="$refs.form.resetFields()">重置</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" icon="el-icon-search" @click="findUser">查找</el-button>
+      </el-form-item>
+    </el-form>
+
+    <el-table :data="userList" :default-sort="{ prop: 'registerTime', order: 'descending' }">
+      <el-table-column type="selection" min-width="45" align="center">
+      </el-table-column>
+      <el-table-column type="index" min-width="50" label="序号" align="center">
+      </el-table-column>
+      <el-table-column label="注册时间" min-width="180" prop="registerTime" sortable :sort-method="sortByRegisterTime">
         <template slot-scope="scope">
           {{ util.formatTime(scope.row.registerTime) }}
         </template>
@@ -46,12 +76,12 @@
     </el-pagination>
 
     <el-dialog title="关押设置" :visible.sync="dialogFormVisible" width="420px">
-      <el-form :model="form" label-width="100px" :rules="rules" ref="form">
+      <el-form :model="form2" label-width="100px" :rules="rules" ref="form2">
         <el-form-item label="关押时间：" prop="time">
-          <el-cascader v-model="form.time" :options="options"></el-cascader>
+          <el-cascader v-model="form2.time" :options="options2"></el-cascader>
         </el-form-item>
         <el-form-item label="关押原因：" style="margin-bottom:0" prop="reason">
-          <el-input type="textarea" :rows="3" resize="none" placeholder="请输入关押原因" v-model="form.reason" clearable
+          <el-input type="textarea" :rows="3" resize="none" placeholder="请输入关押原因" v-model="form2.reason" clearable
             maxlength="50" show-word-limit>
           </el-input>
         </el-form-item>
@@ -99,7 +129,7 @@ export default {
       username: null,
       userList: [],
       dialogFormVisible: false,
-      form: { time: "", reason: "" },
+      form2: { time: "", reason: "" },
       total: 1,
       rules: {
         time: {
@@ -111,7 +141,28 @@ export default {
           message: "关押原因不能为空！"
         }
       },
-      options: day
+      options2: day,
+      form: {
+        registerTime: null,
+        username: null,
+        nickanme: null,
+        status: undefined
+      },
+      options: [{
+        value: true,
+        label: '正常'
+      }, {
+        value: false,
+        label: '小黑屋悔改中'
+      }, {
+        value: null,
+        label: '已注销'
+      }],
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now()
+        }
+      },
     }
   },
   methods: {
@@ -145,13 +196,13 @@ export default {
       })
     },
     confirm() {
-      console.log(this.form.time)
-      this.$refs.form.validate((valid) => {
+      console.log(this.form2.time)
+      this.$refs.form2.validate((valid) => {
         if (valid) {
-          const time = this.form.time[0] * 3600 * 24 + this.form.time[1] * 3600 + this.form.time[2] * 60
+          const time = this.form2.time[0] * 3600 * 24 + this.form2.time[1] * 3600 + this.form2.time[2] * 60
           console.log(time)
 
-          this.$axios.myRequest.disableUser(this.username, time, this.form.reason).then((res) => {
+          this.$axios.myRequest.disableUser(this.username, time, this.form2.reason).then((res) => {
             console.log(res)
 
             if (res.code === 600) {
@@ -177,6 +228,11 @@ export default {
         this.total = res.data.total
       })
     },
+    findUser() { },
+    sortByRegisterTime(a, b) {
+      console.log(a, b)
+      return a.registerTime - b.registerTime
+    },
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
@@ -193,6 +249,7 @@ export default {
   max-height: calc(100vh - 80px);
   overflow: auto;
   background-color: white;
+  padding: 2em 2em 1em 2em;
 
   .el-table::before {
     background-color: white;

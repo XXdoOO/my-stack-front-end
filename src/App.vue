@@ -26,7 +26,6 @@ export default {
       console.log(req)
 
       if ((req.url.includes("/user/") || req.url.includes("/admin/")) && this.$store.state.userInfo === null) {
-        console.log("cancel")
         source.cancel(this.$loginRegister.showLoginRegister())
       } else {
         clearInterval(this.timer);
@@ -75,7 +74,7 @@ export default {
 
       return res.data
     }, (error) => {
-      console.log(error);
+      console.log(error.message);
 
       if (error.code === 'ECONNABORTED' && error.message.indexOf('timeout') !== -1) {
         this.$xMessage.show({
@@ -83,7 +82,12 @@ export default {
           message: error.message,
           type: 'error',
           duration: 3000
-        });
+        })
+        return Promise.reject("请求超时")
+      }else if(error.message.includes("cancelToken" !== -1)){
+        return Promise.reject("用户未登录")
+      }else {
+        return Promise.reject("其他错误")
       }
     })
 

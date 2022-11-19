@@ -1,17 +1,52 @@
 <template>
-  <div style="width:100%;max-height: calc(100vh - 80px);overflow: auto;background-color: white;">
-    <el-table :data="auditList" style="width: 100%;padding: 1em 2em;">
-      <el-table-column prop="postTime" label="发布时间" width="180">
+  <div
+    style="width:100%;max-height: calc(100vh - 80px);overflow: auto;background-color: white;padding: 2em 2em 1em 2em;">
+    <el-form inline :model="form" ref="form">
+      <el-form-item label="发布时间" prop="postTime">
+        <el-date-picker v-model="form.postTime" type="datetimerange" range-separator="至" start-placeholder="开始日期"
+          end-placeholder="结束日期" :pickerOptions="pickerOptions">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="标题" prop="title">
+        <el-input v-model="form.title" placeholder="请输入标题"></el-input>
+      </el-form-item>
+      <el-form-item label="描述" prop="description">
+        <el-input v-model="form.description" placeholder="请输入描述"></el-input>
+      </el-form-item>
+      <el-form-item label="作者" prop="authorNickname">
+        <el-input v-model="form.authorNickname" placeholder="请输入作者"></el-input>
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="form.status" placeholder="请选择状态">
+          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="info" icon="el-icon-refresh" @click="$refs.form.resetFields()">重置</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" icon="el-icon-search" @click="findBlog">查找</el-button>
+      </el-form-item>
+    </el-form>
+
+    <el-table :data="auditList" :default-sort="{ prop: 'postTime', order: 'descending' }">
+      <el-table-column type="selection" min-width="45" align="center">
+      </el-table-column>
+      <el-table-column type="index" min-width="50" label="序号" align="center">
+      </el-table-column>
+      <el-table-column prop="postTime" label="发布时间" min-width="140" sortable :sort-method="sortByPostTime">
         <template slot-scope="scope">
           {{ util.formatTime(scope.row.postTime) }}
         </template>
       </el-table-column>
-      <el-table-column prop="title" label="标题" width="180"></el-table-column>
-      <el-table-column prop="description" label="描述" width="250"></el-table-column>
-      <el-table-column prop="img" label="封面">
+      <el-table-column prop="title" label="标题" min-width="150"></el-table-column>
+      <el-table-column prop="description" label="描述" min-width="280"></el-table-column>
+      <el-table-column prop="img" label="封面" min-width="150">
         <template slot-scope="scope">
           <el-image v-if="scope.row.cover" style="height: 80px;" :src="scope.row.cover" fit="contain"
             :preview-src-list="[scope.row.cover]"></el-image>
+          <span v-if="!scope.row.cover">暂无</span>
         </template>
       </el-table-column>
       <el-table-column prop="authorInfo" label="作者">
@@ -29,7 +64,7 @@
           <el-tag v-if="scope.row.status == false" type="danger">未通过</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="address" label="操作" width="330px">
+      <el-table-column prop="address" label="操作" min-width="280px">
         <template slot-scope="scope">
           <el-button plain type="primary" size="small" @click="getBlogDetails(scope.row.id)">
             查看详情
@@ -79,7 +114,29 @@ export default {
       auditList: [],
       total: 0,
       blog: {},
-      dialogVisible: false
+      dialogVisible: false,
+      form: {
+        postTime: null,
+        title: null,
+        description: null,
+        authorNickname: null,
+        status: undefined
+      },
+      options: [{
+        value: true,
+        label: '已通过'
+      }, {
+        value: false,
+        label: '未通过'
+      }, {
+        value: null,
+        label: '待审核'
+      }],
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now()
+        }
+      },
     }
   },
   methods: {
@@ -130,6 +187,12 @@ export default {
           break
         }
       }
+    },
+    sortByPostTime(a, b) {
+      return a.postTime - b.postTime
+    },
+    findBlog() {
+      console.log(this.form)
     }
   },
   beforeRouteEnter(to, from, next) {

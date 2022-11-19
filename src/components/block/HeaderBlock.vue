@@ -14,7 +14,6 @@
 
       <nav>
         <router-link to="/" :class="{ active: $route.path == '/' }">首页</router-link>
-        <router-link to="/top" :class="{ active: $route.path == '/top' }">热门</router-link>
         <router-link to="/my/pass" :class="{ active: $route.path.split('/')[1] == 'my' }">我的</router-link>
       </nav>
 
@@ -144,9 +143,7 @@ export default {
 
     >nav {
       display: flex;
-      width: 270px;
       height: 100%;
-      justify-content: space-between;
       align-items: center;
 
       a {
@@ -155,6 +152,7 @@ export default {
         font-size: 20px;
         flex-grow: 1;
         height: 100%;
+        padding: 0 1em;
         display: flex;
         justify-content: center;
         align-items: center;
