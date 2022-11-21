@@ -108,7 +108,7 @@ export default {
 
 <style lang="less" scoped>
 .header-block {
-  position: fixed;
+  position: sticky;
   top: 0;
   width: 100%;
   height: 70px;

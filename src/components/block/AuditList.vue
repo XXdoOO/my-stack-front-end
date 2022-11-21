@@ -1,10 +1,10 @@
 <template>
   <div
-    style="width:100%;max-height: calc(100vh - 80px);overflow: auto;background-color: white;padding: 2em 2em 1em 2em;">
+    style="width:100%;background-color: white;padding: 2em 2em 1em 2em;">
     <el-form inline :model="form" ref="form">
       <el-form-item label="发布时间" prop="postTime">
-        <el-date-picker v-model="form.postTime" type="datetimerange" range-separator="至" start-placeholder="开始日期"
-          end-placeholder="结束日期" :pickerOptions="pickerOptions">
+        <el-date-picker v-model="postTime" type="datetimerange" range-separator="至" start-placeholder="开始日期"
+          end-placeholder="结束日期" :pickerOptions="pickerOptions" @change="changeTime">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="标题" prop="title">
@@ -115,13 +115,18 @@ export default {
       total: 0,
       blog: {},
       dialogVisible: false,
+      postTime: null,
       form: {
-        postTime: null,
+        startTime: null,
+        endTime: null,
         title: null,
         description: null,
         authorNickname: null,
         status: undefined
       },
+      orderBy: "post_time",
+      isAsc: true,
+      currentPage: 1,
       options: [{
         value: true,
         label: '已通过'
@@ -159,13 +164,15 @@ export default {
         }
       })
     },
-    getPostBlogList(currentPage) {
-      console.log(currentPage)
-      this.$axios.myRequest.getPostBlogList(null, --currentPage * 10, 10).then((res) => {
-        console.log(res)
+    getBlogList() {
+      this.$axios.myRequest.getPostBlogList(this.form, this.orderBy, this.isAsc, (this.currentPage - 1) * 10, 10).then((res) => {
         this.auditList = res.data.list
         this.total = res.data.total
       })
+    },
+    getPostBlogList(currentPage) {
+      this.currentPage = currentPage
+      this.getBlogList()
     },
     getBlogDetails(blogId) {
       this.$axios.myRequest.getBlogDetails(blogId).then((res) => {
@@ -193,14 +200,18 @@ export default {
     },
     findBlog() {
       console.log(this.form)
+      this.getBlogList()
+    },
+    changeTime() {
+      this.form.startTime = this.postTime[0].getTime()
+      this.form.endTime = this.postTime[1].getTime()
+
+      console.log(this.form)
     }
   },
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.getPostBlogList(1)
-    })
+  created() {
+    this.getBlogList()
   }
-
 }
 </script>
 

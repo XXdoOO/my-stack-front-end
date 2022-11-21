@@ -17,6 +17,7 @@ Vue.use(Login);
 Vue.use(VueRouter);
 
 const router = new VueRouter({
+    mode: "history",
     routes: [
         { path: "/", meta: { title: "首页" }, component: IndexPage },
         { path: "/my/auditing", meta: { title: "审核中" }, component: MyPage },

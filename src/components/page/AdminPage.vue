@@ -1,55 +1,119 @@
 <template>
   <main class="admin-page">
     <el-aside width="200px">
+      <router-link class="logo" to="/">
+        <img src="../../assets/img/logo.png" alt="" width="30" />
+        <span>小破栈-后台管理</span>
+      </router-link>
       <el-menu :router="true" :default-active="$route.path" class="el-menu-vertical-demo" background-color="#545c64"
-        text-color="#fff" active-text-color="#ffd04b">
-        <el-menu-item index="/admin/index">
+        text-color="#fff" active-text-color="#ffd04b" @select="selectMenu">
+        <el-menu-item v-for="item, index in menuList" :key="index" :index="item.path">
           <template slot="title">
-            <i class="el-icon-s-platform"></i>
-            <span>数据监控</span>
-          </template>
-        </el-menu-item>
-        <el-menu-item index="/admin/blogList">
-          <template slot="title">
-            <i class="el-icon-document"></i>
-            <span>博客管理</span>
-          </template>
-        </el-menu-item>
-        <el-menu-item index="/admin/userList">
-          <template slot="title">
-            <i class="el-icon-user"></i>
-            <span>用户管理</span>
+            <i :class="item.icon"></i>
+            <span>{{ item.name }}</span>
           </template>
         </el-menu-item>
       </el-menu>
     </el-aside>
     <el-container class="content">
+      <el-header>
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+          <el-breadcrumb-item v-for="item in breadcrumbList" :key="item.path" :to="{ path: item.path }">{{ item.name }}
+          </el-breadcrumb-item>
+        </el-breadcrumb>
+
+        <div class="userInfo">
+          <el-avatar :src="userInfo.avatar"></el-avatar>
+          <div class="nickname">{{ userInfo.nickname }}</div>
+          <el-link type="primary" icon="el-icon-refresh" href="/" :underline="false">切换前台</el-link>
+          <el-link type="danger" icon="el-icon-switch-button" :underline="false">退出登录</el-link>
+        </div>
+      </el-header>
       <router-view></router-view>
     </el-container>
   </main>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: "AdminPage",
   data() {
     return {
-      blogList: []
+      menuList: [
+        { path: "/admin/index", name: "数据监控", icon: "el-icon-s-platform" },
+        { path: "/admin/blogList", name: "博客管理", icon: "el-icon-s-operation" },
+        { path: "/admin/userList", name: "用户管理", icon: "el-icon-s-custom" },
+      ],
+      blogList: [],
+      breadcrumbList: []
     }
+  },
+  computed: {
+    ...mapState(["userInfo"])
+  },
+  methods: {
+    selectMenu(index) {
+      console.log(index)
+      this.breadcrumbList = []
+
+      this.menuList.map((item) => {
+        if (item.path === index) {
+          this.breadcrumbList.push(item)
+        }
+      })
+    }
+  },
+  created() {
+    this.selectMenu(this.$route.path)
   },
 }
 </script>
 
 <style lang="less" scoped>
-.admin-page {
-  margin-top: 70px !important;
+.logo {
   display: flex;
-  height: calc(100vh - 80px);
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+
+  span {
+    margin-left: 10px;
+    font-weight: bold;
+  }
+}
+
+.admin-page {
+  margin-top: 0 !important;
+  display: flex;
 }
 
 .el-aside {
   background-color: #D3DCE6;
-  color: #333;
+  position: sticky;
+  top: 0;
+  left: 0;
+}
+
+.el-header {
+  background-color: #D3DCE6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .userInfo {
+    display: flex;
+    align-items: center;
+
+    .nickname {
+      margin-left: 10px;
+    }
+
+    a {
+      margin-left: 20px;
+      font-size: medium;
+    }
+  }
 }
 
 .el-main {
@@ -60,5 +124,12 @@ export default {
 
 .content {
   overflow: auto;
+}
+</style>
+
+<style>
+.header-block,
+.footer-block {
+  display: none;
 }
 </style>

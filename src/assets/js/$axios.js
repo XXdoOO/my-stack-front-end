@@ -84,17 +84,14 @@ axios.myRequest = {
     deleteComments(commentsId) {
         return axios.delete(`/user/deleteMyComments?id=${commentsId}`)
     },
-    getPostBlogList(keywords, startIndex, pageSize) {
-        if (keywords === null) {
-            return axios.get(`/admin/getBlogByKeywords?startIndex=${startIndex}&pageSize=${pageSize}`)
-        }
-        return axios.get(`/admin/getBlogByKeywords?keywords=${keywords}&startIndex=${startIndex}&pageSize=${pageSize}`)
+    getPostBlogList(blogView, orderBy, isAsc, startIndex, pageSize) {
+        return axios.post(`/admin/getBlogList?orderBy=${orderBy}&isAsc=${isAsc}&startIndex=${startIndex}&pageSize=${pageSize}`, blogView)
     },
     getAuditPostDetails(blogId) {
         return axios.get(`/admin/getAuditBlogDetails?id=${blogId}`)
     },
-    getUserList(startIndex, pageSize) {
-        return axios.get(`/admin/getUserList?startIndex=${startIndex}&pageSize=${pageSize}`)
+    getUserList(user, orderBy, isAsc, startIndex, pageSize) {
+        return axios.post(`/admin/getUserList?orderBy=${orderBy}&isAsc=${isAsc}&startIndex=${startIndex}&pageSize=${pageSize}`, user)
     },
     auditBlog(blogId, isPass) {
         return axios.put(`/admin/auditBlog?id=${blogId}&isPass=${isPass}`)

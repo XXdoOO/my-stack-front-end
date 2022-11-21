@@ -2,15 +2,15 @@
   <div class="user-list">
     <el-form inline :model="form" ref="form">
       <el-form-item label="注册时间" prop="postTime">
-        <el-date-picker v-model="form.postTime" type="datetimerange" range-separator="至" start-placeholder="开始日期"
-          end-placeholder="结束日期" :pickerOptions="pickerOptions">
+        <el-date-picker v-model="registerTime" type="datetimerange" range-separator="至" start-placeholder="开始日期"
+          end-placeholder="结束日期" :pickerOptions="pickerOptions" @change="changeTime">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="用户名" prop="username">
-        <el-input v-model="form.title" placeholder="请输入标题"></el-input>
+        <el-input v-model="form.title" placeholder="请输入用户名"></el-input>
       </el-form-item>
       <el-form-item label="用户昵称" pro="nickname">
-        <el-input v-model="form.description" placeholder="请输入描述"></el-input>
+        <el-input v-model="form.description" placeholder="请输入用户昵称"></el-input>
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="form.status" placeholder="请选择状态">
@@ -71,7 +71,7 @@
       </el-table-column>
     </el-table>
 
-    <el-pagination background layout="prev, pager, next" :total="total" @current-change="getUserList"
+    <el-pagination background layout="prev, pager, next" :total="total" @current-change="jumpPage"
       style="display:flex;justify-content:center;padding:1.5em 0;">
     </el-pagination>
 
@@ -143,11 +143,14 @@ export default {
       },
       options2: day,
       form: {
-        registerTime: null,
         username: null,
         nickanme: null,
         status: undefined
       },
+      registerTime: null,
+      orderBy: "post_time",
+      isAsc: true,
+      currentPage: 1,
       options: [{
         value: true,
         label: '正常'
@@ -222,32 +225,39 @@ export default {
         }
       })
     },
-    getUserList(currentPage) {
-      this.$axios.myRequest.getUserList(--currentPage * 10, 10).then((res) => {
+    jumpPage(currentPage) {
+      this.currentPage = currentPage
+      this.getUserList(currentPage)
+    },
+    getUserList() {
+      this.$axios.myRequest.getUserList(this.form, this.orderBy, this.isAsc, (this.currentPage - 1) * 10, 10).then((res) => {
         this.userList = res.data.list
         this.total = res.data.total
       })
     },
-    findUser() { },
+    findUser() {
+      this.getUserList()
+    },
     sortByRegisterTime(a, b) {
       console.log(a, b)
       return a.registerTime - b.registerTime
     },
-  },
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.getUserList(1)
-    })
-  }
+    changeTime() {
+      this.form.startTime = this.postTime[0].getTime()
+      this.form.endTime = this.postTime[1].getTime()
 
+      console.log(this.form)
+    }
+  },
+  created() {
+    this.getUserList(1)
+  },
 }
 </script>
 
 <style lang="less" scoped>
 .user-list {
   width: 100%;
-  max-height: calc(100vh - 80px);
-  overflow: auto;
   background-color: white;
   padding: 2em 2em 1em 2em;
 
