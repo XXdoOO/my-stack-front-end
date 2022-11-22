@@ -126,10 +126,3 @@ export default {
   overflow: auto;
 }
 </style>
-
-<style>
-.header-block,
-.footer-block {
-  display: none;
-}
-</style>

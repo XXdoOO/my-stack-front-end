@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <HeaderBlock />
+    <HeaderBlock v-if="!$route.path.includes('/admin/')" />
     <router-view></router-view>
-    <FooterBlock />
+    <FooterBlock v-if="!$route.path.includes('/admin/')" />
   </div>
 </template>
 
@@ -84,9 +84,9 @@ export default {
           duration: 3000
         })
         return Promise.reject("请求超时")
-      }else if(error.message.includes("cancelToken" !== -1)){
+      } else if (error.message.includes("cancelToken" !== -1)) {
         return Promise.reject("用户未登录")
-      }else {
+      } else {
         return Promise.reject("其他错误")
       }
     })

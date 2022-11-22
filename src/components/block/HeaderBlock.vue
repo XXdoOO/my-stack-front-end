@@ -99,7 +99,7 @@ export default {
         this.scroll = this.scroll - scroll > 0 ? 0 : this.scroll - scroll;
       } else {
         // 鼠标下滚
-        this.scroll = this.scroll - scroll < -70 ? -70 : this.scroll - scroll;
+        this.scroll = this.scroll - scroll < -70 ? -71 : this.scroll - scroll;
       }
     });
   },

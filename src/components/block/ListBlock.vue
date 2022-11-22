@@ -5,9 +5,15 @@
         <div>
           <ul class="topContent">
             <li>
-              <router-link :to="`/user/${blog.authorUsername}/postBlogList`">{{ blog.authorNickname }}</router-link>
+              <router-link class="wrapper-icon" :to="`/user/${blog.authorUsername}/postBlogList`"><i
+                  class="icon-user"></i>
+                <span>{{ blog.authorNickname }}</span>
+              </router-link>
             </li>
-            <li>{{ util.formatTime(blog.postTime) }}</li>
+            <li class="wrapper-icon">
+              <i class="icon-time"></i>
+              <span>{{ util.formatTime(blog.postTime) }}</span>
+            </li>
           </ul>
           <h2>{{ blog.title }}</h2>
           <p>{{ blog.description }}</p>
@@ -245,6 +251,24 @@ export default {
   display: flex;
   margin-bottom: 10px;
 
+  .wrapper-icon {
+    display: flex;
+    align-items: center;
+
+    span {
+      margin-left: 5px;
+      transition: @transition-time;
+    }
+  }
+
+  .wrapper-icon:first-of-type:hover {
+    color: @theme-color;
+  }
+
+  .wrapper-icon:first-of-type:hover i {
+    background-image: url(@/assets/img/user-active.png);
+  }
+
   li {
     padding: 0 10px;
     color: @gray-color-dep;
@@ -253,6 +277,23 @@ export default {
   li:first-child {
     border-right: 2px solid @gray-color;
     padding-left: 0;
+  }
+
+  .icon-user {
+    display: block;
+    width: 15px;
+    height: 15px;
+    background-image: url(@/assets/img/user.png);
+    background-size: cover;
+    transition: @transition-time;
+  }
+
+  .icon-time {
+    display: block;
+    width: 15px;
+    height: 15px;
+    background-image: url(@/assets/img/time.png);
+    background-size: cover;
   }
 }
 
