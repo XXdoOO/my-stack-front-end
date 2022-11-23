@@ -51,19 +51,66 @@
                             <div class="bottom-content">
                                 <time>{{ util.formatTime(hot.postTime) }}</time>
                                 <ul class="menu comment-menu">
-                                    <li title="顶数" :class="{ 'up-hover': hot.isUp }">
+                                    <li class="reply">
+                                        回复
+                                    </li>
+                                    <li class="up" title="顶这条评论" :class="{ 'up-hover': hot.isUp }">
                                         <i title="顶" @click="upComments('hot', index, hot.id)"></i>
                                         <span>{{ hot.up }}</span>
                                     </li>
-                                    <li title="踩数" :class="{ 'down-hover': hot.isDown }">
+                                    <li class="down" title="踩这条评论" :class="{ 'down-hover': hot.isDown }">
                                         <i title="踩" @click="downComments('hot', index, hot.id)"></i>
                                         <span>{{ hot.down }}</span>
                                     </li>
-                                    <li title="删除这条评论">
-                                        <i v-if="$store.state.userInfo && hot.authorUsername === $store.state.userInfo.username"
-                                            @click="deleteComments('hotComments', index, hot.id)"></i>
+                                    <li class="delete" title="删除这条评论"
+                                        v-if="$store.state.userInfo && hot.authorUsername === $store.state.userInfo.username">
+                                        <i @click="deleteComments('hotComments', index, hot.id)"></i>
                                     </li>
                                 </ul>
+                            </div>
+
+                            <div class="post-area-children">
+                                <textarea cols="30" rows="10" v-model="content" maxlength="100"
+                                    placeholder="回复"></textarea>
+                                <button @click="postComment(content)"
+                                    :class="{ active: $store.state.userInfo }">发表评论</button>
+                            </div>
+
+                            <div class="children">
+                                <div class="comment" v-for="(h, index) in hot.children" :key="h.id">
+                                    <img :src="h.authorInfo.avatar" alt="" width="30" height="30" />
+                                    <div class="content">
+                                        <router-link :to="`/user/${h.authorUsername}/postBlogList`">{{
+                                                h.authorInfo.nickname
+                                        }}
+                                        </router-link>
+                                        <p>{{ h.content }}</p>
+                                        <div class="bottom-content">
+                                            <time>{{ util.formatTime(h.postTime) }}</time>
+                                            <ul class="menu comment-menu">
+                                                <li class="reply">回复</li>
+                                                <li title="顶数" :class="{ 'up-hover': h.isUp }">
+                                                    <i title="顶" @click="upComments('hot', index, h.id)"></i>
+                                                    <span>{{ h.up }}</span>
+                                                </li>
+                                                <li title="踩数" :class="{ 'down-hover': h.isDown }">
+                                                    <i title="踩" @click="downComments('hot', index, h.id)"></i>
+                                                    <span>{{ h.down }}</span>
+                                                </li>
+                                                <li title="删除这条评论">
+                                                    <i v-if="$store.state.userInfo && hot.authorUsername === $store.state.userInfo.username"
+                                                        @click="deleteComments('hotComments', index, h.id)"></i>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="post-area-children">
+                                            <textarea cols="30" rows="10" v-model="content" maxlength="100"
+                                                placeholder="回复"></textarea>
+                                            <button @click="postComment(content)"
+                                                :class="{ active: $store.state.userInfo }">发表评论</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -126,7 +173,13 @@ export default {
                         isUp: false,
                         isDown: false,
                         authorInfo: {},
-                        postTime: ""
+                        postTime: "",
+                        children: [{
+                            isUp: false,
+                            isDown: false,
+                            authorInfo: { avatar: "" },
+                            postTime: "",
+                        }]
                     }],
                     newComments: [{
                         isUp: false,
@@ -318,7 +371,6 @@ export default {
     width: 210px;
     margin-top: 5px;
     padding: 10px;
-    background-color: white;
     border-radius: 5px;
 
     li {
@@ -345,33 +397,28 @@ export default {
         padding-right: 0;
     }
 
-    li:first-child i {
+    li.up i {
         background-image: url(../../assets/img/up.png);
     }
 
-    li:nth-child(2) i {
-        background-image: url(../../assets/img/up.png);
-        transform: rotate(180deg);
+    li.down i {
+        background-image: url(../../assets/img/down.png);
     }
 
-    li:first-child i:hover,
-    li:nth-child(2) i:hover,
-    li.up-hover i,
-    li.down-hover i {
-        background-image: url(../../assets/img/up-hover.png);
+    li.delete i {
+        background-image: url(@/assets/img/delete.png);
     }
 
-    li:nth-child(3) i {
-        background-image: url(../../assets/img/star.png);
+    li.up i:hover {
+        background-image: url(@/assets/img/up-hover.png);
     }
 
-    li:nth-child(3) i:hover,
-    li.star-hover i {
-        background-image: url(../../assets/img/star-hover.png);
+    li.down i:hover {
+        background-image: url(@/assets/img/down-hover.png);
     }
 
-    li:nth-child(4) i {
-        background-image: url(../../assets/img/views.png);
+    li.delete i:hover {
+        background-image: url(@/assets/img/delete-hover.png);
     }
 }
 
@@ -379,13 +426,14 @@ export default {
     padding: 0;
     width: 150px;
 
-    li:nth-child(3) i {
-        background-image: url(../../assets/img/delete.png);
+    .reply {
+        color: @gray-color-dep;
+        font-size: 14px;
+        transition: @transition-time;
     }
 
-    li:nth-child(3) i:hover,
-    li.star-hover i {
-        background-image: url(../../assets/img/delete-hover.png);
+    .reply:hover {
+        color: @theme-color;
     }
 }
 
@@ -406,6 +454,20 @@ export default {
 
         textarea {
             flex-grow: 0.96;
+            height: 100px;
+            border-radius: 5px;
+            outline: none;
+            padding: 5px;
+            resize: none;
+            border-color: @theme-color;
+        }
+    }
+
+    .post-area-children {
+        margin-top: 10px;
+
+        textarea {
+            width: 100%;
             height: 100px;
             border-radius: 5px;
             outline: none;
@@ -445,12 +507,20 @@ export default {
         .hot-comments {
             color: red;
         }
+
+        .children {
+            background-color: rgb(244, 244, 245);
+            margin-top: 1em;
+            border-radius: 5px;
+            padding-left: 1em;
+            padding-right: 1em;
+        }
     }
 }
 
 .comment {
     display: flex;
-    margin-bottom: 15px;
+    padding: 1em 0;
 
     img {
         border-radius: 50%;
