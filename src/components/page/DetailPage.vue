@@ -38,7 +38,10 @@
                     <textarea cols="30" rows="10" v-model="content" maxlength="100" placeholder="说说你此刻的想法"></textarea>
                 </div>
 
-                <button @click="postComment(content)" :class="{ active: $store.state.userInfo }">发表评论</button>
+                <button @click="postComment({
+                    blogId: blog.id,
+                    content: content
+                })" :class="{ active: $store.state.userInfo }">发表评论</button>
 
                 <div class="comments-area">
                     <div class="hot-comments">热门评论</div>
@@ -63,7 +66,7 @@
                                         <span>{{ hot.down }}</span>
                                     </li>
                                     <li class="delete" title="删除这条评论"
-                                        v-if="$store.state.userInfo && hot.authorUsername === $store.state.userInfo.username">
+                                        v-if="$store.state.userInfo && hot.senderUsername === $store.state.userInfo.username">
                                         <i @click="deleteComments('hotComments', index, hot.id)"></i>
                                     </li>
                                 </ul>
@@ -72,42 +75,59 @@
                             <div class="post-area-children">
                                 <textarea cols="30" rows="10" v-model="content" maxlength="100"
                                     placeholder="回复"></textarea>
-                                <button @click="postComment(content)"
-                                    :class="{ active: $store.state.userInfo }">发表评论</button>
+                                <button @click="postComment({
+                                    blogId: blog.id,
+                                    content: content,
+                                    parent: hot.id,
+                                })" :class="{ active: $store.state.userInfo }">回复</button>
                             </div>
 
                             <div class="children">
                                 <div class="comment" v-for="(h, index) in hot.children" :key="h.id">
                                     <img :src="h.authorInfo.avatar" alt="" width="30" height="30" />
                                     <div class="content">
-                                        <router-link :to="`/user/${h.authorUsername}/postBlogList`">{{
-                                                h.authorInfo.nickname
-                                        }}
-                                        </router-link>
+                                        <div class="nickname">
+                                            <router-link :to="`/user/${h.authorUsername}/postBlogList`">{{
+                                                    h.authorInfo.nickname
+                                            }}
+                                            </router-link>
+
+                                            <i v-if="h.receiveUsername"></i>
+
+                                            <router-link v-if="h.receiveUsername"
+                                                :to="`/user/${h.receiveUsername}/postBlogList`">{{
+                                                        h.receiveNickname
+                                                }}
+                                            </router-link>
+                                        </div>
                                         <p>{{ h.content }}</p>
                                         <div class="bottom-content">
                                             <time>{{ util.formatTime(h.postTime) }}</time>
                                             <ul class="menu comment-menu">
                                                 <li class="reply">回复</li>
-                                                <li title="顶数" :class="{ 'up-hover': h.isUp }">
+                                                <li class="up" title="顶数" :class="{ 'up-hover': h.isUp }">
                                                     <i title="顶" @click="upComments('hot', index, h.id)"></i>
                                                     <span>{{ h.up }}</span>
                                                 </li>
-                                                <li title="踩数" :class="{ 'down-hover': h.isDown }">
+                                                <li class="down" title="踩数" :class="{ 'down-hover': h.isDown }">
                                                     <i title="踩" @click="downComments('hot', index, h.id)"></i>
                                                     <span>{{ h.down }}</span>
                                                 </li>
-                                                <li title="删除这条评论">
-                                                    <i v-if="$store.state.userInfo && hot.authorUsername === $store.state.userInfo.username"
-                                                        @click="deleteComments('hotComments', index, h.id)"></i>
+                                                <li v-if="$store.state.userInfo && h.senderUsername === $store.state.userInfo.username"
+                                                    class="delete" title="删除这条评论">
+                                                    <i @click="deleteComments('hotComments', index, h.id)"></i>
                                                 </li>
                                             </ul>
                                         </div>
                                         <div class="post-area-children">
                                             <textarea cols="30" rows="10" v-model="content" maxlength="100"
                                                 placeholder="回复"></textarea>
-                                            <button @click="postComment(content)"
-                                                :class="{ active: $store.state.userInfo }">发表评论</button>
+                                            <button @click="postComment({
+                                                blogId: blog.id,
+                                                content: content,
+                                                parent: hot.id,
+                                                receiveUsername: h.senderUsername
+                                            })" :class="{ active: $store.state.userInfo }">回复</button>
                                         </div>
                                     </div>
                                 </div>
@@ -226,16 +246,16 @@ export default {
                 this.syncData("isStar")
             })
         },
-        postComment(content) {
-            const data = {
-                blogId: this.blog.id,
-                content: content
-            }
-            this.$axios.myRequest.postComments(data).then((res) => {
+        postComment(comment) {
+            console.log(comment)
+
+            this.$axios.myRequest.postComments(comment).then((res) => {
                 console.log(res)
 
-                this.blog.commentsList.newComments.unshift(res.data)
+                // this.blog.commentsList.newComments.unshift(res.data)
                 this.content = ""
+
+                this.getBlogDetails()
             })
         },
         deleteComments(type, index, commentsId) {
@@ -320,8 +340,9 @@ export default {
             // console.log(titles)
             // this.directory = titles
         },
-        getBlogDetails(blogId) {
-            this.$axios.myRequest.getBlogDetails(blogId).then((res) => {
+        getBlogDetails() {
+            console.log(this.$route.params)
+            this.$axios.myRequest.getBlogDetails(this.$route.params.blogId).then((res) => {
                 res.data.content = res.data.content.replace(/\\n/g, " \n")
                 res.data.content = res.data.content.replace(/\\u.{4}/g, function (e) {
                     return unescape(e.replace(/\\/g, '%'))
@@ -336,17 +357,9 @@ export default {
             });
         }
     },
-    updated() {
-        // this.createDirectory()
+    created() {
+        this.getBlogDetails()
     },
-    mounted() {
-        // this.createDirectory()
-    },
-    beforeRouteEnter(to, from, next) {
-        next((vm) => {
-            vm.getBlogDetails(to.params.blogId)
-        });
-    }
 }
 </script>
 <style lang="less" scoped>
@@ -404,6 +417,7 @@ export default {
     li.down i {
         background-image: url(../../assets/img/down.png);
     }
+
 
     li.delete i {
         background-image: url(@/assets/img/delete.png);
@@ -509,7 +523,7 @@ export default {
         }
 
         .children {
-            background-color: rgb(244, 244, 245);
+            background-color: rgb(248, 248, 248);
             margin-top: 1em;
             border-radius: 5px;
             padding-left: 1em;
@@ -530,9 +544,27 @@ export default {
         margin-left: 20px;
         flex-grow: 1;
 
-        a {
-            display: block;
-            margin-top: 5px;
+        .nickname {
+            display: flex;
+            align-items: center;
+
+            a {
+                transition: @transition-time;
+            }
+
+            a:hover {
+                color: @theme-color;
+            }
+
+            i {
+                display: inline-block;
+                border: 6px solid;
+                border-radius: 3px;
+                border-top-color: transparent;
+                border-right-color: transparent;
+                border-bottom-color: transparent;
+                margin: 0 10px;
+            }
         }
 
         p {
