@@ -54,7 +54,7 @@
                             <div class="bottom-content">
                                 <time>{{ util.formatTime(hot.postTime) }}</time>
                                 <ul class="menu comment-menu">
-                                    <li class="reply">
+                                    <li class="reply" @click="openReplyArea(hot, $event)">
                                         回复
                                     </li>
                                     <li class="up" title="顶这条评论" :class="{ 'up-hover': hot.isUp }">
@@ -70,16 +70,6 @@
                                         <i @click="deleteComments('hotComments', index, hot.id)"></i>
                                     </li>
                                 </ul>
-                            </div>
-
-                            <div class="post-area-children">
-                                <textarea cols="30" rows="10" v-model="content" maxlength="100"
-                                    placeholder="回复"></textarea>
-                                <button @click="postComment({
-                                    blogId: blog.id,
-                                    content: content,
-                                    parent: hot.id,
-                                })" :class="{ active: $store.state.userInfo }">回复</button>
                             </div>
 
                             <div class="children">
@@ -104,7 +94,7 @@
                                         <div class="bottom-content">
                                             <time>{{ util.formatTime(h.postTime) }}</time>
                                             <ul class="menu comment-menu">
-                                                <li class="reply">回复</li>
+                                                <li class="reply" @click="openReplyArea(h, $event)">回复</li>
                                                 <li class="up" title="顶数" :class="{ 'up-hover': h.isUp }">
                                                     <i title="顶" @click="upComments('hot', index, h.id)"></i>
                                                     <span>{{ h.up }}</span>
@@ -119,16 +109,6 @@
                                                 </li>
                                             </ul>
                                         </div>
-                                        <div class="post-area-children">
-                                            <textarea cols="30" rows="10" v-model="content" maxlength="100"
-                                                placeholder="回复"></textarea>
-                                            <button @click="postComment({
-                                                blogId: blog.id,
-                                                content: content,
-                                                parent: hot.id,
-                                                receiveUsername: h.senderUsername
-                                            })" :class="{ active: $store.state.userInfo }">回复</button>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -136,36 +116,85 @@
                     </div>
 
 
-                    <div class="new-comments">新评论</div>
-                    <div class="comment" v-for="(item, index) in blog.commentsList.newComments" :key="index">
+                    <!-- <div class="new-comments">新评论</div>
+                    <div class="comment" v-for="(item, index) in blog.commentsList.newComments" :key="item.id">
                         <img :src="item.authorInfo.avatar" alt="" width="40" height="40" />
                         <div class="content">
-                            <router-link :to="`/user/${item.authorUsername}/postBlogList`">{{
-                                    item.authorInfo.nickname
+                            <router-link :to="`/user/${item.authorUsername}/postBlogList`">{{ item.authorInfo.nickname
                             }}
                             </router-link>
                             <p>{{ item.content }}</p>
                             <div class="bottom-content">
                                 <time>{{ util.formatTime(item.postTime) }}</time>
                                 <ul class="menu comment-menu">
-                                    <li title="顶数" :class="{ 'up-hover': item.isUp }">
-                                        <i title="顶" @click="upComments('new', index, item.id)"></i>
+                                    <li class="reply" @click="openReplyArea(item, $event)">
+                                        回复
+                                    </li>
+                                    <li class="up" title="顶这条评论" :class="{ 'up-hover': item.isUp }">
+                                        <i title="顶" @click="upComments('hot', index, item.id)"></i>
                                         <span>{{ item.up }}</span>
                                     </li>
-                                    <li title="踩数" :class="{ 'down-hover': item.isDown }">
-                                        <i title="踩" @click="downComments('new', index, item.id)"></i>
+                                    <li class="down" title="踩这条评论" :class="{ 'down-hover': item.isDown }">
+                                        <i title="踩" @click="downComments('hot', index, item.id)"></i>
                                         <span>{{ item.down }}</span>
                                     </li>
-                                    <li title="删除这条评论">
-                                        <i v-if="$store.state.userInfo && item.authorUsername === $store.state.userInfo.username"
-                                            @click="deleteComments('newComments', index, item.id)"></i>
+                                    <li class="delete" title="删除这条评论"
+                                        v-if="$store.state.userInfo && item.senderUsername === $store.state.userInfo.username">
+                                        <i @click="deleteComments('hotComments', index, item.id)"></i>
                                     </li>
                                 </ul>
                             </div>
+
+                            <div class="children">
+                                <div class="comment" v-for="(h, index) in item.children" :key="h.id">
+                                    <img :src="h.authorInfo.avatar" alt="" width="30" height="30" />
+                                    <div class="content">
+                                        <div class="nickname">
+                                            <router-link :to="`/user/${h.authorUsername}/postBlogList`">{{
+                                                    h.authorInfo.nickname
+                                            }}
+                                            </router-link>
+
+                                            <i v-if="h.receiveUsername"></i>
+
+                                            <router-link v-if="h.receiveUsername"
+                                                :to="`/user/${h.receiveUsername}/postBlogList`">{{
+                                                        h.receiveNickname
+                                                }}
+                                            </router-link>
+                                        </div>
+                                        <p>{{ h.content }}</p>
+                                        <div class="bottom-content">
+                                            <time>{{ util.formatTime(h.postTime) }}</time>
+                                            <ul class="menu comment-menu">
+                                                <li class="reply" @click="openReplyArea(h, $event)">回复</li>
+                                                <li class="up" title="顶数" :class="{ 'up-hover': h.isUp }">
+                                                    <i title="顶" @click="upComments('hot', index, h.id)"></i>
+                                                    <span>{{ h.up }}</span>
+                                                </li>
+                                                <li class="down" title="踩数" :class="{ 'down-hover': h.isDown }">
+                                                    <i title="踩" @click="downComments('hot', index, h.id)"></i>
+                                                    <span>{{ h.down }}</span>
+                                                </li>
+                                                <li v-if="$store.state.userInfo && h.senderUsername === $store.state.userInfo.username"
+                                                    class="delete" title="删除这条评论">
+                                                    <i @click="deleteComments('hotComments', index, h.id)"></i>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
+        </div>
+
+        <div class="post-area-children" ref="reply-area" v-show="isShowCommentArea">
+            <textarea cols="30" rows="10" v-model="comment.content" maxlength="100" placeholder="回复"
+                @blur="isShowCommentArea = false"></textarea>
+            <button @click="postComment(comment)" :class="{ active: $store.state.userInfo }">回复</button>
         </div>
 
         <GoTop></GoTop>
@@ -210,7 +239,11 @@ export default {
                 },
             },
             directory: null,
-            content: ""
+            content: "",
+            comment: {
+                content: ""
+            },
+            isShowCommentArea: false
         }
     },
     methods: {
@@ -354,7 +387,28 @@ export default {
 
                 // console.log(res.data.content)
                 this.blog = res.data
-            });
+                this.comment.blogId = this.blog.id
+            })
+        },
+        openReplyArea(item, e) {
+            console.log(item, e)
+            this.comment.parent = item.id
+
+            let targetElement = e.target.parentNode.parentNode
+
+            const parent = targetElement.parentNode
+            if (parent.lastChild == targetElement) {
+                parent.appendChild(this.$refs['reply-area'])
+            } else {
+                parent.insertBefore(this.$refs['reply-area'], targetElement.nextSibling)
+            }
+
+            this.isShowCommentArea = true
+            console.log(this.isShowCommentArea)
+            this.$nextTick(() => {
+                console.log(this.isShowCommentArea)
+                this.$refs['reply-area'].querySelector('textarea').focus()
+            })
         }
     },
     created() {
