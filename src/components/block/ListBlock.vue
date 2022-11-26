@@ -272,6 +272,10 @@ export default {
   li {
     padding: 0 10px;
     color: @gray-color-dep;
+
+    a {
+      color: @gray-color-dep;
+    }
   }
 
   li:first-child {

@@ -26,7 +26,8 @@
           <el-avatar :src="userInfo.avatar"></el-avatar>
           <div class="nickname">{{ userInfo.nickname }}</div>
           <el-link type="primary" icon="el-icon-refresh" href="/" :underline="false">切换前台</el-link>
-          <el-link type="danger" icon="el-icon-switch-button" :underline="false">退出登录</el-link>
+          <el-link type="danger" icon="el-icon-switch-button" :underline="false" @click="logout">退出登录
+          </el-link>
         </div>
       </el-header>
       <router-view></router-view>
@@ -62,6 +63,9 @@ export default {
           this.breadcrumbList.push(item)
         }
       })
+    },
+    logout() {
+      this.$store.dispatch('logout', this)
     }
   },
   created() {

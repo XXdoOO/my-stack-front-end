@@ -56,17 +56,13 @@ export default {
     border-radius: 5px;
     padding: 12px 15px;
 
-    .header {
-      margin-bottom: 10px;
-    }
-
     .msg {
       font-size: 14px;
+      margin: 15px 0;
     }
 
     .btn-group {
       float: right;
-      margin-top: 10px;
 
       button {
         border-radius: 5px;

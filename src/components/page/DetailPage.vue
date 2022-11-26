@@ -54,7 +54,8 @@
                             <div class="bottom-content">
                                 <time>{{ util.formatTime(hot.postTime) }}</time>
                                 <ul class="menu comment-menu">
-                                    <li class="reply" @click="openReplyArea(hot, $event)">
+                                    <li class="reply" @click="openReplyArea(hot.id, hot.senderUsername, true, $event)"
+                                        ref="reply">
                                         回复
                                     </li>
                                     <li class="up" title="顶这条评论" :class="{ 'up-hover': hot.isUp }">
@@ -94,7 +95,10 @@
                                         <div class="bottom-content">
                                             <time>{{ util.formatTime(h.postTime) }}</time>
                                             <ul class="menu comment-menu">
-                                                <li class="reply" @click="openReplyArea(h, $event)">回复</li>
+                                                <li class="reply"
+                                                    @click="openReplyArea(hot.id, h.senderUsername, false, $event)"
+                                                    ref="reply">回复
+                                                </li>
                                                 <li class="up" title="顶数" :class="{ 'up-hover': h.isUp }">
                                                     <i title="顶" @click="upComments('hot', index, h.id)"></i>
                                                     <span>{{ h.up }}</span>
@@ -115,85 +119,12 @@
                         </div>
                     </div>
 
-
-                    <!-- <div class="new-comments">新评论</div>
-                    <div class="comment" v-for="(item, index) in blog.commentsList.newComments" :key="item.id">
-                        <img :src="item.authorInfo.avatar" alt="" width="40" height="40" />
-                        <div class="content">
-                            <router-link :to="`/user/${item.authorUsername}/postBlogList`">{{ item.authorInfo.nickname
-                            }}
-                            </router-link>
-                            <p>{{ item.content }}</p>
-                            <div class="bottom-content">
-                                <time>{{ util.formatTime(item.postTime) }}</time>
-                                <ul class="menu comment-menu">
-                                    <li class="reply" @click="openReplyArea(item, $event)">
-                                        回复
-                                    </li>
-                                    <li class="up" title="顶这条评论" :class="{ 'up-hover': item.isUp }">
-                                        <i title="顶" @click="upComments('hot', index, item.id)"></i>
-                                        <span>{{ item.up }}</span>
-                                    </li>
-                                    <li class="down" title="踩这条评论" :class="{ 'down-hover': item.isDown }">
-                                        <i title="踩" @click="downComments('hot', index, item.id)"></i>
-                                        <span>{{ item.down }}</span>
-                                    </li>
-                                    <li class="delete" title="删除这条评论"
-                                        v-if="$store.state.userInfo && item.senderUsername === $store.state.userInfo.username">
-                                        <i @click="deleteComments('hotComments', index, item.id)"></i>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div class="children">
-                                <div class="comment" v-for="(h, index) in item.children" :key="h.id">
-                                    <img :src="h.authorInfo.avatar" alt="" width="30" height="30" />
-                                    <div class="content">
-                                        <div class="nickname">
-                                            <router-link :to="`/user/${h.authorUsername}/postBlogList`">{{
-                                                    h.authorInfo.nickname
-                                            }}
-                                            </router-link>
-
-                                            <i v-if="h.receiveUsername"></i>
-
-                                            <router-link v-if="h.receiveUsername"
-                                                :to="`/user/${h.receiveUsername}/postBlogList`">{{
-                                                        h.receiveNickname
-                                                }}
-                                            </router-link>
-                                        </div>
-                                        <p>{{ h.content }}</p>
-                                        <div class="bottom-content">
-                                            <time>{{ util.formatTime(h.postTime) }}</time>
-                                            <ul class="menu comment-menu">
-                                                <li class="reply" @click="openReplyArea(h, $event)">回复</li>
-                                                <li class="up" title="顶数" :class="{ 'up-hover': h.isUp }">
-                                                    <i title="顶" @click="upComments('hot', index, h.id)"></i>
-                                                    <span>{{ h.up }}</span>
-                                                </li>
-                                                <li class="down" title="踩数" :class="{ 'down-hover': h.isDown }">
-                                                    <i title="踩" @click="downComments('hot', index, h.id)"></i>
-                                                    <span>{{ h.down }}</span>
-                                                </li>
-                                                <li v-if="$store.state.userInfo && h.senderUsername === $store.state.userInfo.username"
-                                                    class="delete" title="删除这条评论">
-                                                    <i @click="deleteComments('hotComments', index, h.id)"></i>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </div>
 
-        <div class="post-area-children" ref="reply-area" v-show="isShowCommentArea">
-            <textarea cols="30" rows="10" v-model="comment.content" maxlength="100" placeholder="回复"
-                @blur="isShowCommentArea = false"></textarea>
+        <div class="post-area-children" v-show="isShowCommentArea" ref="reply-area">
+            <textarea cols="30" rows="10" v-model="comment.content" maxlength="100" placeholder="回复"></textarea>
             <button @click="postComment(comment)" :class="{ active: $store.state.userInfo }">回复</button>
         </div>
 
@@ -390,17 +321,25 @@ export default {
                 this.comment.blogId = this.blog.id
             })
         },
-        openReplyArea(item, e) {
-            console.log(item, e)
-            this.comment.parent = item.id
+        openReplyArea(parent, senderUsername, isRoot, e) {
+            console.log(parent, senderUsername, isRoot, e)
+
+            this.comment = {}
+
+            this.comment.blogId = this.blog.id
+            this.comment.parent = parent
+
+            if (!isRoot) {
+                this.comment.receiveUsername = senderUsername
+            }
 
             let targetElement = e.target.parentNode.parentNode
 
-            const parent = targetElement.parentNode
-            if (parent.lastChild == targetElement) {
-                parent.appendChild(this.$refs['reply-area'])
+            const parentNode = targetElement.parentNode
+            if (parentNode.lastChild == targetElement) {
+                parentNode.appendChild(this.$refs['reply-area'])
             } else {
-                parent.insertBefore(this.$refs['reply-area'], targetElement.nextSibling)
+                parentNode.insertBefore(this.$refs['reply-area'], targetElement.nextSibling)
             }
 
             this.isShowCommentArea = true
@@ -409,6 +348,24 @@ export default {
                 console.log(this.isShowCommentArea)
                 this.$refs['reply-area'].querySelector('textarea').focus()
             })
+
+            document.addEventListener('click', this.handlerClick)
+        },
+        handlerClick(event) {
+            let isSelf = this.$refs['reply-area'].contains(event.target)
+            let isReply = false
+
+            for (const item of this.$refs.reply) {
+                if (item.contains(event.target)) {
+                    isReply = true
+                }
+            }
+            if (!isSelf && !isReply) {
+                console.log('没在区域里面-->>>')
+                this.isShowCommentArea = false
+
+                document.removeEventListener('click', this.handlerClick)
+            }
         }
     },
     created() {

@@ -35,6 +35,22 @@ const actions = {
       context.state.userInfo = res.data
     })
   },
+  logout(context, that) {
+    console.log(that)
+
+    that.$xConfirm.show({
+      msg: "此操作将会退出该账号，确定继续吗？",
+      success: () => {
+        $axios.myRequest.logout().then((res) => {
+          console.log(res)
+
+          sessionStorage.removeItem("userInfo");
+          window.location.href = "/#"
+          window.location.reload();
+        })
+      }
+    })
+  }
 }
 
 const mutations = {

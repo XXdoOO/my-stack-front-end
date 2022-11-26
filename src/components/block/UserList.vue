@@ -31,42 +31,31 @@
       </el-table-column>
       <el-table-column type="index" min-width="50" label="序号" align="center">
       </el-table-column>
-      <el-table-column label="注册时间" min-width="180" prop="registerTime" sortable :sort-method="sortByRegisterTime">
+      <el-table-column label="注册时间" min-width="80" prop="registerTime" sortable :sort-method="sortByRegisterTime"
+        align="center">
         <template slot-scope="scope">
           {{ util.formatTime(scope.row.registerTime) }}
         </template>
       </el-table-column>
-      <el-table-column label="头像">
+      <el-table-column label="头像" align="center">
         <template slot-scope="scope">
           <el-image style="width:50px;height: 50px;border-radius: 50%" :src="scope.row.avatar" fit="cover"
             :preview-src-list="[scope.row.avatar]"></el-image>
         </template>
       </el-table-column>
-      <el-table-column prop="username" label="用户名"></el-table-column>
-      <el-table-column prop="nickname" label="用户昵称"></el-table-column>
-      <el-table-column prop="status" label="身份">
+      <el-table-column prop="username" label="用户名" align="center"></el-table-column>
+      <el-table-column prop="nickname" label="用户昵称" align="center"></el-table-column>
+      <el-table-column prop="status" label="身份" align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.identity" type="info">普通用户</el-tag>
           <el-tag v-if="!scope.row.identity">管理用户</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="状态">
+      <el-table-column prop="status" label="状态" align="center" min-width="100">
         <template slot-scope="scope">
-          <el-tag v-if="!scope.row.status" type="success">正常</el-tag>
-          <el-tag v-if="scope.row.status" type="danger">小黑屋悔改中</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="address" label="操作">
-        <template slot-scope="scope">
-          <el-button v-if="!scope.row.status" plain @click="held(scope.row)" type="primary" size="small">
-            关进小黑屋
-          </el-button>
-          <el-button v-if="scope.row.status" plain @click="release(scope.row)" type="primary" size="small">
-            从小黑屋释放
-          </el-button>
-          <!--<el-button plain icon="el-icon-success" @click="handleClick(scope.row)" type="success" size="small">通过
-          </el-button>
-          <el-button plain icon="el-icon-error" type="danger" size="small">不通过</el-button>-->
+          <el-switch v-model="scope.row.status" active-color="#ff4949" inactive-color="#13ce66" active-text="小黑屋悔改中"
+            inactive-text="正常" @change="changeStatus(scope.row, $event)">
+          </el-switch>
         </template>
       </el-table-column>
     </el-table>
@@ -169,34 +158,36 @@ export default {
     }
   },
   methods: {
-    held(user) {
-      console.log(user)
-      this.dialogFormVisible = true
-      this.username = user.username
-    },
-    release(user) {
-      console.log(user)
+    changeStatus(user, isRelease) {
+      console.log(user, isRelease)
+      if (!isRelease) {
+        user.status = true
+        this.$confirm('此操作将该用户从小黑屋释放, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$axios.myRequest.cancelDisable(user.username).then((res) => {
+            console.log(res)
 
-      this.$confirm('此操作将该用户从小黑屋释放, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$axios.myRequest.cancelDisable(user.username).then((res) => {
-          console.log(res)
-
-          user.status = false
+            user.status = false
+            this.$message({
+              type: 'success',
+              message: '释放成功!'
+            })
+          })
+        }).catch(() => {
+          user.status = true
           this.$message({
-            type: 'success',
-            message: '释放成功!'
+            type: 'info',
+            message: '已取消释放'
           })
         })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消释放'
-        })
-      })
+      } else {
+        user.status = false
+        this.dialogFormVisible = true
+        this.username = user.username
+      }
     },
     confirm() {
       console.log(this.form2.time)
