@@ -3,20 +3,20 @@
         <div class="sidebar">
             <MyBlock :user-info="blog.authorInfo" />
 
-            <ul class="menu">
-                <li title="顶数" :class="{ 'up-hover': blog.isUp }">
+            <ul class="menu" style="background-color: white;">
+                <li class="up" title="顶数" :class="{ 'up-hover': blog.isUp }">
                     <i title="顶" @click="up(blog.id)"></i>
                     <span>{{ util.formatNum(blog.up) }}</span>
                 </li>
-                <li title="踩数" :class="{ 'down-hover': blog.isDown }">
+                <li class="down" title="踩数" :class="{ 'down-hover': blog.isDown }">
                     <i title="踩" @click="down(blog.id)"></i>
                     <span>{{ util.formatNum(blog.down) }}</span>
                 </li>
-                <li title="收藏数" :class="{ 'star-hover': blog.isStar }">
+                <li class="star" title="收藏数" :class="{ 'star-hover': blog.isStar }">
                     <i title="收藏" @click="star(blog.id)"></i>
                     <span>{{ util.formatNum(blog.star) }}</span>
                 </li>
-                <li title="浏览数">
+                <li class="view" title="浏览数">
                     <i></i>
                     <span>{{ util.formatNum(blog.views) }}</span>
                 </li>
@@ -29,19 +29,26 @@
 
         <div>
             <MarkdownPreview :initialValue="blog.content" theme="gitHub"
-                style="margin-left: 217px;border-radius: 5px;overflow: hidden;" ref="markdown" :on-ready="onReady">
+                style="margin-left: 217px;border-radius: 5px;overflow: hidden;" ref="markdown">
             </MarkdownPreview>
 
             <div v-if="blog.status == 1" class="comments">
-                <div class="post-area">
-                    <img class="face" :src="blog.authorInfo.avatar" alt="" width="40" height="40">
-                    <textarea cols="30" rows="10" v-model="content" maxlength="100" placeholder="说说你此刻的想法"></textarea>
-                </div>
+                <div class="comments-blog">
+                    <img class="face" :src="blog.authorInfo.avatar" alt="" width="40" height="40" />
+                    <div class="post-area">
+                        <textarea cols="30" rows="10" v-model="content" maxlength="100"
+                            placeholder="说说你此刻的想法"></textarea>
+                        <div class="bottom">
+                            <p class="tip" :class="{ 'tip-active': isTip1 }" @animationend="isTip1 = false">{{ tip1 }}
+                            </p>
+                            <button @click="postComment({
+                                blogId: blog.id,
+                                content: content
+                            })" :class="{ active: $store.state.userInfo }">发表评论</button>
+                        </div>
 
-                <button @click="postComment({
-                    blogId: blog.id,
-                    content: content
-                })" :class="{ active: $store.state.userInfo }">发表评论</button>
+                    </div>
+                </div>
 
                 <div class="comments-area">
                     <div class="hot-comments">热门评论</div>
@@ -125,7 +132,10 @@
 
         <div class="post-area-children" v-show="isShowCommentArea" ref="reply-area">
             <textarea cols="30" rows="10" v-model="comment.content" maxlength="100" placeholder="回复"></textarea>
-            <button @click="postComment(comment)" :class="{ active: $store.state.userInfo }">回复</button>
+            <div class="bottom">
+                <p class="tip" :class="{ 'tip-active': isTip2 }" @animationend="isTip2 = false">{{ tip2 }}</p>
+                <button @click="postComment2(comment)" :class="{ active: $store.state.userInfo }">回复</button>
+            </div>
         </div>
 
         <GoTop></GoTop>
@@ -174,7 +184,11 @@ export default {
             comment: {
                 content: ""
             },
-            isShowCommentArea: false
+            isShowCommentArea: false,
+            tip1: null,
+            isTip1: false,
+            tip2: null,
+            isTip2: false
         }
     },
     methods: {
@@ -213,27 +227,53 @@ export default {
         postComment(comment) {
             console.log(comment)
 
-            this.$axios.myRequest.postComments(comment).then((res) => {
-                console.log(res)
+            if (comment.content == null || comment.content.length == 0) {
+                this.tip1 = '评论不能为空！'
+                this.isTip1 = true
+            } else {
+                this.tip1 = null
+                this.isTip1 = false
 
-                // this.blog.commentsList.newComments.unshift(res.data)
-                this.content = ""
+                this.$axios.myRequest.postComments(comment).then((res) => {
+                    console.log(res)
 
-                this.getBlogDetails()
-            })
+                    // this.blog.commentsList.newComments.unshift(res.data)
+                    this.content = ""
+
+                    this.getBlogDetails()
+                })
+            }
+        },
+        postComment2(comment) {
+            console.log(comment)
+
+            if (comment.content == null || comment.content.length == 0) {
+                this.tip2 = '评论不能为空！'
+                this.isTip2 = true
+            } else {
+                this.tip2 = null
+                this.isTip2 = false
+                this.$axios.myRequest.postComments(comment).then((res) => {
+                    console.log(res)
+                    this.content = ""
+                    this.getBlogDetails()
+                })
+            }
         },
         deleteComments(type, index, commentsId) {
             this.$axios.myRequest.deleteComments(commentsId).then((res) => {
                 console.log(res)
                 if (res.code === 600) {
-                    this.blog.commentsList[type].splice(index, 1)
+                    // this.blog.commentsList[type].splice(index, 1)
+
+                    this.getBlogDetails()
 
                     this.$xMessage.show({
                         title: '删除成功！',
                         message: "",
                         type: 'success',
                         duration: 3000
-                    });
+                    })
                 }
             })
         },
@@ -241,23 +281,26 @@ export default {
             this.$axios.myRequest.upComments(commentsId).then((res) => {
                 console.log(res)
                 if (res.code === 600) {
-                    if (type === "hot") {
-                        this.blog.commentsList.hotComments[index].isUp = !this.blog.commentsList.hotComments[index].isUp
+                    this.getBlogDetails()
 
-                        if (this.blog.commentsList.hotComments[index].isUp) {
-                            this.blog.commentsList.hotComments[index].up++
-                        } else {
-                            this.blog.commentsList.hotComments[index].up--
-                        }
-                    } else {
-                        this.blog.commentsList.newComments[index].isUp = !this.blog.commentsList.newComments[index].isUp
+                    console.log(type, index)
+                    // if (type === "hot") {
+                    //     this.blog.commentsList.hotComments[index].isUp = !this.blog.commentsList.hotComments[index].isUp
 
-                        if (this.blog.commentsList.newComments[index].isUp) {
-                            this.blog.commentsList.newComments[index].up++
-                        } else {
-                            this.blog.commentsList.newComments[index].up--
-                        }
-                    }
+                    //     if (this.blog.commentsList.hotComments[index].isUp) {
+                    //         this.blog.commentsList.hotComments[index].up++
+                    //     } else {
+                    //         this.blog.commentsList.hotComments[index].up--
+                    //     }
+                    // } else {
+                    //     this.blog.commentsList.newComments[index].isUp = !this.blog.commentsList.newComments[index].isUp
+
+                    //     if (this.blog.commentsList.newComments[index].isUp) {
+                    //         this.blog.commentsList.newComments[index].up++
+                    //     } else {
+                    //         this.blog.commentsList.newComments[index].up--
+                    //     }
+                    // }
 
                 }
             })
@@ -266,29 +309,29 @@ export default {
             this.$axios.myRequest.downComments(commentsId).then((res) => {
                 console.log(res)
                 if (res.code === 600) {
-                    if (type === "hot") {
-                        this.blog.commentsList.hotComments[index].isDown = !this.blog.commentsList.hotComments[index].isDown
+                    this.getBlogDetails()
 
-                        if (this.blog.commentsList.hotComments[index].isDown) {
-                            this.blog.commentsList.hotComments[index].down++
-                        } else {
-                            this.blog.commentsList.hotComments[index].down--
-                        }
-                    } else {
-                        this.blog.commentsList.newComments[index].isDown = !this.blog.commentsList.newComments[index].isDown
+                    console.log(type, index)
+                    // if (type === "hot") {
+                    //     this.blog.commentsList.hotComments[index].isDown = !this.blog.commentsList.hotComments[index].isDown
 
-                        if (this.blog.commentsList.newComments[index].isDown) {
-                            this.blog.commentsList.newComments[index].down++
-                        } else {
-                            this.blog.commentsList.newComments[index].down--
-                        }
-                    }
+                    //     if (this.blog.commentsList.hotComments[index].isDown) {
+                    //         this.blog.commentsList.hotComments[index].down++
+                    //     } else {
+                    //         this.blog.commentsList.hotComments[index].down--
+                    //     }
+                    // } else {
+                    //     this.blog.commentsList.newComments[index].isDown = !this.blog.commentsList.newComments[index].isDown
+
+                    //     if (this.blog.commentsList.newComments[index].isDown) {
+                    //         this.blog.commentsList.newComments[index].down++
+                    //     } else {
+                    //         this.blog.commentsList.newComments[index].down--
+                    //     }
+                    // }
 
                 }
             })
-        },
-        onReady(obj) {
-            console.log(obj)
         },
         createDirectory() {
             const content = this.$refs.markdown.$el.querySelector('div:first-child').children
@@ -374,6 +417,62 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+@keyframes plusOne {
+    0% {
+        opacity: 0;
+        top: 0;
+    }
+
+    50% {
+        opacity: 1;
+        top: -15px;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes tip {
+    0% {
+        margin-left: 0;
+    }
+
+    25% {
+        margin-left: 30px;
+    }
+
+    50% {
+        margin-left: 0;
+    }
+
+    75% {
+        margin-left: 30px;
+    }
+
+    100% {
+        margin-left: 0;
+    }
+}
+
+.comments-blog {
+    display: flex;
+
+    img {
+        border-radius: 50%;
+    }
+
+    .post-area {
+        width: 100%;
+        margin-left: 20px;
+
+        textarea {
+            width: 100%;
+        }
+    }
+}
+
+
 .details {
     margin: 80px auto 30px auto;
 
@@ -408,6 +507,17 @@ export default {
             display: block;
             background-size: cover;
             transition: @transition-time;
+            position: relative;
+        }
+
+        i::before {
+            content: "+1";
+            position: absolute;
+            top: 0;
+            left: 2px;
+            color: @theme-color;
+            opacity: 0;
+            font-size: 12px;
         }
 
         span {
@@ -434,16 +544,51 @@ export default {
         background-image: url(@/assets/img/delete.png);
     }
 
+    li.up-hover i,
     li.up i:hover {
         background-image: url(@/assets/img/up-hover.png);
     }
 
+    li.up i:hover {
+        transform: scale(1.3);
+    }
+
+    li.down-hover i,
     li.down i:hover {
         background-image: url(@/assets/img/down-hover.png);
     }
 
+    li.down i:hover {
+        transform: scale(1.3);
+    }
+
     li.delete i:hover {
         background-image: url(@/assets/img/delete-hover.png);
+        transform: scale(1.3);
+    }
+
+    li.star i {
+        background-image: url(@/assets/img/star.png);
+    }
+
+
+    li.star i:hover {
+        transform: scale(1.3);
+    }
+
+    li.star-hover i,
+    li.star i:hover {
+        background-image: url(@/assets/img/star-hover.png);
+    }
+
+    li.view i {
+        background-image: url(@/assets/img/views.png);
+    }
+
+    li.up-hover i::before,
+    li.down-hover i::before,
+    li.star-hover i::before {
+        animation: plusOne 1s;
     }
 }
 
@@ -470,8 +615,6 @@ export default {
     padding: 30px 40px;
 
     .post-area {
-        display: flex;
-        justify-content: space-between;
 
         img {
             border-radius: 50%;
@@ -496,27 +639,40 @@ export default {
             height: 100px;
             border-radius: 5px;
             outline: none;
-            padding: 5px;
+            padding: 10px;
             resize: none;
             border-color: @theme-color;
         }
     }
 
-    button {
-        margin-top: 10px;
-        margin-left: auto;
-        display: block;
-        border-radius: 5px;
-        padding: 5px 10px;
-        border: 1px solid @theme-color-shallow;
-        background-color: @theme-color-shallow;
-        cursor: pointer;
-        color: white;
-    }
+    .bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 5px;
 
-    button.active {
-        background-color: @theme-color;
-        border-color: @theme-color;
+        button {
+            border-radius: 5px;
+            padding: 5px 20px;
+            border: 1px solid @theme-color-shallow;
+            background-color: @theme-color-shallow;
+            cursor: pointer;
+            color: white;
+        }
+
+        button.active {
+            background-color: @theme-color;
+            border-color: @theme-color;
+        }
+
+        .tip {
+            color: red;
+            font-size: 14px;
+        }
+
+        .tip-active {
+            animation: tip 0.6s;
+        }
     }
 
     .comments-area {
@@ -578,7 +734,7 @@ export default {
             }
         }
 
-        p {
+        >p {
             margin: 10px 0 5px 0;
             color: @gray-color-dep;
             font-size: 15px;

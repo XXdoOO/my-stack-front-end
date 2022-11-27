@@ -66,6 +66,8 @@ export default {
           type: 'error',
           duration: 3000
         })
+      } else if (code === 613) {
+        this.$loginRegister.showLoginRegister()
       }
 
       if (res.data.data !== null && res.data.data.total !== undefined) {

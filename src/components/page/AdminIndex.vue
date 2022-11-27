@@ -147,21 +147,26 @@ export default defineComponent({
     return { option, option2 };
   },
   created() {
-    this.$axios.myRequest.getWatchData().then((res) => {
-      console.log(res)
-      console.log(this.option)
-      this.option.series[0].data[0].value = res.data.blogStatus.passCount
-      this.option.series[0].data[1].value = res.data.blogStatus.auditingCount
-      this.option.series[0].data[2].value = res.data.blogStatus.noPassCount
-      this.option.series[0].data[3].value = res.data.blogStatus.deletedCount
+    this.timer = setInterval(() => {
+      this.$axios.myRequest.getWatchData().then((res) => {
+        console.log(res)
+        console.log(this.option)
+        this.option.series[0].data[0].value = res.data.blogStatus.passCount
+        this.option.series[0].data[1].value = res.data.blogStatus.auditingCount
+        this.option.series[0].data[2].value = res.data.blogStatus.noPassCount
+        this.option.series[0].data[3].value = res.data.blogStatus.deletedCount
 
-      this.option2.series[0].data[0].value = res.data.userStatus.onlineCount
-      this.option2.series[0].data[1].value = res.data.userStatus.offlineCount2
-      this.option2.series[0].data[2].value = res.data.userStatus.offlineCount
-      this.option2.series[0].data[3].value = res.data.userStatus.deletedCount
-    })
+        this.option2.series[0].data[0].value = res.data.userStatus.onlineCount
+        this.option2.series[0].data[1].value = res.data.userStatus.offlineCount2
+        this.option2.series[0].data[2].value = res.data.userStatus.offlineCount
+        this.option2.series[0].data[3].value = res.data.userStatus.deletedCount
+      })
+    }, 60000)
+  },
+  destroyed() {
+    clearInterval(this.timer)
   }
-});
+})
 </script>
 
 <style scoped lang="less">

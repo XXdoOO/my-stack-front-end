@@ -25,7 +25,7 @@
         <div class="userInfo">
           <el-avatar :src="userInfo.avatar"></el-avatar>
           <div class="nickname">{{ userInfo.nickname }}</div>
-          <el-link type="primary" icon="el-icon-refresh" href="/" :underline="false">切换前台</el-link>
+          <el-link type="primary" icon="el-icon-refresh" href="/" :underline="false">返回前台</el-link>
           <el-link type="danger" icon="el-icon-switch-button" :underline="false" @click="logout">退出登录
           </el-link>
         </div>

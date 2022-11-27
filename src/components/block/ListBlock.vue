@@ -324,6 +324,7 @@ export default {
       content: "+1";
       position: absolute;
       top: 0;
+      left: 2px;
       color: @theme-color;
       opacity: 0;
       font-size: 12px;

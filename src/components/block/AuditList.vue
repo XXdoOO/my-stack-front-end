@@ -59,9 +59,9 @@
       </el-table-column>
       <el-table-column prop="status" label="状态">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.status == null">待审核</el-tag>
-          <el-tag v-if="scope.row.status" type="success">已通过</el-tag>
-          <el-tag v-if="scope.row.status == false" type="danger">未通过</el-tag>
+          <el-tag v-if="scope.row.status == 0">待审核</el-tag>
+          <el-tag v-if="scope.row.status == 1" type="success">已通过</el-tag>
+          <el-tag v-if="scope.row.status == 2" type="danger">未通过</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="address" label="操作" min-width="280px">
@@ -128,13 +128,13 @@ export default {
       isAsc: true,
       currentPage: 1,
       options: [{
-        value: true,
+        value: 1,
         label: '已通过'
       }, {
-        value: false,
+        value: 2,
         label: '未通过'
       }, {
-        value: null,
+        value: 0,
         label: '待审核'
       }],
       pickerOptions: {
