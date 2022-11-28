@@ -34,7 +34,9 @@
 
             <div v-if="blog.status == 1" class="comments">
                 <div class="comments-blog">
-                    <img class="face" :src="blog.authorInfo.avatar" alt="" width="40" height="40" />
+                    <img v-if="$store.state.userInfo" class="face" :src="$store.state.userInfo.avatar" alt="" width="40"
+                        height="40" />
+                    <img v-else class="face" src="@/assets/img/avatar.jpg" alt="" width="40" height="40" />
                     <div class="post-area">
                         <textarea cols="30" rows="10" v-model="content" maxlength="100"
                             placeholder="说说你此刻的想法"></textarea>
@@ -460,6 +462,7 @@ export default {
 
     img {
         border-radius: 50%;
+        border: 1px solid @border-color;
     }
 
     .post-area {

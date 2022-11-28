@@ -9,7 +9,7 @@
     <div class="container">
       <router-link class="logo" to="/">
         <img src="../../assets/img/logo.png" alt="" width="35" />
-        <span>小破栈</span>
+        <span>My Stack</span>
       </router-link>
 
       <nav>
