@@ -1,0 +1,36 @@
+<template>
+  <main class="container">
+    <ListBlock :nextPage="getBlogList" />
+
+    <GoTop></GoTop>
+  </main>
+</template>
+<script>
+import ListBlock from "@/components/block/ListBlock.vue"
+import GoTop from "@/components/block/GoTop.vue"
+export default {
+  name: "Home",
+  components: { ListBlock, GoTop },
+  data() {
+    return {
+      blogList: []
+    }
+  },
+  methods: {
+    getBlogList() {
+      this.$axios.myRequest.getBlogList(null, this.$store.state.currentPage * 10, 10).then((res) => {
+        this.$store.state.blogList = this.$store.state.blogList.concat(res.data.list)
+        this.$store.state.total = res.data.total
+      })
+    }
+  },
+  created() {
+    this.getBlogList()
+  }
+};
+</script>
+<style lang="less" scoped>
+// main {
+//   margin: ;
+// }
+</style>
