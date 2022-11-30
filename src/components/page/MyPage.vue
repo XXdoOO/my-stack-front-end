@@ -4,14 +4,14 @@
       <div class="avatar">
         <img :src="userInfo.avatar" width="50" height="50" />
         <input style="display:none" type="file" accept=".jpg,.png" ref="avatar" @change="uploadAvatar" />
-        <i class="update" @click="$refs.avatar.click()"></i>
+        <i class="update" @click="isShowPopup = true"></i>
       </div>
       <input class="nickname" type="text" v-model="userInfo.nickname"
         @input="isChange = true; nickname = userInfo.nickname">
       <button class="edit-btn" v-if="isChange" @click="save">保存</button>
 
       <time class="register-time">入栈天数：{{ new Date(parseInt(userInfo.registerTime)).getDay() }}天</time>
-      <button class="delete-btn" @click="deleteAccount">注销账号</button>
+      <button class="delete-btn" @click="deleteAccount">注销</button>
       <button class="logout" @click="logout">退出登录</button>
     </div>
     <nav>
@@ -34,6 +34,23 @@
       </router-link>
     </nav>
     <ListBlock :next-page="getMyInfo" :is-my="true" />
+
+    <div v-show="isShowPopup" class="mask" @click="isShowPopup = false">
+      <div class="dialog" @click.stop>
+        <div class="title">
+          <div>从这里选择你的头像或点击 &nbsp;</div>
+          <div class="upload" @click="$refs.avatar.click()">
+            <div>上传图片</div>
+            <i></i>
+          </div>
+        </div>
+        <div class="avatar">
+          <img v-for="item of 49" :key="item" :class="{ active: selected == item }" @click="selected = item"
+            :src="`/avatar/${item}.jpg`" width="50" height="50" alt="">
+          <button class="confirm">确认</button>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 
@@ -48,19 +65,16 @@ export default {
       blogList: [],
       type: null,
       isChange: false,
-      nickname: undefined
+      nickname: undefined,
+      selected: null,
+      isShowPopup: false
     }
   },
   computed: {
     ...mapState(["userInfo"]),
   },
-  watch: {
-    $route: {
-      immediate: true,
-      handler() {
-        this.getMyInfo()
-      }
-    }
+  created() {
+    this.getMyInfo()
   },
   methods: {
     getMyInfo() {
@@ -179,25 +193,27 @@ export default {
       border: 1px solid @border-color;
     }
 
-    i {
+    i.update {
       position: absolute;
       top: 0;
       left: 0;
       width: 50px;
       height: 50px;
-      background-color: @gray-color;
-      border-radius: 50%;
-      background-image: url(../../assets/img/upload.png);
-      background-repeat: no-repeat;
-      background-position: 10px 10px;
-      opacity: 0;
       cursor: pointer;
       transition: @transition-time;
+      opacity: 0;
+      background-color: @gray-color;
+      border-radius: 50%;
+      background-image: url('@/assets/img/logo.png');
+      background-repeat: no-repeat;
+      background-position: 50%;
+      background-size: 50%;
     }
 
     img:hover+i,
     i:hover {
-      opacity: 0.7;
+      opacity: 1;
+      background-color: #ecedeeb8;
     }
   }
 
@@ -307,6 +323,79 @@ nav {
   a:hover:after,
   a.active:after {
     width: 30%;
+  }
+}
+
+.mask {
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  // background-color: red;
+
+  .dialog {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    box-shadow: @shadow-color;
+    padding: 10px;
+    background-color: white;
+
+    .title {
+      margin: 10px 0 10px 15px;
+      display: flex;
+      align-items: center;
+      line-height: 25px;
+
+      .upload {
+        display: flex;
+        align-items: center;
+        color: @theme-color;
+        cursor: pointer;
+
+        i {
+          display: block;
+          width: 25px;
+          height: 25px;
+          background-image: url('@/assets/img/upload.png');
+          background-repeat: no-repeat;
+          background-size: cover;
+        }
+      }
+    }
+
+    .avatar {
+      width: 550px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+
+      img {
+        border-radius: 50%;
+        margin: 5px;
+        border: 2px solid transparent;
+        transition: @transition-time;
+      }
+
+      img.active {
+        border-color: @theme-color;
+      }
+
+      .confirm {
+        border-radius: 5px;
+        padding: 5px 30px;
+        border: 1px solid @theme-color;
+        color: white;
+        background-color: @theme-color;
+        margin-left: auto;
+        margin-right: 15px;
+      }
+    }
+
   }
 }
 </style>
