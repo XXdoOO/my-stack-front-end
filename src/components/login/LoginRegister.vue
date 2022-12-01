@@ -1,7 +1,9 @@
 <template>
   <div class="login-register" ref="login" @click="hiddenPopup">
     <div @click.stop="">
-      <div :class="{ cover: true, active }"></div>
+      <div class="cover" :class="{ cover: true, active }">
+        <div>My Stack</div>
+      </div>
       <div :class="{ login: true, active }">
         <h1>登录</h1>
         <input type="text" maxlength="10" required placeholder="请输入用户名" v-model="loginFrom.username" />
@@ -66,9 +68,13 @@ export default {
       this.$refs.login.style.zIndex = -1
     },
     login(username, password) {
+      const email = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
       if (username.length === 0 || password.length === 0) {
-        this.tip.loginTip = "用户名或密码不能为空！";
+        this.tip.loginTip = "用户名或密码不能为空！"
         this.tip.tipClass = true;
+      } else if (!email.test(username)) {
+        this.tip.loginTip = "用户名不正确！"
+        this.tip.tipClass = true
       } else {
         console.log(this.$store);
 
@@ -260,6 +266,18 @@ export default {
     .register {
       z-index: 1;
     }
+  }
+}
+
+.cover {
+  position: relative;
+
+  div {
+    position: absolute;
+    left: 100px;
+    top: 50px;
+    color: white;
+    font-size: 30px;
   }
 }
 </style>
