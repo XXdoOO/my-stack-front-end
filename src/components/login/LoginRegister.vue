@@ -6,59 +6,74 @@
       </div>
       <div :class="{ login: true, active }">
         <h1>登录</h1>
-        <input type="text" maxlength="10" required placeholder="请输入用户名" v-model="loginFrom.username" />
-        <input type="password" maxlength="10" required placeholder="请输入密码" v-model="loginFrom.password" />
+        <input class="form-input" type="text" maxlength="16" required placeholder="请输入邮箱" v-model="loginFrom.email" />
+        <input class="form-input" type="password" maxlength="16" required placeholder="请输入密码"
+          v-model="loginFrom.password" />
+        <div class="kaptcha">
+          <input class="form-input" type="text" maxlength="8" required placeholder="请输入验证码" v-model="loginFrom.code" />
+          <MyButton type="text" class="toggle" @click="time = new Date()">换一张</MyButton>
+          <img :src="`/kaptcha?time=${time}`" />
+        </div>
         <p :class="{ active: tip.tipClass }" @animationend="tip.tipClass = false">
           {{ tip.loginTip }}
         </p>
 
-        <button type="submit" @click.stop="login(loginFrom.username, loginFrom.password)">
-          登录
-        </button>
-        <p @click.stop="active = !active">没有账号？点击注册</p>
+        <MyButton @click="login" style="margin-top: 20px">登录
+        </MyButton>
+        <p @click="active = !active">没有账号？点击注册</p>
       </div>
       <div :class="{ register: true, active }">
         <h1>注册</h1>
-        <input type="text" maxlength="10" required placeholder="请输入用户名" v-model="registerFrom.username" />
-        <input type="password" maxlength="10" required placeholder="请输入密码" v-model="registerFrom.password" />
-        <input type="password" maxlength="10" required placeholder="请输入确认密码" v-model="registerFrom.password2" />
+        <div class="email">
+          <input class="form-input" type="text" maxlength="16" required placeholder="请输入邮箱"
+            v-model="registerFrom.email" />
+          <MyButton type="text" class="toggle" @click="sendCode">发送验证码</MyButton>
+        </div>
+        <input class="form-input" type="text" maxlength="8" required placeholder="请输入验证码"
+          v-model="registerFrom.password2" />
+        <input class="form-input" type="password" maxlength="16" required placeholder="请输入密码"
+          v-model="registerFrom.password" />
+        <input class="form-input" type="password" maxlength="16" required placeholder="请输入确认密码" style="margin-bottom:0"
+          v-model="registerFrom.code" />
         <p :class="{ active: tip.tipClass }" @animationend="tip.tipClass = false">
           {{ tip.registerTip }}
         </p>
 
-        <button @click.stop="
-          register(
-            registerFrom.username,
-            registerFrom.password,
-            registerFrom.password2
-          )
-        ">
-          注册
-        </button>
-        <p @click.stop="active = !active">已有账号？点击登录</p>
+        <MyButton style="margin-top: 20px" @click="register">注册
+        </MyButton>
+        <p @click="active = !active">已有账号？点击登录</p>
       </div>
     </div>
   </div>
 </template>
 <script>
+import api from '@/assets/js/api/user.js'
+import MyButton from '@/components/MyButton.vue'
+
+const regex = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+
 export default {
   name: "LoginRegister",
+  components: { MyButton },
   data() {
     return {
       active: false,
+      time: '',
       tip: {
         loginTip: "",
         tipClass: false,
         registerTip: "",
       },
       loginFrom: {
-        username: "admin",
-        password: "xx",
+        email: "",
+        password: "",
+        code: ''
       },
       registerFrom: {
-        username: "",
+        email: "",
         password: "",
         password2: "",
+        code: ''
       },
     };
   },
@@ -67,45 +82,69 @@ export default {
       this.$refs.login.style.opacity = 0
       this.$refs.login.style.zIndex = -1
     },
-    login(username, password) {
-      const email = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
-      if (username.length === 0 || password.length === 0) {
-        this.tip.loginTip = "用户名或密码不能为空！"
-        this.tip.tipClass = true;
-      } else if (!email.test(username)) {
-        this.tip.loginTip = "用户名不正确！"
+    login() {
+      let email = this.loginFrom.email
+      let password = this.loginFrom.email
+
+      if (email.length === 0 || password.length === 0) {
+        this.tip.loginTip = "邮箱或密码不能为空"
+        this.tip.tipClass = true
+      } else if (!regex.test(email)) {
+        this.tip.loginTip = "邮箱格式错误"
         this.tip.tipClass = true
       } else {
-        console.log(this.$store);
+        console.log(this.$store)
 
-        this.$axios.myRequest.login(username, password).then((res) => {
-          if (res.code == 600) {
-            sessionStorage.setItem("userInfo", JSON.stringify(res.data));
+        this.$axios.myRequest.login(email, password).then((res) => {
+          if (res.code == 200) {
+            sessionStorage.setItem("userInfo", JSON.stringify(res.data))
 
-            window.location.reload();
+            window.location.reload()
           } else {
-            this.tip.loginTip = res.msg;
-            this.tip.tipClass = true;
+            this.tip.loginTip = res.msg
+            this.tip.tipClass = true
           }
         })
       }
     },
-    register(username, password, password2) {
-      if (username.length === 0) {
-        this.tip.registerTip = "用户名不能为空！";
-        this.tip.tipClass = true;
+    register() {
+      let email = this.registerFrom.email
+      let password = this.registerFrom.password
+      let password2 = this.registerFrom.password2
+      let code = this.registerFrom.password
+
+      if (email.length === 0) {
+        this.tip.registerTip = "邮箱不能为空"
+        this.tip.tipClass = true
+      } else if (!regex.test(email)) {
+        this.tip.registerTip = "邮箱格式错误"
+        this.tip.tipClass = true
+      } else if (code.length === 0) {
+        this.tip.registerTip = "验证码不能为空"
+        this.tip.tipClass = true
       } else if (password.length === 0 || password2.length === 0) {
-        this.tip.registerTip = "密码或确认不能为空！";
-        this.tip.tipClass = true;
+        this.tip.registerTip = "密码或确认密码不能为空"
+        this.tip.tipClass = true
       } else if (password !== password2) {
-        this.tip.registerTip = "两次密码不一致！";
-        this.tip.tipClass = true;
+        this.tip.registerTip = "两次密码不一致";
+        this.tip.tipClass = true
       } else {
-        this.$axios.myRequest.register(username, password).then((res) => {
-          this.tip.registerTip = res.msg;
+        this.$axios.myRequest.register(email, password, code).then((res) => {
+          this.tip.registerTip = res.msg
         })
       }
     },
+    sendCode() {
+      if (this.registerFrom.email.length == 0) {
+        this.tip.registerTip = "邮箱不能为空"
+        this.tip.tipClass = true
+      } else if (!regex.test(this.registerFrom.email)) {
+        this.tip.registerTip = "邮箱格式错误"
+        this.tip.tipClass = true
+      } else {
+        api.sendCode(this.registerFrom.email)
+      }
+    }
   },
 };
 </script>
@@ -143,17 +182,17 @@ export default {
   align-items: center;
   background-color: rgba(0, 0, 0, 0.2);
   transition: opacity @transition-time;
-  z-index: -1;
-  opacity: 0;
+  z-index: 99;
+  opacity: 1;
 
   >div {
     position: relative;
     overflow: hidden;
     width: 800px;
+    height: 520px;
     aspect-ratio: calc(1 / 0.618);
     border-radius: 10px;
     box-shadow: @shadow-color;
-    z-index: 999;
 
     .cover {
       position: absolute;
@@ -182,7 +221,7 @@ export default {
       transition: 0.5s;
       display: flex;
       flex-direction: column;
-      padding: 60px;
+      padding: 40px;
 
       >h1 {
         text-align: center;
@@ -190,38 +229,64 @@ export default {
         color: @theme-color;
       }
 
-      >input {
-        outline: none;
-        border: 1px solid @theme-color;
-        border-radius: 5px;
+      .kaptcha {
+        position: relative;
+        overflow: hidden;
         width: 100%;
         height: 40px;
-        font-size: 16px;
-        padding: 0 10px;
-        margin-bottom: 20px;
+
+        input {
+          padding-right: 120px;
+        }
+
+        .toggle {
+          position: absolute;
+          right: 110px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: @theme-color;
+          cursor: pointer;
+          opacity: 0.7;
+          font-size: 14px;
+          transition: @transition-time;
+        }
+
+        .toggle:hover {
+          opacity: 1;
+        }
+
+        img {
+          position: absolute;
+          right: 2px;
+          top: 2px;
+          width: auto;
+          height: 36px;
+          border-radius: 5px;
+        }
       }
 
-      >input:last-of-type {
-        margin-bottom: 0;
-      }
-
-      >button {
-        color: @theme-color;
-        background-color: white;
-        border: 1px solid @theme-color;
-        width: 150px;
+      .email {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
         height: 40px;
-        border-radius: 5px;
-        font-weight: bold;
-        transition: 0.3s;
-        cursor: pointer;
-        font-size: 16px;
-        margin: 20px auto;
-      }
+        margin-bottom: 20px;
 
-      >button:hover {
-        color: white;
-        background-color: @theme-color;
+        input {
+          padding-right: 70px;
+        }
+
+        .toggle {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: @theme-color;
+          cursor: pointer;
+          opacity: 0.7;
+          font-size: 14px;
+          transition: @transition-time;
+        }
       }
 
       >p:first-of-type {
@@ -242,6 +307,7 @@ export default {
         text-decoration: underline;
         transition: 0.3s;
         text-align: center;
+        margin-top: 15px;
       }
 
       >p:last-child:hover {
@@ -267,6 +333,17 @@ export default {
       z-index: 1;
     }
   }
+}
+
+.form-input {
+  outline: none;
+  width: 100%;
+  height: 40px;
+  padding: 0 10px;
+  margin-bottom: 20px;
+  border: 1px solid @theme-color;
+  padding-right: 165px;
+  border-radius: 5px;
 }
 
 .cover {
