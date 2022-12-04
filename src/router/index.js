@@ -59,13 +59,13 @@ router.beforeEach((to, from, next) => {
         if (userInfo) {
             next()
         } else {
-            Vue.prototype.$loginRegister.showLoginRegister()
+            Vue.prototype.$loginRegister.show()
         }
     } else if (identity === "admin") {
         if (userInfo && userInfo.identity) {
             next()
         } else {
-            Vue.prototype.$loginRegister.showLoginRegister()
+            Vue.prototype.$loginRegister.show()
         }
     } else {
         next()

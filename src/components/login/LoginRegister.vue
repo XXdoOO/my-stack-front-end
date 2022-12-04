@@ -6,7 +6,7 @@
       </div>
       <div :class="{ login: true, active }">
         <h1>登录</h1>
-        <input class="form-input" type="text" maxlength="16" required placeholder="请输入邮箱" v-model="loginFrom.email" />
+        <input class="form-input" type="text" maxlength="32" required placeholder="请输入邮箱" v-model="loginFrom.email" />
         <input class="form-input" type="password" maxlength="16" required placeholder="请输入密码"
           v-model="loginFrom.password" />
         <div class="kaptcha">
@@ -25,16 +25,17 @@
       <div :class="{ register: true, active }">
         <h1>注册</h1>
         <div class="email">
-          <input class="form-input" type="text" maxlength="16" required placeholder="请输入邮箱"
+          <input class="form-input" type="text" maxlength="32" required placeholder="请输入邮箱"
             v-model="registerFrom.email" />
-          <MyButton type="text" class="toggle" @click="sendCode">发送验证码</MyButton>
+          <MyButton type="text" class="toggle" :disabled="isDisableSend" @click="sendCode">{{ isDisableSend ?
+              `${countdown}后重新发送` : '发送验证码'
+          }}</MyButton>
         </div>
-        <input class="form-input" type="text" maxlength="8" required placeholder="请输入验证码"
-          v-model="registerFrom.password2" />
+        <input class="form-input" type="text" maxlength="8" required placeholder="请输入验证码" v-model="registerFrom.code" />
         <input class="form-input" type="password" maxlength="16" required placeholder="请输入密码"
           v-model="registerFrom.password" />
         <input class="form-input" type="password" maxlength="16" required placeholder="请输入确认密码" style="margin-bottom:0"
-          v-model="registerFrom.code" />
+          v-model="registerFrom.password2" />
         <p :class="{ active: tip.tipClass }" @animationend="tip.tipClass = false">
           {{ tip.registerTip }}
         </p>
@@ -47,7 +48,7 @@
   </div>
 </template>
 <script>
-import api from '@/assets/js/api/user.js'
+import api from '@/api/user.js'
 import MyButton from '@/components/MyButton.vue'
 
 const regex = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
@@ -65,26 +66,29 @@ export default {
         registerTip: "",
       },
       loginFrom: {
-        email: "",
-        password: "",
+        email: "1972524359@qq.com",
+        password: "xx",
         code: ''
       },
       registerFrom: {
-        email: "",
-        password: "",
-        password2: "",
+        email: "1972524359@qq.com",
+        password: "xx",
+        password2: "xx",
         code: ''
       },
+      isDisableSend: false,
+      countdown: 60
     };
   },
   methods: {
     hiddenPopup() {
       this.$refs.login.style.opacity = 0
-      this.$refs.login.style.zIndex = -1
+      this.$refs.login.style.zIndex = -999
     },
     login() {
       let email = this.loginFrom.email
-      let password = this.loginFrom.email
+      let password = this.loginFrom.password
+      let code = this.loginFrom.code
 
       if (email.length === 0 || password.length === 0) {
         this.tip.loginTip = "邮箱或密码不能为空"
@@ -92,18 +96,24 @@ export default {
       } else if (!regex.test(email)) {
         this.tip.loginTip = "邮箱格式错误"
         this.tip.tipClass = true
+      } else if (code.length === 0) {
+        this.tip.loginTip = "验证码不能为空"
+        this.tip.tipClass = true
       } else {
         console.log(this.$store)
 
-        this.$axios.myRequest.login(email, password).then((res) => {
-          if (res.code == 200) {
-            sessionStorage.setItem("userInfo", JSON.stringify(res.data))
+        api.login({
+          email,
+          password,
+          code
+        }).then((data) => {
+          sessionStorage.setItem("userInfo", JSON.stringify(data))
 
-            window.location.reload()
-          } else {
-            this.tip.loginTip = res.msg
-            this.tip.tipClass = true
-          }
+          window.location.reload()
+        }).catch(msg => {
+          this.time = new Date()
+          this.tip.loginTip = msg
+          this.tip.tipClass = true
         })
       }
     },
@@ -111,7 +121,7 @@ export default {
       let email = this.registerFrom.email
       let password = this.registerFrom.password
       let password2 = this.registerFrom.password2
-      let code = this.registerFrom.password
+      let code = this.registerFrom.code
 
       if (email.length === 0) {
         this.tip.registerTip = "邮箱不能为空"
@@ -129,8 +139,11 @@ export default {
         this.tip.registerTip = "两次密码不一致";
         this.tip.tipClass = true
       } else {
-        this.$axios.myRequest.register(email, password, code).then((res) => {
-          this.tip.registerTip = res.msg
+        api.register({ email, password, code }).then(() => {
+          this.tip.registerTip = '注册成功'
+        }).catch(msg => {
+          this.tip.registerTip = msg
+          this.tip.tipClass = true
         })
       }
     },
@@ -142,7 +155,18 @@ export default {
         this.tip.registerTip = "邮箱格式错误"
         this.tip.tipClass = true
       } else {
-        api.sendCode(this.registerFrom.email)
+        api.sendCode(this.registerFrom.email).then(res => {
+          console.log(res)
+
+          this.isDisableSend = true
+          setInterval(() => {
+            if (this.countdown > 0) {
+              this.countdown--
+            } else {
+              this.isDisableSend = false
+            }
+          }, 1000)
+        })
       }
     }
   },
@@ -180,10 +204,9 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.2);
   transition: opacity @transition-time;
-  z-index: 99;
-  opacity: 1;
+  z-index: -999;
+  opacity: 0;
 
   >div {
     position: relative;
@@ -244,15 +267,6 @@ export default {
           right: 110px;
           top: 50%;
           transform: translateY(-50%);
-          color: @theme-color;
-          cursor: pointer;
-          opacity: 0.7;
-          font-size: 14px;
-          transition: @transition-time;
-        }
-
-        .toggle:hover {
-          opacity: 1;
         }
 
         img {
@@ -281,11 +295,6 @@ export default {
           right: 10px;
           top: 50%;
           transform: translateY(-50%);
-          color: @theme-color;
-          cursor: pointer;
-          opacity: 0.7;
-          font-size: 14px;
-          transition: @transition-time;
         }
       }
 

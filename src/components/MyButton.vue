@@ -117,8 +117,8 @@ export default {
   padding: 0;
 }
 
-.text:not(.disabled):hover {
-  color: @theme-color2;
+.text:not(.disabled):hover::before {
+  background-color: rgba(255, 255, 255, .3);
 }
 
 .disabled {

@@ -7,7 +7,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import Message from "./components/message"
 import Confirm from "./components/confirm"
-import util from "./assets/js/util"
+import util from "./util/util"
 import MyButton from '@/components/MyButton.vue'
 
 

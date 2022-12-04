@@ -1,8 +1,4 @@
-import axios from "axios"
-
-axios.defaults.baseURL = "http://localhost:8080"
-axios.defaults.withCredentials = true
-axios.defaults.timeout = 10000
+import axios from "@/util/request"
 
 
 axios.myRequest = {

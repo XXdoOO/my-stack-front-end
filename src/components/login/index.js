@@ -13,14 +13,14 @@ export default {
         this.vm = instance.$mount(document.createElement('div')) // 创建一个空的div标签并挂载到上面
         document.body.appendChild(this.vm.$el); // 挂载到全局节点
 
-        const showLoginRegister = () => { // 添加方法，后面挂载到$message上
+        const show = () => { // 添加方法，后面挂载到$message上
             console.log(this.vm.$el.style.opacity);
             this.vm.$el.style.opacity = 1
             this.vm.$el.style.zIndex = 999
         }
 
         Vue.prototype.$loginRegister = {
-            showLoginRegister
+            show
         }
     }
 }
