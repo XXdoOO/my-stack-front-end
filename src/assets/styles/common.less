@@ -1,0 +1,152 @@
+@theme-color: #40a0ff;
+@theme-color-shallow: #99cbfd;
+@warning-color: #E6A23C;
+@danger-color: #F56C6C;
+@gray-color: #ecedee;
+@gray-color-dep: #777777;
+@transition-time: 0.3s;
+@shadow-color: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+@border-color: #eee;
+
+@font-face {
+    font-family: "jxzk";
+    src: url("@/assets/font/有爱魔兽圆体-M.ttf");
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+// #markdown {
+//     hr {
+//         height: 1px;
+//         border: none;
+//         border-top: 1px dashed @theme-color;
+//     }
+
+//     h1 {
+//         font-size: 2em;
+//     }
+
+//     h2 {
+//         font-size: 1.8em;
+//     }
+
+//     h3 {
+//         font-size: 1.6em;
+//     }
+
+//     h4 {
+//         font-size: 1.4em;
+//     }
+
+//     h5 {
+//         font-size: 1.2em;
+//     }
+
+//     h6 {
+//         font-size: 1em;
+//     }
+
+//     h1,
+//     h2,
+//     h3,
+//     h4,
+//     h5,
+//     h6 {
+//         margin-top: 1rem;
+//         margin-bottom: 1rem;
+//         font-weight: bold;
+//         padding: 0.15em 0 0.15em 0.5em;
+//         background-color: rgb(245, 245, 245);
+//         border-left: 0.15em solid @theme-color;
+//     }
+
+//     img {
+//         margin-top: 1rem;
+//         width: 100%;
+//     }
+
+//     li {
+//         list-style: inherit;
+//         margin-left: 3em;
+//     }
+
+//     a {
+//         color: @theme-color;
+//     }
+
+//     a:hover {
+//         font-weight: 600;
+//     }
+
+//     pre code {
+//         border-radius: 0 5px 5px 0;
+//         flex-grow: 1;
+//     }
+
+//     pre {
+//         position: relative;
+//         display: flex;
+//         flex-direction: row-reverse;
+//     }
+
+//     .pre-numbering {
+//         width: 30px;
+//         border-right: 1px solid #C3CCD0;
+//         background-color: #1C1D21;
+//         text-align: center;
+//         padding: 1em 0;
+//         border-radius: 5px 0 0 5px;
+//     }
+
+//     .pre-numbering li {
+//         list-style: none;
+//         color: #AAA;
+//         font-size: 1em;
+//         margin-left: 0;
+//     }
+// }
+
+// 覆盖markdown默认样式
+#app .markdown-preview {
+    padding: 10px 25px !important;
+
+    ul {
+        li {
+            list-style: disc !important;
+            font-size: 16px !important;
+            padding-left: 0 !important;
+
+            li {
+                list-style: circle !important;
+            }
+        }
+
+        li:after {
+            display: none !important;
+        }
+    }
+
+    ol {
+        li {
+            list-style: decimal !important;
+        }
+    }
+
+    img {
+        border-radius: 5px;
+    }
+
+    strong {
+        font-size: 14px !important;
+    }
+
+    code {
+        background-color: unset !important;
+        color: unset !important;
+        font-size: 12px !important;
+    }
+}

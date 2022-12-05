@@ -1,9 +1,14 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(),
   routes: [
-    { path: '/', component: () => import('@/views/index/home/index.vue') }
+    { path: '/', component: () => import('@/views/index/index.vue') },
+    {
+      path: '/admin', component: () => import('@/views/admin/home/index.vue'), children: [
+        { path: '/index', component: () => import('@/views/admin/home/index.vue') }
+      ]
+    },
   ]
 })
 export default router
