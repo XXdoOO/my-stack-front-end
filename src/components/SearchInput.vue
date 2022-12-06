@@ -1,25 +1,21 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const keywords = ref<string>('')
+const router = useRouter()
+
+const search = (keywords) => {
+  router.push(`/search/${keywords}`)
+}
+</script>
+
 <template>
   <div class="search-input">
     <input type="text" placeholder="请输入搜索关键词" v-model="keywords" @keyup.enter="search(keywords)" />
     <i title="点击搜索" @click="search(keywords)"></i>
   </div>
 </template>
-
-<script>
-export default {
-  name: "SearchInput",
-  data() {
-    return {
-      keywords: "",
-    };
-  },
-  methods: {
-    search(keywords) {
-      this.$router.push(`/search/${keywords}`)
-    },
-  },
-};
-</script>
 
 <style lang="less" scoped>
 .search-input {

@@ -1,0 +1,107 @@
+{
+  "id": "3584595",
+  "name": "graduation-design",
+  "font_family": "iconfont",
+  "css_prefix_text": "",
+  "description": "毕业设计",
+  "glyphs": [
+    {
+      "icon_id": "730799",
+      "name": "用户",
+      "font_class": "user",
+      "unicode": "e677",
+      "unicode_decimal": 58999
+    },
+    {
+      "icon_id": "4942660",
+      "name": "时间",
+      "font_class": "history",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "4880416",
+      "name": "上传",
+      "font_class": "upload",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "248953",
+      "name": "delete",
+      "font_class": "delete",
+      "unicode": "e67e",
+      "unicode_decimal": 59006
+    },
+    {
+      "icon_id": "10471752",
+      "name": "浏览",
+      "font_class": "view",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "33267206",
+      "name": "笔记-copy-copy-copy",
+      "font_class": "edit",
+      "unicode": "e7c1",
+      "unicode_decimal": 59329
+    },
+    {
+      "icon_id": "11481317",
+      "name": "favorites-fill",
+      "font_class": "star-active",
+      "unicode": "e721",
+      "unicode_decimal": 59169
+    },
+    {
+      "icon_id": "11488053",
+      "name": "good",
+      "font_class": "up",
+      "unicode": "e753",
+      "unicode_decimal": 59219
+    },
+    {
+      "icon_id": "11488262",
+      "name": "good-fill",
+      "font_class": "up-active",
+      "unicode": "e780",
+      "unicode_decimal": 59264
+    },
+    {
+      "icon_id": "12011695",
+      "name": "favorites",
+      "font_class": "star",
+      "unicode": "e7b6",
+      "unicode_decimal": 59318
+    },
+    {
+      "icon_id": "12011697",
+      "name": "search",
+      "font_class": "search",
+      "unicode": "e7b7",
+      "unicode_decimal": 59319
+    },
+    {
+      "icon_id": "33267172",
+      "name": "search-copy",
+      "font_class": "search-active",
+      "unicode": "e7be",
+      "unicode_decimal": 59326
+    },
+    {
+      "icon_id": "33267118",
+      "name": "good-copy",
+      "font_class": "down",
+      "unicode": "e7b8",
+      "unicode_decimal": 59320
+    },
+    {
+      "icon_id": "33267119",
+      "name": "good-fill-copy",
+      "font_class": "down-active",
+      "unicode": "e7b9",
+      "unicode_decimal": 59321
+    }
+  ]
+}

@@ -8,6 +8,7 @@ import Header from '@/components/header.vue'
 <template>
   <Header></Header>
   <RouterView></RouterView>
+  <icon></icon>
 </template>
 
 <style lang="less" scoped>
