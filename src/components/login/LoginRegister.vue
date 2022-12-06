@@ -1,127 +1,141 @@
 <script setup lang="ts">
-import MyButton from '@/components/MyButton.vue'
+import { ref, reactive } from 'vue'
+import MyButton from '@/components/button.vue'
+import api from '@/api/user'
 
-const regex = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+const regex: RegExp = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+const active = ref<boolean>(false)
+const time = ref<Date>(null)
+const isDisableSend = ref<boolean>(false)
+const countdown = ref<number>(60)
 
-export default {
-  name: "LoginRegister",
-  components: { MyButton },
-  data() {
-    return {
-      active: false,
-      time: '',
-      tip: {
-        loginTip: "",
-        tipClass: false,
-        registerTip: "",
-      },
-      loginFrom: {
-        email: "1972524359@qq.com",
-        password: "xx",
-        code: ''
-      },
-      registerFrom: {
-        email: "1972524359@qq.com",
-        password: "xx",
-        password2: "xx",
-        code: ''
-      },
-      isDisableSend: false,
-      countdown: 60
-    };
-  },
-  methods: {
-    hiddenPopup() {
-      this.$refs.login.style.opacity = 0
-      this.$refs.login.style.zIndex = -999
-    },
-    login() {
-      let email = this.loginFrom.email
-      let password = this.loginFrom.password
-      let code = this.loginFrom.code
+type Tip = {
+  loginTip: string,
+  tipClass: boolean,
+  registerTip: string
+}
 
-      if (email.length === 0 || password.length === 0) {
-        this.tip.loginTip = "邮箱或密码不能为空"
-        this.tip.tipClass = true
-      } else if (!regex.test(email)) {
-        this.tip.loginTip = "邮箱格式错误"
-        this.tip.tipClass = true
-      } else if (code.length === 0) {
-        this.tip.loginTip = "验证码不能为空"
-        this.tip.tipClass = true
-      } else {
-        console.log(this.$store)
+interface BaseForm {
+  email: string,
+  password: string,
+  code: string
+}
 
-        api.login({
-          email,
-          password,
-          code
-        }).then((data) => {
-          sessionStorage.setItem("userInfo", JSON.stringify(data))
+interface LoginForm extends BaseForm { }
 
-          window.location.reload()
-        }).catch(msg => {
-          this.time = new Date()
-          this.tip.loginTip = msg
-          this.tip.tipClass = true
-        })
-      }
-    },
-    register() {
-      let email = this.registerFrom.email
-      let password = this.registerFrom.password
-      let password2 = this.registerFrom.password2
-      let code = this.registerFrom.code
+interface RegisterForm extends BaseForm {
+  password2: string,
+}
+const tip = reactive<Tip>({
+  loginTip: '',
+  tipClass: false,
+  registerTip: ''
+})
 
-      if (email.length === 0) {
-        this.tip.registerTip = "邮箱不能为空"
-        this.tip.tipClass = true
-      } else if (!regex.test(email)) {
-        this.tip.registerTip = "邮箱格式错误"
-        this.tip.tipClass = true
-      } else if (code.length === 0) {
-        this.tip.registerTip = "验证码不能为空"
-        this.tip.tipClass = true
-      } else if (password.length === 0 || password2.length === 0) {
-        this.tip.registerTip = "密码或确认密码不能为空"
-        this.tip.tipClass = true
-      } else if (password !== password2) {
-        this.tip.registerTip = "两次密码不一致";
-        this.tip.tipClass = true
-      } else {
-        api.register({ email, password, code }).then(() => {
-          this.tip.registerTip = '注册成功'
-        }).catch(msg => {
-          this.tip.registerTip = msg
-          this.tip.tipClass = true
-        })
-      }
-    },
-    sendCode() {
-      if (this.registerFrom.email.length == 0) {
-        this.tip.registerTip = "邮箱不能为空"
-        this.tip.tipClass = true
-      } else if (!regex.test(this.registerFrom.email)) {
-        this.tip.registerTip = "邮箱格式错误"
-        this.tip.tipClass = true
-      } else {
-        api.sendCode(this.registerFrom.email).then(res => {
-          console.log(res)
+const loginFrom = reactive<LoginForm>({
+  email: '1972524359@qq.com',
+  password: 'xx',
+  code: ''
+})
 
-          this.isDisableSend = true
-          setInterval(() => {
-            if (this.countdown > 0) {
-              this.countdown--
-            } else {
-              this.isDisableSend = false
-            }
-          }, 1000)
-        })
-      }
-    }
-  },
-};
+const registerFrom = reactive<RegisterForm>({
+  email: '1972524359@qq.com',
+  password: 'xx',
+  password2: 'xx',
+  code: ''
+})
+
+const hiddenPopup = () => {
+  const login = ref()
+  login.value.style.opacity = 0
+  login.value.style.zIndex = -999
+}
+
+const login = () => {
+  let email = loginFrom.email
+  let password = loginFrom.password
+  let code = loginFrom.code
+
+  if (email.length === 0 || password.length === 0) {
+    tip.loginTip = "邮箱或密码不能为空"
+    tip.tipClass = true
+  } else if (!regex.test(email)) {
+    tip.loginTip = "邮箱格式错误"
+    tip.tipClass = true
+  } else if (code.length === 0) {
+    tip.loginTip = "验证码不能为空"
+    tip.tipClass = true
+  } else {
+    api.login({
+      email,
+      password,
+      code
+    }).then((data) => {
+      sessionStorage.setItem("userInfo", JSON.stringify(data))
+
+      window.location.reload()
+    }).catch(msg => {
+      time.value = new Date()
+      tip.loginTip = msg
+      tip.tipClass = true
+    })
+  }
+}
+
+const register = () => {
+  let email = registerFrom.email
+  let password = registerFrom.password
+  let password2 = registerFrom.password2
+  let code = registerFrom.code
+
+  if (email.length === 0) {
+    tip.registerTip = "邮箱不能为空"
+    tip.tipClass = true
+  } else if (!regex.test(email)) {
+    tip.registerTip = "邮箱格式错误"
+    tip.tipClass = true
+  } else if (code.length === 0) {
+    tip.registerTip = "验证码不能为空"
+    tip.tipClass = true
+  } else if (password.length === 0 || password2.length === 0) {
+    tip.registerTip = "密码或确认密码不能为空"
+    tip.tipClass = true
+  } else if (password !== password2) {
+    tip.registerTip = "两次密码不一致";
+    tip.tipClass = true
+  } else {
+    api.register({ email, password, code }).then(() => {
+      tip.registerTip = '注册成功'
+    }).catch(msg => {
+      tip.registerTip = msg
+      tip.tipClass = true
+    })
+  }
+}
+const sendCode = () => {
+  if (registerFrom.email.length == 0) {
+    tip.registerTip = "邮箱不能为空"
+    tip.tipClass = true
+  } else if (!regex.test(registerFrom.email)) {
+    tip.registerTip = "邮箱格式错误"
+    tip.tipClass = true
+  } else {
+    api.sendCode(registerFrom.email).then(res => {
+      console.log(res)
+
+      isDisableSend.value = true
+      setInterval(() => {
+        if (countdown.value > 0) {
+          countdown.value--
+        } else {
+          isDisableSend.value = false
+        }
+      }, 1000)
+    })
+  }
+}
 </script>
+
 <template>
   <div class="login-register" ref="login" @click="hiddenPopup">
     <div @click.stop="">

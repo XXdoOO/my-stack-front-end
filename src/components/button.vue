@@ -1,3 +1,25 @@
+<script setup lang="ts">
+let timer
+withDefaults(defineProps<{
+  type: string,
+  icon: string,
+  plain: boolean,
+  disabled: boolean
+}>(), {
+  type: 'primary',
+  plain: false,
+  disabled: false
+})
+
+const emit = defineEmits(['click'])
+
+const handleClick = (e) => {
+  clearTimeout(timer)
+  timer = setTimeout(() => {
+    emit('click', e)
+  }, 100)
+}
+</script>
 <template>
   <button class="my-button" :class="[type, { plain: plain, disabled: disabled }]" @click="handleClick"
     :disabled="disabled">
@@ -6,43 +28,6 @@
     </span>
   </button>
 </template>
-<script>
-let timer
-export default {
-  name: 'MyButton',
-  props: {
-    type: {
-      type: String,
-      default() {
-        return 'primary'
-      }
-    },
-    icon: {
-      type: String
-    },
-    plain: {
-      type: Boolean,
-      default() {
-        return false
-      }
-    },
-    disabled: {
-      type: Boolean,
-      default() {
-        return false
-      }
-    }
-  },
-  methods: {
-    handleClick(e) {
-      clearTimeout(timer)
-      timer = setTimeout(() => {
-        this.$emit('click', e)
-      }, 100)
-    }
-  },
-}
-</script>
 <style lang="less" scoped>
 .my-button {
   border-radius: 5px;

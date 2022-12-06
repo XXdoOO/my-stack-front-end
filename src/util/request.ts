@@ -58,7 +58,7 @@ axios.interceptors.response.use((res) => {
       duration: 3000
     })
     return Promise.reject("请求超时")
-  } else if (error.message.includes("cancelToken" !== -1)) {
+  } else if (error.message.includes("cancelToken") !== -1) {
     xMessage({
       title: '用户未登录',
       message: error.message,
@@ -80,15 +80,15 @@ axios.interceptors.response.use((res) => {
 let timer
 
 const start = () => {
-  const progress = document.querySelector('.header-block')
+  const progress: HTMLElement | null = document.querySelector('.header-block')
 
-  progress.style.setProperty('--transition-time', '.3s')
+  progress?.style.setProperty('--transition-time', '.3s')
 
   let progressWidth = 0
 
   clearInterval(timer)
   timer = setInterval(() => {
-    progress.style.setProperty('--progress-width', progressWidth + '%')
+    progress?.style.setProperty('--progress-width', progressWidth + '%')
 
     if (progressWidth < 70) {
       progressWidth += Math.random() * 5
@@ -99,13 +99,13 @@ const start = () => {
 const done = () => {
   clearInterval(timer)
 
-  const progress = document.querySelector('.header-block')
+  const progress: HTMLElement | null = document.querySelector('.header-block')
 
-  progress.style.setProperty('--transition-time', '0')
-  progress.style.setProperty('--progress-width', '100%')
+  progress?.style.setProperty('--transition-time', '0')
+  progress?.style.setProperty('--progress-width', '100%')
 
   setTimeout(() => {
-    progress.style.setProperty('--progress-width', '0')
+    progress?.style.setProperty('--progress-width', '0')
   }, 200)
 }
 

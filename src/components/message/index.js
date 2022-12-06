@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import Message from "./MessagePopup.vue"
 
 export default function xMessage(options) {

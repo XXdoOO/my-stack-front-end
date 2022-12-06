@@ -1,0 +1,37 @@
+@font-face {
+  font-family: "jxzk";
+  src: url("@/assets/font/有爱魔兽圆体-M.ttf");
+}
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+#app .markdown-preview {
+  padding: 10px 25px !important;
+}
+#app .markdown-preview ul li {
+  list-style: disc !important;
+  font-size: 16px !important;
+  padding-left: 0 !important;
+}
+#app .markdown-preview ul li li {
+  list-style: circle !important;
+}
+#app .markdown-preview ul li:after {
+  display: none !important;
+}
+#app .markdown-preview ol li {
+  list-style: decimal !important;
+}
+#app .markdown-preview img {
+  border-radius: 5px;
+}
+#app .markdown-preview strong {
+  font-size: 14px !important;
+}
+#app .markdown-preview code {
+  background-color: unset !important;
+  color: unset !important;
+  font-size: 12px !important;
+}

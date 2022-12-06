@@ -11,7 +11,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, defineComponent } from 'vue';
+import { ref } from 'vue';
 
 defineProps<{
   msg: string
