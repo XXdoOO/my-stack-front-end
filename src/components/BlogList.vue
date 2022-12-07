@@ -1,35 +1,91 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { store } from '@/stores/index'
 import MyEmpty from '@/components/MyEmpty.vue'
+import util from '@/util/util'
 
-withDefaults(defineProps<{
-  isMy: boolean
+interface Blog {
+  id: string | number,
+  authorUsername: string,
+  authorNickname: string,
+  postTime: string,
+  title: string,
+  description: string,
+  isUp: boolean,
+  isDown: boolean,
+  isStar: boolean | null,
+  up: string | number,
+  down: string | number,
+  star: string | number,
+  views: string | number,
+  cover: string
+}
+
+const $props = withDefaults(defineProps<{
+  list: Blog[],
+  isMy?: boolean,
+  pageNum?: number
 }>(), {
-  isMy: false
+  isMy: false,
+  pageNum: 1
 })
 
+const userInfo = store().userInfo
+
+const $emit = defineEmits(['getBlogList'])
 const $router = useRouter()
+
+const blogList = $props.list
+const pageSize: number = 10
+const total: number = 0
+
 
 const getDetails = (blogId) => {
   $router.push(`/details/${blogId}`)
 }
 
-const up = () => { }
-const down = () => { }
-const star = () => { }
-const deleteBlog = () => { }
-const editBlog = () => { }
+const up = (index: number) => {
+
+}
+
+const down = (index: number) => {
+
+}
+
+const star = (index: number) => {
+
+}
+
+const deleteBlog = (index: number) => {
+
+}
+
+const editBlog = (blogId: string | number) => {
+
+}
+
 const scroll = () => {
-  let doc = document.documentElement
+  const doc = document.documentElement
 
   // console.log(doc.scrollHeight, doc.scrollTop, doc.clientHeight)
 
-  if (doc.scrollHeight - doc.scrollTop - doc.clientHeight < 1 && (this.$store.state.currentPage + 1) * 10 < this.$store.state.total) {
-    this.$store.state.currentPage++
-    this.nextPage()
+  if (doc.scrollHeight - doc.scrollTop - doc.clientHeight < 1 && $props.pageNum * pageSize < total) {
+    $emit('getBlogList', {
+      pageNum: $props.pageNum + 1,
+      pageSize,
+      total
+    })
   }
 }
+
+onMounted(() => {
+  window.addEventListener("scroll", scroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", scroll)
+})
 </script>
 
 <template>
@@ -53,27 +109,27 @@ const scroll = () => {
           <p>{{ blog.description }}</p>
           <ul class="bottomContent">
             <li :class="{ 'up-hover': blog.isUp }" title="顶数">
-              <i title="顶" @click.stop="up(index, blog.id)"></i>
+              <i title="顶" @click.stop="up(index)"></i>
               <span>{{ util.formatNum(blog.up) }}</span>
             </li>
             <li :class="{ 'down-hover': blog.isDown }" title="踩数">
-              <i title="踩" @click.stop="down(index, blog.id)"></i>
+              <i title="踩" @click.stop="down(index)"></i>
               <span>{{ util.formatNum(blog.down) }}</span>
             </li>
             <li :class="{ 'star-hover': blog.isStar }" title="收藏数">
-              <i title="收藏" @click.stop="star(index, blog.id)"></i>
+              <i title="收藏" @click.stop="star(index)"></i>
               <span>{{ util.formatNum(blog.star) }}</span>
             </li>
             <li title="浏览数">
               <i></i>
               <span>{{ util.formatNum(blog.views) }}</span>
             </li>
-            <li class="delete-icon" title="删除此博客" v-if="isMy && blog.authorUsername === $store.state.userInfo.username"
-              @click.stop="deleteBlog(index, blog.id)">
+            <li class="delete-icon" title="删除此博客" v-if="isMy && blog.authorUsername === userInfo.username"
+              @click.stop="deleteBlog(index)">
               <i></i>
             </li>
-            <li class="edit-icon" title="编辑此博客" v-if="isMy && blog.authorUsername === $store.state.userInfo.username"
-              @click.stop="updateBlog(blog.id)">
+            <li class="edit-icon" title="编辑此博客" v-if="isMy && blog.authorUsername === userInfo.username"
+              @click.stop="editBlog(blog.id)">
               <i></i>
             </li>
           </ul>

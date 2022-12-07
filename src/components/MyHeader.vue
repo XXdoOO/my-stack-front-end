@@ -3,7 +3,6 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import type { Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { store } from '@/stores/index'
-import SearchInput from '@/components/SearchInput.vue'
 import Confirm from '@/components/confirm'
 import LoginRegister from '@/components/login'
 
@@ -102,9 +101,7 @@ onBeforeUnmount(() => {
           <button class="my-menu" @click="logout">退出登录</button>
         </div>
       </div>
-
     </div>
-
   </header>
 </template>
 

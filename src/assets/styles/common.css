@@ -30,6 +30,9 @@ a {
 img {
   object-fit: cover;
 }
+body {
+  background: url("@/assets/images/bg.jpg");
+}
 main {
   min-height: 100vh;
   margin-top: 5px !important;

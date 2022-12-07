@@ -11,12 +11,12 @@ withDefaults(defineProps<{
 })
 
 let timer
-const emit = defineEmits(['click'])
+const $emit = defineEmits(['click'])
 
 const handleClick = (e) => {
   clearTimeout(timer)
   timer = setTimeout(() => {
-    emit('click', e)
+    $emit('click', e)
   }, 100)
 }
 </script>
