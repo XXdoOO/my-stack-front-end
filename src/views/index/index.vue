@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import Header from '@/components/header.vue'
+import MyHeader from '@/components/MyHeader.vue'
+import MyFooter from '@/components/MyFooter.vue'
 
 
 </script>
 
 <template>
-  <Header></Header>
+  <MyHeader></MyHeader>
   <RouterView></RouterView>
-  <icon></icon>
+  <MyFooter></MyFooter>
 </template>
 
 <style lang="less" scoped>

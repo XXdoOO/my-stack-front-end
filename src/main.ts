@@ -3,7 +3,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router/index'
-import icon from '@/components/icon.vue'
+import icon from '@/components/MyIcon.vue'
 
 const app = createApp(App)
 

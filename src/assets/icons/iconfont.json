@@ -6,6 +6,13 @@
   "description": "毕业设计",
   "glyphs": [
     {
+      "icon_id": "11372640",
+      "name": "编辑",
+      "font_class": "edit",
+      "unicode": "e8ac",
+      "unicode_decimal": 59564
+    },
+    {
       "icon_id": "730799",
       "name": "用户",
       "font_class": "user",
@@ -39,13 +46,6 @@
       "font_class": "view",
       "unicode": "e629",
       "unicode_decimal": 58921
-    },
-    {
-      "icon_id": "33267206",
-      "name": "笔记-copy-copy-copy",
-      "font_class": "edit",
-      "unicode": "e7c1",
-      "unicode_decimal": 59329
     },
     {
       "icon_id": "11481317",
