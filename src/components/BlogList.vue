@@ -89,48 +89,44 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div>
+  <div class="container root">
     <div class="articles" v-if="blogList.length > 0">
       <article v-for="(blog, index) in blogList" :key="blog.id" @click="getDetails(blog.id)">
         <div>
-          <ul class="topContent">
+          <ul class="top">
             <li>
-              <router-link class="wrapper-icon" :to="`/user/${blog.authorUsername}/postBlogList`"><i
-                  class="icon-user"></i>
-                <span>{{ blog.authorNickname }}</span>
-              </router-link>
+              <my-icon icon="user">{{ blog.authorNickname }}</my-icon>
             </li>
-            <li class="wrapper-icon">
-              <i class="icon-time"></i>
-              <span>{{ util.formatTime(blog.postTime) }}</span>
+            <li>
+              <my-icon icon="history" :enable-hover="false">{{ util.formatTime(blog.postTime) }}</my-icon>
             </li>
           </ul>
           <h2>{{ blog.title }}</h2>
           <p>{{ blog.description }}</p>
-          <ul class="bottomContent">
-            <li :class="{ 'up-hover': blog.isUp }" title="顶数">
-              <i title="顶" @click.stop="up(index)"></i>
-              <span>{{ util.formatNum(blog.up) }}</span>
+          <ul class="bottom">
+            <li title="顶数">
+              <my-icon icon="up-active">
+                {{ util.formatNum(blog.up) }}
+              </my-icon>
             </li>
-            <li :class="{ 'down-hover': blog.isDown }" title="踩数">
-              <i title="踩" @click.stop="down(index)"></i>
-              <span>{{ util.formatNum(blog.down) }}</span>
+            <li title="踩数">
+              <my-icon icon="down-active">{{ util.formatNum(blog.down) }}</my-icon>
             </li>
-            <li :class="{ 'star-hover': blog.isStar }" title="收藏数">
-              <i title="收藏" @click.stop="star(index)"></i>
+            <li title="收藏数">
+              <my-icon icon="star-active"></my-icon>
               <span>{{ util.formatNum(blog.star) }}</span>
             </li>
             <li title="浏览数">
-              <i></i>
+              <my-icon icon="view"></my-icon>
               <span>{{ util.formatNum(blog.views) }}</span>
             </li>
-            <li class="delete-icon" title="删除此博客" v-if="isMy && blog.authorUsername === userInfo.username"
+            <li class="delete" title="删除此博客" v-if="isMy && blog.authorUsername === userInfo.username"
               @click.stop="deleteBlog(index)">
-              <i></i>
+              <my-icon icon="delete"></my-icon>
             </li>
-            <li class="edit-icon" title="编辑此博客" v-if="isMy && blog.authorUsername === userInfo.username"
+            <li class="edit" title="编辑此博客" v-if="isMy && blog.authorUsername === userInfo.username"
               @click.stop="editBlog(blog.id)">
-              <i></i>
+              <my-icon icon="edit"></my-icon>
             </li>
           </ul>
         </div>
@@ -142,5 +138,98 @@ onUnmounted(() => {
 </template>
 
 <style lang="less" scoped>
+@keyframes plusOne {
+  0% {
+    opacity: 0;
+    top: 0;
+  }
 
+  50% {
+    opacity: 1;
+    top: -15px;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.root {
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+}
+
+.articles {
+  width: 100%;
+  background-color: white;
+
+  article {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 30px;
+    transition: 0.1s;
+    cursor: pointer;
+    position: relative;
+
+    img {
+      object-fit: cover;
+      margin-left: 20px;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 14px;
+      color: @gray-color-dep;
+      transition: 0.1s;
+    }
+  }
+
+  article::before {
+    content: "";
+    width: 94%;
+    height: 1px;
+    background-color: @gray-color;
+    position: absolute;
+    bottom: 0;
+    left: 3%;
+  }
+
+  article:hover {
+    background-color: #f4f5f6;
+  }
+
+  article:hover p {
+    color: @theme-color;
+  }
+
+  article:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+}
+
+.top {
+  display: flex;
+  font-size: 12px;
+
+  li {
+    display: flex;
+    align-items: center;
+
+    span {
+      margin-left: 5px;
+    }
+  }
+
+  li:first-child {
+    border-right: 2px solid @gray-color;
+    padding-right: 15px;
+    margin-right: 15px;
+  }
+}
 </style>

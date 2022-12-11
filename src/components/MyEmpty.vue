@@ -3,7 +3,7 @@
 
 <template>
   <div class="empty">
-    <img src=".@/assets/images/empty.png" alt="">
+    <img src="@/assets/images/empty.png" alt="">
     <span class="msg">这里空空如也哦</span>
   </div>
 </template>

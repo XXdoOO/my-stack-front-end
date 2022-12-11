@@ -116,6 +116,7 @@ onBeforeUnmount(() => {
   box-shadow: @shadow-color;
   z-index: 999;
   box-sizing: content-box;
+  margin-bottom: 10px;
 
   >.container {
     display: flex;
