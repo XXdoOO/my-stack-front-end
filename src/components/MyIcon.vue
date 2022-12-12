@@ -4,13 +4,11 @@ import { useRouter } from 'vue-router';
 
 const props = withDefaults(defineProps<{
   icon: string,
-  isActive: boolean,
-  enableHover: boolean,
-  href: string
+  href: string,
+  type: 'link' | 'text' | 'button'
 }>(), {
   icon: 'star-active',
-  isActive: false,
-  enableHover: true,
+  type: 'button'
 })
 
 const $emit = defineEmits(['click'])
@@ -31,7 +29,7 @@ const handleClick = (e) => {
 </script>
 
 <template>
-  <i class="icon" :class="{ 'enable-hover': enableHover, active: isActive }" @click="handleClick">
+  <i class="icon" :class="type" @click="handleClick">
     <svg aria-hidden="true">
       <use :xlink:href="`#${icon}`"></use>
     </svg>
@@ -43,14 +41,14 @@ const handleClick = (e) => {
 
 <style lang="less" scoped>
 .icon {
-  overflow: hidden;
   color: #C0C4CC;
-  transition: 0.3s;
+  transition: @transition-time;
   display: flex;
   align-items: center;
+  font-style: normal;
 
   svg {
-    margin-right: 10px;
+    margin-right: 0.2em;
     width: 2em;
     height: 2em;
     vertical-align: -0.15em;
@@ -58,19 +56,18 @@ const handleClick = (e) => {
   }
 }
 
-.enable-hover {
+.link,
+.button {
   cursor: pointer;
 }
 
-.enable-hover:hover {
+.link:hover,
+.button:hover {
   color: @theme-color
 }
 
-.enable-hover:hover svg {
-  color: @theme-color
-}
-
-.active {
+.link:hover svg,
+.button:hover svg {
   color: @theme-color
 }
 </style>

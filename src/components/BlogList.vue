@@ -5,25 +5,8 @@ import { store } from '@/stores/index'
 import MyEmpty from '@/components/MyEmpty.vue'
 import util from '@/util/util'
 
-interface Blog {
-  id: string | number,
-  authorUsername: string,
-  authorNickname: string,
-  postTime: string,
-  title: string,
-  description: string,
-  isUp: boolean,
-  isDown: boolean,
-  isStar: boolean | null,
-  up: string | number,
-  down: string | number,
-  star: string | number,
-  views: string | number,
-  cover: string
-}
-
 const $props = withDefaults(defineProps<{
-  list: Blog[],
+  list: any[],
   isMy?: boolean,
   pageNum?: number
 }>(), {
@@ -95,10 +78,10 @@ onUnmounted(() => {
         <div>
           <ul class="top">
             <li>
-              <my-icon icon="user">{{ blog.authorNickname }}</my-icon>
+              <my-icon icon="user" type="link" :href="`/${blog.authorId}`">{{ blog.authorNickname }}</my-icon>
             </li>
             <li>
-              <my-icon icon="history" :enable-hover="false">{{ util.formatTime(blog.postTime) }}</my-icon>
+              <my-icon icon="history" type="text" :enable-hover="false">{{ util.formatTime(blog.postTime) }}</my-icon>
             </li>
           </ul>
           <h2>{{ blog.title }}</h2>
@@ -113,12 +96,10 @@ onUnmounted(() => {
               <my-icon icon="down-active">{{ util.formatNum(blog.down) }}</my-icon>
             </li>
             <li title="收藏数">
-              <my-icon icon="star-active"></my-icon>
-              <span>{{ util.formatNum(blog.star) }}</span>
+              <my-icon icon="star-active">{{ util.formatNum(blog.star) }}</my-icon>
             </li>
             <li title="浏览数">
-              <my-icon icon="view"></my-icon>
-              <span>{{ util.formatNum(blog.views) }}</span>
+              <my-icon icon="view" type="text">{{ util.formatNum(blog.views) }}</my-icon>
             </li>
             <li class="delete" title="删除此博客" v-if="isMy && blog.authorUsername === userInfo.username"
               @click.stop="deleteBlog(index)">
@@ -154,6 +135,8 @@ onUnmounted(() => {
   }
 }
 
+@tt: 0.1s;
+
 .root {
   border-radius: 0 0 10px 10px;
   overflow: hidden;
@@ -179,13 +162,15 @@ onUnmounted(() => {
 
     h2 {
       font-size: 18px;
-      margin-bottom: 10px;
+      margin: 0.7em 0;
+      transition: @tt;
     }
 
     p {
       font-size: 14px;
       color: @gray-color-dep;
-      transition: 0.1s;
+      transition: @tt;
+      margin-bottom: 0.5em;
     }
   }
 
@@ -203,7 +188,8 @@ onUnmounted(() => {
     background-color: #f4f5f6;
   }
 
-  article:hover p {
+  article:hover p,
+  article:hover h2 {
     color: @theme-color;
   }
 
@@ -230,6 +216,15 @@ onUnmounted(() => {
     border-right: 2px solid @gray-color;
     padding-right: 15px;
     margin-right: 15px;
+  }
+}
+
+.bottom {
+  display: flex;
+
+  li {
+    margin-right: 2em;
+    font-size: 12px;
   }
 }
 </style>
