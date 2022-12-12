@@ -25,7 +25,6 @@ li {
 }
 a {
   text-decoration: none;
-  color: black;
 }
 img {
   object-fit: cover;
@@ -42,31 +41,12 @@ main {
   max-width: 1200px;
   margin: 0 auto;
 }
-#app .markdown-preview {
-  padding: 10px 25px !important;
+.v-md-editor__preview-wrapper .line-numbers-wrapper {
+  width: 2.5em !important;
 }
-#app .markdown-preview ul li {
-  list-style: disc !important;
-  font-size: 16px !important;
-  padding-left: 0 !important;
+.v-md-editor__preview-wrapper .v-md-pre-wrapper::after {
+  width: 2.5em !important;
 }
-#app .markdown-preview ul li li {
-  list-style: circle !important;
-}
-#app .markdown-preview ul li:after {
-  display: none !important;
-}
-#app .markdown-preview ol li {
-  list-style: decimal !important;
-}
-#app .markdown-preview img {
-  border-radius: 5px;
-}
-#app .markdown-preview strong {
-  font-size: 14px !important;
-}
-#app .markdown-preview code {
-  background-color: unset !important;
-  color: unset !important;
-  font-size: 12px !important;
+.v-md-editor__preview-wrapper .v-md-pre-wrapper > pre {
+  padding-left: 3.5em !important;
 }

@@ -25,7 +25,7 @@ const total: number = 0
 
 
 const getDetails = (blogId) => {
-  $router.push(`/details/${blogId}`)
+  $router.push(`/blog/${blogId}`)
 }
 
 const up = (index: number) => {
@@ -81,16 +81,14 @@ onUnmounted(() => {
               <my-icon icon="user" type="link" :href="`/${blog.authorId}`">{{ blog.authorNickname }}</my-icon>
             </li>
             <li>
-              <my-icon icon="history" type="text" :enable-hover="false">{{ util.formatTime(blog.postTime) }}</my-icon>
+              <my-icon icon="history" type="text" :enable-hover="false">{{ util.formatTime(blog.createTime) }}</my-icon>
             </li>
           </ul>
           <h2>{{ blog.title }}</h2>
           <p>{{ blog.description }}</p>
           <ul class="bottom">
             <li title="顶数">
-              <my-icon icon="up-active">
-                {{ util.formatNum(blog.up) }}
-              </my-icon>
+              <my-icon icon="up-active">{{ util.formatNum(blog.up) }}</my-icon>
             </li>
             <li title="踩数">
               <my-icon icon="down-active">{{ util.formatNum(blog.down) }}</my-icon>
@@ -201,7 +199,7 @@ onUnmounted(() => {
 
 .top {
   display: flex;
-  font-size: 12px;
+  font-size: 10px;
 
   li {
     display: flex;

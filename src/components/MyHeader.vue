@@ -61,7 +61,7 @@ onBeforeUnmount(() => {
   }">
     <div class="container">
       <router-link class="logo" to="/">
-        <icon class="icon" icon="edit" :isActive="false"></icon>
+        <my-icon class="icon" icon="edit" :isActive="false"></my-icon>
         <span>My Stack</span>
       </router-link>
 
@@ -72,7 +72,7 @@ onBeforeUnmount(() => {
 
       <div class="search-input">
         <input type="text" placeholder="请输入搜索关键词" v-model="keywords" @keyup.enter="search(keywords)" />
-        <icon class="icon" @click="search(keywords)" title="点击搜索" icon="search"></icon>
+        <my-icon icon="search" @click="search(keywords)" title="点击搜索"></my-icon>
       </div>
 
       <span class="login" v-if="!userInfo" @click="$loginRegister.showLoginRegister()">登录/注册</span>

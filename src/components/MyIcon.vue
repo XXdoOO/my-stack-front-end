@@ -4,10 +4,9 @@ import { useRouter } from 'vue-router';
 
 const props = withDefaults(defineProps<{
   icon: string,
-  href: string,
-  type: 'link' | 'text' | 'button'
+  href?: string,
+  type?: 'link' | 'text' | 'button'
 }>(), {
-  icon: 'star-active',
   type: 'button'
 })
 

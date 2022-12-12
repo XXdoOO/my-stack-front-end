@@ -44,7 +44,7 @@ li {
 
 a {
     text-decoration: none;
-    color: black;
+    // color: black;
 }
 
 img {
@@ -158,42 +158,56 @@ main {
 // }
 
 // 覆盖markdown默认样式
-#app .markdown-preview {
-    padding: 10px 25px !important;
+// #app .markdown-preview {
+//     padding: 10px 25px !important;
 
-    ul {
-        li {
-            list-style: disc !important;
-            font-size: 16px !important;
-            padding-left: 0 !important;
+//     ul {
+//         li {
+//             list-style: disc !important;
+//             font-size: 16px !important;
+//             padding-left: 0 !important;
 
-            li {
-                list-style: circle !important;
-            }
-        }
+//             li {
+//                 list-style: circle !important;
+//             }
+//         }
 
-        li:after {
-            display: none !important;
-        }
+//         li:after {
+//             display: none !important;
+//         }
+//     }
+
+//     ol {
+//         li {
+//             list-style: decimal !important;
+//         }
+//     }
+
+//     img {
+//         border-radius: 5px;
+//     }
+
+//     strong {
+//         font-size: 14px !important;
+//     }
+
+//     code {
+//         background-color: unset !important;
+//         color: unset !important;
+//         font-size: 12px !important;
+//     }
+// }
+
+.v-md-editor__preview-wrapper {
+    .line-numbers-wrapper {
+        width: 2.5em !important;
     }
 
-    ol {
-        li {
-            list-style: decimal !important;
-        }
+    .v-md-pre-wrapper::after {
+        width: 2.5em !important;
     }
 
-    img {
-        border-radius: 5px;
-    }
-
-    strong {
-        font-size: 14px !important;
-    }
-
-    code {
-        background-color: unset !important;
-        color: unset !important;
-        font-size: 12px !important;
+    .v-md-pre-wrapper>pre {
+        padding-left: 3.5em !important;
     }
 }

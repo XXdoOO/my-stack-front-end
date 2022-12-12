@@ -1,6 +1,6 @@
 export default {
-  formatTime(timestamp: string | number): string {
-    let date = new Date(timestamp)
+  formatTime(time: string): string {
+    let date = new Date(time)
     let year = date.getFullYear()
     let month: number | string = date.getMonth() + 1
     let strDate: number | string = date.getDate()
