@@ -41,12 +41,12 @@ main {
   max-width: 1200px;
   margin: 0 auto;
 }
-.v-md-editor__preview-wrapper .line-numbers-wrapper {
+.v-md-pre-wrapper .line-numbers-wrapper {
   width: 2.5em !important;
 }
-.v-md-editor__preview-wrapper .v-md-pre-wrapper::after {
-  width: 2.5em !important;
-}
-.v-md-editor__preview-wrapper .v-md-pre-wrapper > pre {
+.v-md-pre-wrapper pre {
   padding-left: 3.5em !important;
+}
+.v-md-pre-wrapper::after {
+  width: 2.5em !important;
 }

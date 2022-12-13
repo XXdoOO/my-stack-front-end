@@ -47,7 +47,7 @@ const handleClick = (e) => {
   font-style: normal;
 
   svg {
-    margin-right: 0.2em;
+    margin-right: 0.1em;
     width: 2em;
     height: 2em;
     vertical-align: -0.15em;

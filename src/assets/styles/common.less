@@ -10,6 +10,7 @@
 @transition-time: 0.3s;
 @shadow-color: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 @border-color: #eee;
+@gap: 5px;
 
 @font-face {
     font-family: "jxzk";
@@ -198,16 +199,17 @@ main {
 //     }
 // }
 
-.v-md-editor__preview-wrapper {
+.v-md-pre-wrapper {
     .line-numbers-wrapper {
         width: 2.5em !important;
     }
 
-    .v-md-pre-wrapper::after {
-        width: 2.5em !important;
-    }
 
-    .v-md-pre-wrapper>pre {
+    pre {
         padding-left: 3.5em !important;
     }
+}
+
+.v-md-pre-wrapper::after {
+    width: 2.5em !important;
 }

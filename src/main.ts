@@ -34,6 +34,8 @@ VMdPreview.use(vuepressTheme, {
 
 VueMarkdownEditor.use(createLineNumbertPlugin())
 VueMarkdownEditor.use(createCopyCodePlugin())
+VMdPreview.use(createLineNumbertPlugin())
+VMdPreview.use(createCopyCodePlugin())
 
 app.use(VueMarkdownEditor)
 app.use(VMdPreview)
