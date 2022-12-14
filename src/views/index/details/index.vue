@@ -1,48 +1,41 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import { useRoute } from 'vue-router';
+import { getBlogDetails } from '@/api/blog'
 import util from '@/util/util'
 
-const authorInfo = {
-  nickname: '作者昵称',
-  avatar: '',
-  passCount: 1221,
-  upCount: 2304,
-  downCount: 1030
-}
+const $route = useRoute()
+let blog = ref(null)
 
-const blog = {
-  up: 2124,
-  down: 2304,
-  star: 1020,
-  views: 23000
-}
-const text = '# ss'
+getBlogDetails($route.params.blogId).then(res => {
+  blog.value = res
+})
 </script>
 
 <template>
   <!-- <v-md-editor id="markdown" v-model="text"></v-md-editor> -->
 
-  <main class="container">
+  <main class="container" v-if="blog">
     <div class="content">
-      <v-md-preview :text="text"></v-md-preview>
+      <v-md-preview :text="blog.content"></v-md-preview>
     </div>
     <div class="sidebar">
       <div class="author-info">
-        <router-link :to="`/user/${authorInfo.nickname}/postBlogList`" class="face">
-          <img src="@/assets/images/bg.jpg" width="50" height="50" />
-          <span> {{ authorInfo.nickname }}</span>
+        <router-link :to="`/user/${blog.authorInfo.id}/postBlogList`" class="face">
+          <img :src="blog.authorInfo.avatar" width="50" height="50" />
+          <span> {{ blog.authorInfo.nickname }}</span>
         </router-link>
         <nav class="account">
-          <router-link :to="`/user/${authorInfo.nickname}/postBlogList`">
-            <span>{{ authorInfo.passCount }}</span>
+          <router-link :to="`/user/${blog.authorInfo.nickname}/postBlogList`">
+            <span>{{ blog.authorInfo.passCount }}</span>
             <span>发布</span>
           </router-link>
-          <router-link :to="`/user/${authorInfo.nickname}/upBlogList`">
-            <span>{{ authorInfo.upCount }}</span>
+          <router-link :to="`/user/${blog.authorInfo.nickname}/upBlogList`">
+            <span>{{ blog.authorInfo.upCount }}</span>
             <span>顶过</span>
           </router-link>
-          <router-link :to="`/user/${authorInfo.nickname}/downBlogList`">
-            <span>{{ authorInfo.downCount }}</span>
+          <router-link :to="`/user/${blog.authorInfo.nickname}/downBlogList`">
+            <span>{{ blog.authorInfo.downCount }}</span>
             <span>踩过</span>
           </router-link>
         </nav>
