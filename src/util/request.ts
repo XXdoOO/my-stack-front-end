@@ -37,10 +37,6 @@ axios.interceptors.response.use((res) => {
 
   done()
 
-  if (res.data.data !== null) {
-    res.data.data.total = parseInt(res.data.data.total)
-  }
-
   if (res.data.code === 200) {
     return Promise.resolve(res.data.data)
   } else {

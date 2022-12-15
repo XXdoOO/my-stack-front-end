@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router/index'
+import MyButton from '@/components/MyButton.vue'
 import MyIcon from '@/components/MyIcon.vue'
 
 import VueMarkdownEditor from '@kangc/v-md-editor'
@@ -41,4 +42,5 @@ app.use(VueMarkdownEditor)
 app.use(VMdPreview)
 
 app.component('my-icon', MyIcon)
+app.component('my-button', MyButton)
 app.mount('#app')

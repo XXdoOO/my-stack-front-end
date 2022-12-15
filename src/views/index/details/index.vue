@@ -2,13 +2,20 @@
 import { ref, reactive } from 'vue'
 import { useRoute } from 'vue-router';
 import { getBlogDetails } from '@/api/blog'
+import { getCommentList } from '@/api/comment'
 import util from '@/util/util'
 
 const $route = useRoute()
 let blog = ref(null)
+let commentList = ref(null)
 
 getBlogDetails($route.params.blogId).then(res => {
   blog.value = res
+})
+
+getCommentList({ blogId: $route.params.blogId as string }).then(res => {
+  console.log(res);
+  commentList.value = res
 })
 </script>
 
@@ -18,6 +25,36 @@ getBlogDetails($route.params.blogId).then(res => {
   <main class="container" v-if="blog">
     <div class="content">
       <v-md-preview :text="blog.content"></v-md-preview>
+
+      <div class="comments">
+        <div class="header">
+          <div>
+            <img src="" alt="" width="50" height="50" />
+          </div>
+          <div class="area">
+            <textarea class="content" placeholder="说说你的看法"></textarea>
+            <my-button class="btn">发布</my-button>
+          </div>
+        </div>
+        <div class="comment" v-for="item in commentList" :key="item.id">
+          <img src="" alt="" width="50" height="50" />
+          <div class="detail">
+            <div class="top">
+              <div class="nickname">{{ item.senderNickname }}</div>
+              <div class="time">{{ item.createTime }}</div>
+            </div>
+            <p class="center">{{ item.content }}</p>
+            <div class="bottom">
+              <div>回复</div>
+              <div class="icons">
+                <my-icon icon="delete"></my-icon>
+                <my-icon icon="down-active">{{ util.formatNum(item.up) }}</my-icon>
+                <my-icon icon="up-active">{{ util.formatNum(item.down) }}</my-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="sidebar">
       <div class="author-info">
@@ -64,12 +101,13 @@ getBlogDetails($route.params.blogId).then(res => {
 
 .sidebar {
   margin-left: @gap;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 .author-info {
   width: 230px;
   padding: 20px 30px;
-  border-radius: 5px;
   background-color: white;
 
   .face {
@@ -108,12 +146,87 @@ getBlogDetails($route.params.blogId).then(res => {
 
 .icon-bar {
   background-color: white;
-  border-radius: 5px;
   margin-top: @gap;
   display: flex;
   font-size: 12px;
   align-items: center;
   justify-content: space-between;
   padding: 5px 10px;
+}
+
+.comments {
+  margin-top: @gap;
+  background-color: white;
+  padding: 30px;
+
+  .header {
+    display: flex;
+  }
+}
+
+.area {
+  flex-grow: 1;
+  margin-left: 20px;
+
+  .content {
+    width: 100%;
+    height: 80px;
+    outline: none;
+    border-color: @border-color;
+    border-radius: 5px;
+    padding: 10px;
+    resize: none;
+  }
+
+  .btn {
+    margin-left: auto;
+    margin-top: 5px;
+  }
+}
+
+.comment {
+  display: flex;
+  margin-top: 30px;
+
+  .detail {
+    flex-grow: 1;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .nickname {
+        color: @gray-color-dep;
+      }
+
+      .time {
+        color: @gray-color-dep;
+        font-size: 14px;
+      }
+    }
+
+    .center {
+      font-size: 15px;
+      margin-top: 5px;
+    }
+
+    .bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+
+      .icons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 150px;
+      }
+    }
+  }
 }
 </style>

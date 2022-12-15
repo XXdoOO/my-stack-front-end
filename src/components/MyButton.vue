@@ -1,9 +1,9 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
-  type: string,
-  icon: string,
-  plain: boolean,
-  disabled: boolean
+  type?: 'primary' | 'danger' | 'text',
+  icon?: string,
+  plain?: boolean,
+  disabled?: boolean
 }>(), {
   type: 'primary',
   plain: false,
@@ -32,7 +32,7 @@ const handleClick = (e) => {
 .my-button {
   border-radius: 5px;
   position: relative;
-  padding: 10px 30px;
+  padding: 5px 30px;
   display: flex;
   align-items: center;
   justify-content: center;

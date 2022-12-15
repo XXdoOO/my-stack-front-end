@@ -16,6 +16,7 @@
     "less-loader": "^11.1.0",
     "mavon-editor": "^3.0.0-beta",
     "pinia": "^2.0.26",
+    "qs": "^6.11.0",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"
   },
