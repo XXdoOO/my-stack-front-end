@@ -45,6 +45,7 @@ getCommentList({ blogId: $route.params.blogId as string }).then(res => {
             </div>
             <p class="center">{{ item.content }}</p>
             <div class="bottom">
+              <div>展开{{ util.formatNum(item.childrenCount) }}条回复</div>
               <div>回复</div>
               <div class="icons">
                 <my-icon icon="delete"></my-icon>
@@ -217,10 +218,10 @@ getCommentList({ blogId: $route.params.blogId as string }).then(res => {
     .bottom {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       font-size: 12px;
 
       .icons {
+        margin-left: auto;
         display: flex;
         justify-content: space-between;
         align-items: center;
