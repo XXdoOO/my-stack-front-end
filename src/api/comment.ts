@@ -1,6 +1,17 @@
 import request from '@/util/request'
-import qs from 'qs'
 
-export const getCommentList = (data: { blogId: string, parent?: string, orderBy?: string }) => {
-  return request.get(`/getCommentsList?${qs.stringify(data)}`)
+interface Page {
+  pageNum?: string | number,
+  pageSize?: string | number
+}
+
+interface Comment extends Page {
+  blogId: string,
+  parent?: string,
+  orderBy?: string
+}
+
+
+export const getCommentList = (params: Comment) => {
+  return request.get(`/getCommentsList`, { params: params })
 }

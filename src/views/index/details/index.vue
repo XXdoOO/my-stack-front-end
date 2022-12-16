@@ -13,10 +13,28 @@ getBlogDetails($route.params.blogId).then(res => {
   blog.value = res
 })
 
-getCommentList({ blogId: $route.params.blogId as string }).then(res => {
-  console.log(res);
-  commentList.value = res
-})
+const getComments = () => {
+  getCommentList({ blogId: $route.params.blogId as string }).then((res: any) => {
+    console.log(res)
+    commentList.value = res.list
+  })
+}
+
+const init = () => {
+  getCommentList({ blogId: $route.params.blogId as string }).then((res: any) => {
+    console.log(res)
+    commentList.value = res.list
+
+    commentList.value.forEach(item => {
+      getCommentList({ blogId: $route.params.blogId as string, parent: item.id, pageSize: 5 }).then((res: any) => {
+        console.log(res)
+        item.children = res.list
+      })
+    })
+  })
+}
+
+init()
 </script>
 
 <template>
@@ -36,6 +54,7 @@ getCommentList({ blogId: $route.params.blogId as string }).then(res => {
             <my-button class="btn">发布</my-button>
           </div>
         </div>
+
         <div class="comment" v-for="item in commentList" :key="item.id">
           <img src="" alt="" width="50" height="50" />
           <div class="detail">
@@ -45,13 +64,34 @@ getCommentList({ blogId: $route.params.blogId as string }).then(res => {
             </div>
             <p class="center">{{ item.content }}</p>
             <div class="bottom">
-              <div>展开{{ util.formatNum(item.childrenCount) }}条回复</div>
-              <div>回复</div>
+              <my-button type="text">回复</my-button>
               <div class="icons">
                 <my-icon icon="delete"></my-icon>
                 <my-icon icon="down-active">{{ util.formatNum(item.up) }}</my-icon>
                 <my-icon icon="up-active">{{ util.formatNum(item.down) }}</my-icon>
               </div>
+            </div>
+
+            <div class="children" v-if="item.children?.length != 0">
+              <div class="comment" v-for="i in item.children">
+                <img src="" alt="" width="30" height="30" />
+                <div class="detail">
+                  <div class="top">
+                    <div class="nickname">{{ i.senderNickname }}</div>
+                    <div class="time">{{ i.createTime }}</div>
+                  </div>
+                  <p class="center">{{ i.content }}</p>
+                  <div class="bottom">
+                    <my-button type="text">回复</my-button>
+                    <div class="icons">
+                      <my-icon icon="delete"></my-icon>
+                      <my-icon icon="down-active">{{ util.formatNum(i.up) }}</my-icon>
+                      <my-icon icon="up-active">{{ util.formatNum(i.down) }}</my-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-if="item.children.length > 3">展开更多回复</div>
             </div>
           </div>
         </div>
@@ -187,7 +227,7 @@ getCommentList({ blogId: $route.params.blogId as string }).then(res => {
 
 .comment {
   display: flex;
-  margin-top: 30px;
+  padding: 10px 0;
 
   .detail {
     flex-grow: 1;
@@ -219,6 +259,7 @@ getCommentList({ blogId: $route.params.blogId as string }).then(res => {
       display: flex;
       align-items: center;
       font-size: 12px;
+      margin-top: 10px;
 
       .icons {
         margin-left: auto;
@@ -229,5 +270,29 @@ getCommentList({ blogId: $route.params.blogId as string }).then(res => {
       }
     }
   }
+}
+
+.children {
+  background-color: @gray-color;
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+
+  .nickname {
+    font-size: 14px;
+  }
+
+}
+
+.collapse {
+  margin-left: 30px;
+  cursor: pointer;
+  transition: @transition-time;
+}
+
+.collapse:hover {
+  color: @theme-color;
 }
 </style>
