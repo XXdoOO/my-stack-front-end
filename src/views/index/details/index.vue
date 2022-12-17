@@ -6,32 +6,62 @@ import { getCommentList } from '@/api/comment'
 import util from '@/util/util'
 
 const $route = useRoute()
+const blogId = $route.params.blogId as string
 let blog = ref(null)
 let commentList = ref(null)
+let content = ref<string>('')
+let content2 = ref<string>('')
 
-getBlogDetails($route.params.blogId).then(res => {
+getBlogDetails(blogId).then(res => {
   blog.value = res
 })
 
-const getComments = () => {
-  getCommentList({ blogId: $route.params.blogId as string }).then((res: any) => {
-    console.log(res)
-    commentList.value = res.list
-  })
-}
-
 const init = () => {
-  getCommentList({ blogId: $route.params.blogId as string }).then((res: any) => {
-    console.log(res)
+  getCommentList({ blogId }).then((res: any) => {
+    res.list.forEach(item => {
+      item.show = false
+    })
+
     commentList.value = res.list
 
     commentList.value.forEach(item => {
-      getCommentList({ blogId: $route.params.blogId as string, parent: item.id, pageSize: 5 }).then((res: any) => {
-        console.log(res)
+      getCommentList({ blogId, parent: item.id, pageSize: 3 }).then((res: any) => {
+        res.list.forEach(item => {
+          item.show = false
+        })
+
         item.children = res.list
+        item.total = res.total
+        item.pageNum = 1
       })
     })
   })
+}
+
+const getMoreReply = (item) => {
+  getCommentList({ blogId, parent: item.id, pageNum: ++item.pageNum, pageSize: 3 }).then((res: any) => {
+    res.list.forEach(item => {
+      item.show = false
+    })
+
+    item.children.push(...res.list)
+    item.total = res.total
+  })
+}
+
+const reply = (item) => {
+  commentList.value.forEach(comment => {
+    comment.show = false
+
+    comment.children?.forEach(c => {
+      c.show = false
+    })
+  })
+  item.show = true
+}
+
+const postComment = (item) => {
+
 }
 
 init()
@@ -50,7 +80,7 @@ init()
             <img src="" alt="" width="50" height="50" />
           </div>
           <div class="area">
-            <textarea class="content" placeholder="说说你的看法"></textarea>
+            <textarea class="content" v-model="content" placeholder="说说你的看法"></textarea>
             <my-button class="btn">发布</my-button>
           </div>
         </div>
@@ -64,12 +94,16 @@ init()
             </div>
             <p class="center">{{ item.content }}</p>
             <div class="bottom">
-              <my-button type="text">回复</my-button>
+              <my-button type="text" @click="reply(item)">回复</my-button>
               <div class="icons">
                 <my-icon icon="delete"></my-icon>
                 <my-icon icon="down-active">{{ util.formatNum(item.up) }}</my-icon>
                 <my-icon icon="up-active">{{ util.formatNum(item.down) }}</my-icon>
               </div>
+            </div>
+            <div class="area" v-show="item.show">
+              <textarea class="content" v-model="content2" placeholder="说说你的看法"></textarea>
+              <my-button class="btn">回复</my-button>
             </div>
 
             <div class="children" v-if="item.children?.length != 0">
@@ -82,21 +116,26 @@ init()
                   </div>
                   <p class="center">{{ i.content }}</p>
                   <div class="bottom">
-                    <my-button type="text">回复</my-button>
+                    <my-button type="text" @click="reply(i)">回复</my-button>
                     <div class="icons">
                       <my-icon icon="delete"></my-icon>
                       <my-icon icon="down-active">{{ util.formatNum(i.up) }}</my-icon>
                       <my-icon icon="up-active">{{ util.formatNum(i.down) }}</my-icon>
                     </div>
                   </div>
+                  <div class="area" v-show="i.show">
+                    <textarea class="content" v-model="content2" placeholder="说说你的看法"></textarea>
+                    <my-button class="btn">回复</my-button>
+                  </div>
                 </div>
               </div>
-              <div v-if="item.children.length > 3">展开更多回复</div>
+              <div class="collapse" v-if="item.total > item.children?.length" @click="getMoreReply(item)">展开更多回复</div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
     <div class="sidebar">
       <div class="author-info">
         <router-link :to="`/user/${blog.authorInfo.id}/postBlogList`" class="face">
@@ -207,7 +246,6 @@ init()
 
 .area {
   flex-grow: 1;
-  margin-left: 20px;
 
   .content {
     width: 100%;
@@ -259,7 +297,7 @@ init()
       display: flex;
       align-items: center;
       font-size: 12px;
-      margin-top: 10px;
+      margin: 10px 0;
 
       .icons {
         margin-left: auto;
@@ -273,7 +311,7 @@ init()
 }
 
 .children {
-  background-color: @gray-color;
+  background-color: @theme-color2;
   border-radius: 5px;
   padding: 10px 20px;
   margin-top: 10px;
@@ -287,7 +325,8 @@ init()
 }
 
 .collapse {
-  margin-left: 30px;
+  margin-left: 50px;
+  font-size: 13px;
   cursor: pointer;
   transition: @transition-time;
 }

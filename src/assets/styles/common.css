@@ -41,6 +41,14 @@ main {
   max-width: 1200px;
   margin: 0 auto;
 }
+input,
+textarea {
+  transition: 0.3s;
+}
+input:focus,
+textarea:focus {
+  border-color: #40a0ff !important;
+}
 .v-md-pre-wrapper .line-numbers-wrapper {
   width: 2.5em !important;
 }

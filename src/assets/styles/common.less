@@ -67,6 +67,16 @@ main {
     margin: 0 auto;
 }
 
+input,
+textarea {
+    transition: @transition-time;
+}
+
+input:focus,
+textarea:focus {
+    border-color: @theme-color !important;
+}
+
 // #markdown {
 //     hr {
 //         height: 1px;

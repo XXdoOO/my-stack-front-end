@@ -15,3 +15,4 @@ interface Comment extends Page {
 export const getCommentList = (params: Comment) => {
   return request.get(`/getCommentsList`, { params: params })
 }
+
