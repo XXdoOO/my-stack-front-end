@@ -3,7 +3,8 @@ withDefaults(defineProps<{
   type?: 'primary' | 'danger' | 'text',
   icon?: string,
   plain?: boolean,
-  disabled?: boolean
+  disabled?: boolean,
+  size?: 'medium' | 'small' | 'mini'
 }>(), {
   type: 'primary',
   plain: false,
@@ -32,7 +33,8 @@ const handleClick = (e) => {
 .my-button {
   border-radius: 5px;
   position: relative;
-  padding: 5px 30px;
+  padding: 0 30px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;

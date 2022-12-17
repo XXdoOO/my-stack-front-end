@@ -1,23 +1,11 @@
-<template>
-  <div class="confirm-popup" ref="confirm">
-    <div class="content">
-      <div class="header">提示</div>
-      <div class="msg">{{ msg }}</div>
-      <div class="btn-group">
-        <button @click="cancel">取消</button>
-        <button @click="confirm">确认</button>
-      </div>
-    </div>
-  </div>
-</template>
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
+import MyButton from '@/components/MyButton.vue';
 
-defineProps<{
-  msg: string
+const props = defineProps<{
+  msg: string,
+  confirm?: Function
 }>()
-
-const emit = defineEmits(['confirm'])
 
 const cancel = () => {
   const confirm = ref()
@@ -27,9 +15,22 @@ const cancel = () => {
 
 const confirm = () => {
   cancel()
-  emit('confirm')
+  props.confirm()
 }
 </script>
+
+<template>
+  <div class="confirm-popup" ref="confirm">
+    <div class="content">
+      <div class="header">提示</div>
+      <div class="msg">{{ msg }}</div>
+      <div class="btn-group">
+        <my-button @click="cancel" plain>取消</my-button>
+        <my-button class="confirm" @click="confirm">确认</my-button>
+      </div>
+    </div>
+  </div>
+</template>
 <style lang="less">
 .confirm-popup {
   position: fixed;
@@ -46,7 +47,7 @@ const confirm = () => {
   opacity: 0;
 
   .content {
-    min-width: 350px;
+    min-width: 400px;
     background-color: white;
     border-radius: 5px;
     padding: 12px 15px;
@@ -58,21 +59,10 @@ const confirm = () => {
 
     .btn-group {
       float: right;
+      display: flex;
 
-      button {
-        border-radius: 5px;
-        border: 1px solid @theme-color;
-        color: white;
-        background-color: @theme-color;
-        padding: 5px 20px;
-        cursor: pointer;
-        transition: @transition-time;
-      }
-
-      button:first-child {
-        margin-right: 10px;
-        background-color: white;
-        color: @theme-color;
+      .confirm {
+        margin-left: 30px;
       }
     }
   }

@@ -1,63 +1,37 @@
+<script setup lang="ts">
+import { defineProps, ref, onMounted } from 'vue'
+
+const props = withDefaults(defineProps<{
+  message: string,
+  title: string,
+  type: 'info' | 'success' | 'error' | 'warn'
+}>(), {})
+
+
+const timer = setTimeout(() => {
+  const message = ref()
+
+  console.log(message.value);
+
+  vnode.el.style.opacity = 0
+  vnode.el.style.zIndex = -1
+}, 3000)
+
+onMounted(() => {
+  clearTimeout(timer)
+})
+</script>
+
 <template>
-  <div :class="['message', 'message-' + type]" v-if="show">
+  <div :class="['message', 'message-' + type]" ref="message">
     <div class="message-text">
-      <div class="message-title" v-if="title !== ''">{{title}}</div>
+      <div class="message-title" v-if="title !== ''">{{ title }}</div>
       <div class="message-content">
-        提示信息：{{message}}
+        提示信息：{{ message }}
       </div>
     </div>
   </div>
 </template>
-
-
-<script>
-export default {
-  name: 'TMessage',
-
-  props: {
-    message: {
-      type: String,
-      default: ''
-    },
-    title: {
-      type: String,
-      default: ''
-    },
-    type: {
-      type: String,
-      default: 'success'
-    },
-    duration: {
-      type: Number,
-      default: 3000
-    }
-  },
-
-  data() {
-    return {
-      show: false,
-    }
-  },
-
-  mounted() {
-    this.show = true;
-    let timer = setTimeout(() => {
-      if (this.show) {
-        this.close(timer);
-      }
-    }, this.duration);
-
-  },
-
-  methods: {
-    close(timer) {
-      this.show = false;
-      clearTimeout(timer);
-      timer = null;
-    }
-  }
-}
-</script>
 <style scoped>
 .message {
   position: fixed;

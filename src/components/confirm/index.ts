@@ -1,14 +1,13 @@
 import { createVNode, render } from 'vue'
 import Confirm from './confirm.vue'
 
-const confirm = (app, props) => {
-  const div = document.createElement('div')
-  document.body.appendChild(div)
+const div = document.createElement('div')
+document.body.appendChild(div)
 
-  const vnode = createVNode(Confirm, props)
+export default (msg: string, confirm: Function) => {
+  const vnode = createVNode(Confirm, { msg, confirm })
   render(vnode, div)
 
-  $vm.$el.style.opacity = 1
-  $vm.$el.style.zIndex = 999
+  vnode.el.style.opacity = 1
+  vnode.el.style.zIndex = 999
 }
-export default confirm

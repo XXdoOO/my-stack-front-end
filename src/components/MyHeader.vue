@@ -36,11 +36,8 @@ const search = (keywords) => {
 }
 
 const logout = () => {
-  Confirm({
-    msg: "此操作将会退出该账号，确定继续吗？",
-    success: () => {
+  Confirm('确认退出账号吗?', () => {
 
-    }
   })
 }
 

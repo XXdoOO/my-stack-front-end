@@ -1,22 +1,28 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRoute } from 'vue-router';
 import { getBlogDetails } from '@/api/blog'
 import { getCommentList } from '@/api/comment'
 import util from '@/util/util'
+import login from '@/components/login'
+import message from '@/components/message'
 
 const $route = useRoute()
+
+console.log($route);
+
 const blogId = $route.params.blogId as string
 let blog = ref(null)
 let commentList = ref(null)
 let content = ref<string>('')
 let content2 = ref<string>('')
 
-getBlogDetails(blogId).then(res => {
-  blog.value = res
-})
 
 const init = () => {
+  getBlogDetails(blogId).then(res => {
+    blog.value = res
+  })
+
   getCommentList({ blogId }).then((res: any) => {
     res.list.forEach(item => {
       item.show = false
@@ -64,13 +70,22 @@ const postComment = (item) => {
 
 }
 
-init()
+onMounted(() => {
+  console.log(22222222222222222);
+  const aaa = ref()
+  console.log(aaa.value);
+
+})
+
+// init()
+// login()
+message('success', 'title', 'sdajkgadaddgkdld')
 </script>
 
 <template>
   <!-- <v-md-editor id="markdown" v-model="text"></v-md-editor> -->
 
-  <main class="container" v-if="blog">
+  <main class="container" v-if="blog" ref="aaa">
     <div class="content">
       <v-md-preview :text="blog.content"></v-md-preview>
 

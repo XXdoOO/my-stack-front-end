@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import MyButton from '@/components/MyButton.vue'
 import api from '@/api/user'
 
@@ -9,7 +9,7 @@ const time = ref<Date>(null)
 const isDisableSend = ref<boolean>(false)
 const countdown = ref<number>(60)
 
-type Tip = {
+interface Tip {
   loginTip: string,
   tipClass: boolean,
   registerTip: string
@@ -26,6 +26,7 @@ interface LoginForm extends BaseForm { }
 interface RegisterForm extends BaseForm {
   password2: string,
 }
+
 const tip = reactive<Tip>({
   loginTip: '',
   tipClass: false,
@@ -45,10 +46,19 @@ const registerFrom = reactive<RegisterForm>({
   code: ''
 })
 
+onMounted(() => {
+  const popup = ref()
+
+  console.log(popup.value);
+  console.log(document.getElementById('popup'));
+
+})
+
 const hiddenPopup = () => {
-  const login = ref()
-  login.value.style.opacity = 0
-  login.value.style.zIndex = -999
+  const p = document.getElementById('popup')
+
+  p.style.opacity = '0'
+  p.style.zIndex = '-999'
 }
 
 const login = () => {
@@ -137,7 +147,7 @@ const sendCode = () => {
 </script>
 
 <template>
-  <div class="login-register" ref="login" @click="hiddenPopup">
+  <div class="login-register" ref="popup" @click="hiddenPopup" id="popup">
     <div @click.stop="">
       <div class="cover" :class="{ cover: true, active }">
         <div>My Stack</div>
@@ -150,7 +160,7 @@ const sendCode = () => {
         <div class="kaptcha">
           <input class="form-input" type="text" maxlength="8" required placeholder="请输入验证码" v-model="loginFrom.code" />
           <MyButton type="text" class="toggle" @click="time = new Date()">换一张</MyButton>
-          <img :src="`/kaptcha?time=${time}`" />
+          <img :src="`/api/kaptcha?time=${time}`" />
         </div>
         <p :class="{ active: tip.tipClass }" @animationend="tip.tipClass = false">
           {{ tip.loginTip }}
@@ -236,7 +246,7 @@ const sendCode = () => {
       height: 100%;
       top: 0;
       left: 0;
-      background-image: url(../../assets/img/cover.webp);
+      background-image: url("@/assets/images/cover.webp");
       z-index: 3;
       transition: 0.5s;
     }
@@ -363,7 +373,7 @@ const sendCode = () => {
   height: 40px;
   padding: 0 10px;
   margin-bottom: 20px;
-  border: 1px solid @theme-color;
+  border: 1px solid @border-color;
   padding-right: 165px;
   border-radius: 5px;
 }

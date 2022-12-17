@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import BlogList from '@/components/BlogList.vue';
 import { getBlogList } from '@/api/blog'
 
@@ -15,10 +15,16 @@ getBlogList().then((data: any) => {
 })
 
 
+onMounted(() => {
+  const blog = ref()
+  console.log(blog.value);
+})
+
 </script>
 
 <template>
   <BlogList :list="list" :page-num="1"></BlogList>
+  <div ref="blog"></div>
 </template>
 
 <style lang="less" scoped>
