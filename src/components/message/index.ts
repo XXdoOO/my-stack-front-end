@@ -4,8 +4,14 @@ import { createVNode, render } from 'vue'
 const div = document.createElement('div')
 document.body.appendChild(div)
 
-export default (type: 'info' | 'success' | 'error' | 'warn', title: string, msg: string) => {
-    const vnode = createVNode(Message, { type, title, msg })
+interface Props {
+    type: 'info' | 'success' | 'error' | 'warn',
+    title: string,
+    message: string
+}
+
+export default (props: Props) => {
+    const vnode = createVNode(Message, { ...props })
     render(vnode, div)
 
     console.log(vnode);

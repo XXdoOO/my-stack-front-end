@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { store } from '@/stores/index'
@@ -29,10 +29,10 @@ const onScroll = (): void => {
 }
 
 const keywords = ref<string>('')
-const router = useRouter()
+const $router = useRouter()
 
 const search = (keywords) => {
-  router.push(`/search/${keywords}`)
+  $router.push(`/search/${keywords}`)
 }
 
 const logout = () => {
@@ -45,7 +45,7 @@ onMounted(() => {
   window.addEventListener("scroll", onScroll)
 })
 
-onBeforeUnmount(() => {
+onUnmounted(() => {
   window.removeEventListener("scroll", onScroll)
 })
 </script>
@@ -72,28 +72,28 @@ onBeforeUnmount(() => {
         <my-icon icon="search" @click="search(keywords)" title="点击搜索"></my-icon>
       </div>
 
-      <span class="login" v-if="!userInfo" @click="$loginRegister.showLoginRegister()">登录/注册</span>
+      <span class="login" v-if="!userInfo" @click="LoginRegister()">登录/注册</span>
       <div class="my" v-if="userInfo">
-        <img :src="userInfo.avatar" alt="" width="50" height="50">
+        <img :src="`/api/${userInfo.avatar}`" alt="" width="50" height="50">
 
         <div class="hover-popup">
           <span class="nickname">{{ userInfo.nickname }}</span>
           <nav class="my-count">
             <router-link :to="`/my/pass`">
               <span>{{ userInfo.passCount }}</span>
-              <span>已发布</span>
+              <span>发布</span>
             </router-link>
             <router-link :to="`/my/up`">
-              <span>{{ userInfo.upCount }}</span>
+              <span>{{ userInfo.up }}</span>
               <span>顶过</span>
             </router-link>
             <router-link :to="`/my/down`">
-              <span>{{ userInfo.downCount }}</span>
+              <span>{{ userInfo.down }}</span>
               <span>踩过</span>
             </router-link>
           </nav>
           <router-link class="my-menu" to="/my/pass">个人中心</router-link>
-          <router-link class="my-menu" to="/admin/index" v-if="userInfo.identity">管理后台</router-link>
+          <router-link class="my-menu" to="/admin/index" v-if="userInfo.isAdmin">管理后台</router-link>
           <router-link class="create-btn" to="/user/edit">开始创作</router-link>
           <button class="my-menu" @click="logout">退出登录</button>
         </div>
@@ -341,9 +341,6 @@ onBeforeUnmount(() => {
   position: relative;
   width: 220px;
   height: 40px;
-  border-radius: 5px;
-  border: 1px solid @gray-color;
-  overflow: hidden;
 
   input {
     width: 100%;
@@ -351,6 +348,8 @@ onBeforeUnmount(() => {
     border: none;
     outline: none;
     padding: 0 10px;
+    border: 1px solid @border-color;
+    border-radius: 5px;
   }
 
   .icon {

@@ -1,23 +1,20 @@
 <script setup lang="ts">
-import { defineProps, ref, onMounted } from 'vue'
+import { ref, onUnmounted } from 'vue'
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   message: string,
   title: string,
   type: 'info' | 'success' | 'error' | 'warn'
 }>(), {})
 
 
+const message = ref<HTMLElement>()
 const timer = setTimeout(() => {
-  const message = ref()
-
-  console.log(message.value);
-
-  vnode.el.style.opacity = 0
-  vnode.el.style.zIndex = -1
+  message.value.style.opacity = '0'
+  message.value.style.zIndex = '-1'
 }, 3000)
 
-onMounted(() => {
+onUnmounted(() => {
   clearTimeout(timer)
 })
 </script>

@@ -4,11 +4,12 @@ withDefaults(defineProps<{
   icon?: string,
   plain?: boolean,
   disabled?: boolean,
-  size?: 'medium' | 'small' | 'mini'
+  size?: 'medium' | 'large'
 }>(), {
   type: 'primary',
   plain: false,
-  disabled: false
+  disabled: false,
+  size: 'medium'
 })
 
 let timer
@@ -22,7 +23,7 @@ const handleClick = (e) => {
 }
 </script>
 <template>
-  <button class="my-button" :class="[type, { plain: plain, disabled: disabled }]" @click="handleClick"
+  <button class="my-button" :class="[type, size, { plain: plain, disabled: disabled }]" @click="handleClick"
     :disabled="disabled">
     <span>
       <slot>按钮</slot>
@@ -33,8 +34,6 @@ const handleClick = (e) => {
 .my-button {
   border-radius: 5px;
   position: relative;
-  padding: 0 30px;
-  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,5 +109,15 @@ const handleClick = (e) => {
 
 .disabled {
   cursor: not-allowed;
+}
+
+.medium {
+  padding: 0 20px;
+  height: 30px;
+}
+
+.large {
+  padding: 0 30px;
+  height: 40px;
 }
 </style>

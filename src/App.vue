@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { store } from '@/stores/index'
+import user from './api/user';
+
+const userInfo = JSON.parse(sessionStorage.getItem("userInfo"))
+
+if (userInfo) {
+  store().userInfo = userInfo
+}
+
 </script>
 
 <template>

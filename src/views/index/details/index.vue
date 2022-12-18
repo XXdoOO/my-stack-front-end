@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-import { useRoute } from 'vue-router';
+import { useRoute } from 'vue-router'
 import { getBlogDetails } from '@/api/blog'
 import { getCommentList } from '@/api/comment'
 import util from '@/util/util'
-import login from '@/components/login'
-import message from '@/components/message'
 
 const $route = useRoute()
 
@@ -77,9 +75,7 @@ onMounted(() => {
 
 })
 
-// init()
-// login()
-message('success', 'title', 'sdajkgadaddgkdld')
+init()
 </script>
 
 <template>
@@ -163,11 +159,11 @@ message('success', 'title', 'sdajkgadaddgkdld')
             <span>发布</span>
           </router-link>
           <router-link :to="`/user/${blog.authorInfo.nickname}/upBlogList`">
-            <span>{{ blog.authorInfo.upCount }}</span>
+            <span>{{ blog.authorInfo.up }}</span>
             <span>顶过</span>
           </router-link>
           <router-link :to="`/user/${blog.authorInfo.nickname}/downBlogList`">
-            <span>{{ blog.authorInfo.downCount }}</span>
+            <span>{{ blog.authorInfo.down }}</span>
             <span>踩过</span>
           </router-link>
         </nav>

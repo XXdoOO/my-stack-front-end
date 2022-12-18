@@ -7,6 +7,7 @@ const path = require("path")
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: './',
   plugins: [vue()],
   resolve: {
     alias: {
@@ -19,10 +20,11 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:8080/',
         changeOrigin: true,
-        ws: false
+        ws: false,
+        rewrite: (path) => path.replace(/^\/api/, '')
       }
     },
-  
+
   },
   css: {
     preprocessorOptions: {

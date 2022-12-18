@@ -3,7 +3,7 @@ import LoginRegister from '@/components/login/LoginRegister.vue'
 import xMessage from '@/components/message/index'
 
 
-axios.defaults.baseURL = "http://localhost:8080"
+axios.defaults.baseURL = "/api"
 axios.defaults.withCredentials = true
 axios.defaults.timeout = 10000
 
@@ -24,11 +24,10 @@ axios.interceptors.request.use((req) => {
   }
 }, (error) => {
   console.log("error", error);
-  xMessage.show({
+  xMessage({
+    type: 'error',
     title: '请求或相应错误！',
     message: error.message,
-    type: 'error',
-    duration: 3000
   })
 })
 
@@ -51,15 +50,13 @@ axios.interceptors.response.use((res) => {
       title: '请求超时，请刷新',
       message: error.message,
       type: 'error',
-      duration: 3000
     })
     return Promise.reject("请求超时")
-  } else if (error.message.includes("cancelToken") !== -1) {
+  } else if (error.message.includes("cancelToken") != -1) {
     xMessage({
       title: '用户未登录',
       message: error.message,
       type: 'error',
-      duration: 3000
     })
     return Promise.reject("用户未登录")
   } else {
@@ -67,7 +64,6 @@ axios.interceptors.response.use((res) => {
       title: '其他错误',
       message: error.message,
       type: 'error',
-      duration: 3000
     })
     return Promise.reject("其他错误")
   }

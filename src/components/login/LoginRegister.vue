@@ -1,13 +1,7 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onUnmounted } from 'vue'
 import MyButton from '@/components/MyButton.vue'
 import api from '@/api/user'
-
-const regex: RegExp = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
-const active = ref<boolean>(false)
-const time = ref<Date>(null)
-const isDisableSend = ref<boolean>(false)
-const countdown = ref<number>(60)
 
 interface Tip {
   loginTip: string,
@@ -26,6 +20,12 @@ interface LoginForm extends BaseForm { }
 interface RegisterForm extends BaseForm {
   password2: string,
 }
+
+const regex: RegExp = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+const active = ref<boolean>(false)
+const time = ref<number>(new Date().getTime())
+const isDisableSend = ref<boolean>(false)
+const countdown = ref<number>(60)
 
 const tip = reactive<Tip>({
   loginTip: '',
@@ -46,19 +46,19 @@ const registerFrom = reactive<RegisterForm>({
   code: ''
 })
 
-onMounted(() => {
-  const popup = ref()
+const timer = setInterval(() => {
+  time.value = new Date().getTime()
+}, 60000)
 
-  console.log(popup.value);
-  console.log(document.getElementById('popup'));
-
+onUnmounted(() => {
+  clearInterval(timer)
 })
 
-const hiddenPopup = () => {
-  const p = document.getElementById('popup')
+const popup = ref<HTMLElement>()
 
-  p.style.opacity = '0'
-  p.style.zIndex = '-999'
+const hiddenPopup = () => {
+  popup.value.style.opacity = '0'
+  popup.value.style.zIndex = '-999'
 }
 
 const login = () => {
@@ -85,7 +85,7 @@ const login = () => {
 
       window.location.reload()
     }).catch(msg => {
-      time.value = new Date()
+      time.value = new Date().getTime()
       tip.loginTip = msg
       tip.tipClass = true
     })
@@ -122,6 +122,7 @@ const register = () => {
     })
   }
 }
+
 const sendCode = () => {
   if (registerFrom.email.length == 0) {
     tip.registerTip = "邮箱不能为空"
@@ -159,14 +160,14 @@ const sendCode = () => {
           v-model="loginFrom.password" />
         <div class="kaptcha">
           <input class="form-input" type="text" maxlength="8" required placeholder="请输入验证码" v-model="loginFrom.code" />
-          <MyButton type="text" class="toggle" @click="time = new Date()">换一张</MyButton>
+          <MyButton type="text" class="toggle" @click="time = new Date().getTime()">换一张</MyButton>
           <img :src="`/api/kaptcha?time=${time}`" />
         </div>
         <p :class="{ active: tip.tipClass }" @animationend="tip.tipClass = false">
           {{ tip.loginTip }}
         </p>
 
-        <MyButton @click="login" style="margin-top: 20px">登录
+        <MyButton @click="login" size="large" style="margin-top: 20px">登录
         </MyButton>
         <p @click="active = !active">没有账号？点击注册</p>
       </div>
@@ -188,7 +189,7 @@ const sendCode = () => {
           {{ tip.registerTip }}
         </p>
 
-        <MyButton style="margin-top: 20px" @click="register">注册
+        <MyButton style="margin-top: 20px" size="large" @click="register">注册
         </MyButton>
         <p @click="active = !active">已有账号？点击登录</p>
       </div>

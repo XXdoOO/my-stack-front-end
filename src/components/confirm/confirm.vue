@@ -7,10 +7,11 @@ const props = defineProps<{
   confirm?: Function
 }>()
 
+const popup = ref()
+
 const cancel = () => {
-  const confirm = ref()
-  confirm.value.style.opacity = 0
-  confirm.value.style.zIndex = -1
+  popup.value.style.opacity = 0
+  popup.value.style.zIndex = -1
 }
 
 const confirm = () => {
@@ -20,7 +21,7 @@ const confirm = () => {
 </script>
 
 <template>
-  <div class="confirm-popup" ref="confirm">
+  <div class="confirm-popup" ref="popup">
     <div class="content">
       <div class="header">提示</div>
       <div class="msg">{{ msg }}</div>
