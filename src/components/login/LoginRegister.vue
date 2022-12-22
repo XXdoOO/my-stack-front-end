@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, onUnmounted } from 'vue'
 import MyButton from '@/components/MyButton.vue'
-import api from '@/api/user'
+import { login, sendCode, register } from '@/api/user'
 
 interface Tip {
   loginTip: string,
@@ -61,7 +61,7 @@ const hiddenPopup = () => {
   popup.value.style.zIndex = '-999'
 }
 
-const login = () => {
+const handleLogin = () => {
   let email = loginFrom.email
   let password = loginFrom.password
   let code = loginFrom.code
@@ -76,7 +76,7 @@ const login = () => {
     tip.loginTip = "验证码不能为空"
     tip.tipClass = true
   } else {
-    api.login({
+    login({
       email,
       password,
       code
@@ -92,7 +92,7 @@ const login = () => {
   }
 }
 
-const register = () => {
+const handleRegister = () => {
   let email = registerFrom.email
   let password = registerFrom.password
   let password2 = registerFrom.password2
@@ -114,7 +114,7 @@ const register = () => {
     tip.registerTip = "两次密码不一致";
     tip.tipClass = true
   } else {
-    api.register({ email, password, code }).then(() => {
+    register({ email, password, code }).then(() => {
       tip.registerTip = '注册成功'
     }).catch(msg => {
       tip.registerTip = msg
@@ -123,7 +123,7 @@ const register = () => {
   }
 }
 
-const sendCode = () => {
+const handleSendCode = () => {
   if (registerFrom.email.length == 0) {
     tip.registerTip = "邮箱不能为空"
     tip.tipClass = true
@@ -131,7 +131,7 @@ const sendCode = () => {
     tip.registerTip = "邮箱格式错误"
     tip.tipClass = true
   } else {
-    api.sendCode(registerFrom.email).then(res => {
+    sendCode(registerFrom.email).then(res => {
       console.log(res)
 
       isDisableSend.value = true
@@ -167,7 +167,7 @@ const sendCode = () => {
           {{ tip.loginTip }}
         </p>
 
-        <MyButton @click="login" size="large" style="margin-top: 20px">登录
+        <MyButton @click="handleLogin" size="large" style="margin-top: 20px">登录
         </MyButton>
         <p @click="active = !active">没有账号？点击注册</p>
       </div>
@@ -176,7 +176,7 @@ const sendCode = () => {
         <div class="email">
           <input class="form-input" type="text" maxlength="32" required placeholder="请输入邮箱"
             v-model="registerFrom.email" />
-          <MyButton type="text" class="toggle" :disabled="isDisableSend" @click="sendCode">{{ isDisableSend ?
+          <MyButton type="text" class="toggle" :disabled="isDisableSend" @click="handleSendCode">{{ isDisableSend ?
               `${countdown}后重新发送` : '发送验证码'
           }}</MyButton>
         </div>
@@ -189,7 +189,7 @@ const sendCode = () => {
           {{ tip.registerTip }}
         </p>
 
-        <MyButton style="margin-top: 20px" size="large" @click="register">注册
+        <MyButton style="margin-top: 20px" size="large" @click="handleRegister">注册
         </MyButton>
         <p @click="active = !active">已有账号？点击登录</p>
       </div>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { store } from '@/stores/index'
-import user from './api/user';
 
 const userInfo = JSON.parse(sessionStorage.getItem("userInfo"))
 

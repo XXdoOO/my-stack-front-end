@@ -6,14 +6,18 @@ interface Login {
   code: string
 }
 
-export default {
-  sendCode(email: string) {
-    return request.get(`/sendCode?email=${email}`)
-  },
-  login(data: Login) {
-    return request.post(`/login`, data)
-  },
-  register(data: Login)   {
-    return request.post(`/register`, data)
-  }
+export const sendCode = (email: string) => {
+  return request.get(`/sendCode?email=${email}`)
+}
+
+export const login = (data: Login) => {
+  return request.post(`/login`, data)
+}
+
+export const logout = () => {
+  return request.get('/user/logout')
+}
+
+export const register = (data: Login) => {
+  return request.post(`/register`, data)
 }

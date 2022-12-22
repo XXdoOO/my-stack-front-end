@@ -100,7 +100,8 @@ const handleClick = (e) => {
   border: none;
   background-color: transparent;
   color: @theme-color;
-  padding: 0;
+  padding: 0 !important;
+  height: auto !important;
 }
 
 .text:not(.disabled):hover::before {
