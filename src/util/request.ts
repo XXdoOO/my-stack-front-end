@@ -1,5 +1,5 @@
 import axios from "axios"
-import LoginRegister from '@/components/login/LoginRegister.vue'
+import LoginRegister from '@/components/login'
 import xMessage from '@/components/message/index'
 
 
@@ -17,7 +17,8 @@ axios.interceptors.request.use((req) => {
   const userInfo = JSON.parse(sessionStorage.getItem("userInfo"))
 
   if (userInfo == null && (req.url.includes("/user/") || req.url.includes("/admin/"))) {
-    source.cancel(LoginRegister.show())
+    LoginRegister()
+    source.cancel()
   } else {
     start()
     return req
@@ -36,9 +37,10 @@ axios.interceptors.response.use((res) => {
 
   done()
 
-  if (res.data.code === 200) {
+  if (res.data.code == 200) {
     return Promise.resolve(res.data.data)
-  } else {
+  } else if (res.data.code == 403) {
+    LoginRegister()
     return Promise.reject(res.data.msg)
   }
 }, (error) => {
@@ -53,11 +55,6 @@ axios.interceptors.response.use((res) => {
     })
     return Promise.reject("请求超时")
   } else if (error.message.includes("cancelToken") != -1) {
-    xMessage({
-      title: '用户未登录',
-      message: error.message,
-      type: 'error',
-    })
     return Promise.reject("用户未登录")
   } else {
     xMessage({

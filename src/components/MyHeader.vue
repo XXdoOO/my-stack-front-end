@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { store } from '@/stores/index'
 import { logout } from '@/api/user'
 import Confirm from '@/components/confirm'
@@ -29,7 +29,7 @@ const onScroll = (): void => {
   }
 }
 
-const keywords = ref<string>('')
+const keywords = ref<string>(useRoute().params.keywords as string)
 const $router = useRouter()
 
 const search = (keywords) => {
@@ -99,7 +99,7 @@ onUnmounted(() => {
           </nav>
           <router-link class="my-menu" to="/my/pass">个人中心</router-link>
           <router-link class="my-menu" to="/admin/index" v-if="userInfo.isAdmin">管理后台</router-link>
-          <router-link class="create-btn" to="/user/edit">开始创作</router-link>
+          <router-link class="create-btn" to="/edit">开始创作</router-link>
           <button class="my-menu" @click="handleLogout">退出登录</button>
         </div>
       </div>

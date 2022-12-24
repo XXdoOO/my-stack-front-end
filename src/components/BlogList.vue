@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { store } from '@/stores/index'
 import MyEmpty from '@/components/MyEmpty.vue'
 import util from '@/util/util'
+import { handleBlog } from '@/api/blog'
 
 const $props = withDefaults(defineProps<{
   list: any[],
@@ -28,16 +29,11 @@ const getDetails = (blogId) => {
   $router.push(`/blog/${blogId}`)
 }
 
-const up = (index: number) => {
+const handle = (blogId: string | number, type: 0 | 1 | 2) => {
+  handleBlog(blogId, type).then(data => {
+    console.log(data);
 
-}
-
-const down = (index: number) => {
-
-}
-
-const star = (index: number) => {
-
+  })
 }
 
 const deleteBlog = (index: number) => {
@@ -76,38 +72,28 @@ onUnmounted(() => {
     <div class="articles" v-if="blogList.length > 0">
       <article v-for="(blog, index) in blogList" :key="blog.id" @click="getDetails(blog.id)">
         <div>
-          <ul class="top">
-            <li>
-              <my-icon icon="user" type="link" :href="`/${blog.authorId}`">{{ blog.authorNickname }}</my-icon>
-            </li>
-            <li>
-              <my-icon icon="history" type="text" :enable-hover="false">{{ util.formatTime(blog.createTime) }}</my-icon>
-            </li>
-          </ul>
+          <div class="top" @click.stop>
+            <my-icon icon="user" type="link" :href="`/${blog.authorId}`">{{ blog.authorNickname }}</my-icon>
+            <my-icon icon="history" type="text" :enable-hover="false">{{ util.formatTime(blog.createTime) }}</my-icon>
+          </div>
           <h2>{{ blog.title }}</h2>
           <p>{{ blog.description }}</p>
-          <ul class="bottom">
-            <li title="顶数">
-              <my-icon icon="up-active">{{ util.formatNum(blog.up) }}</my-icon>
-            </li>
-            <li title="踩数">
-              <my-icon icon="down-active">{{ util.formatNum(blog.down) }}</my-icon>
-            </li>
-            <li title="收藏数">
-              <my-icon icon="star-active">{{ util.formatNum(blog.star) }}</my-icon>
-            </li>
-            <li title="浏览数">
-              <my-icon icon="view" type="text">{{ util.formatNum(blog.views) }}</my-icon>
-            </li>
-            <li class="delete" title="删除此博客" v-if="isMy && blog.authorUsername === userInfo.username"
+          <div class="bottom" @click.stop>
+            <my-icon @click="handle(blog.id, 0)" v-model:num="blog.up" v-model:active="blog.isUp" icon="up-active" />
+            <my-icon @click="handle(blog.id, 1)" v-model:num="blog.down" icon="down-active"
+              v-model:active="blog.isDown" />
+            <my-icon @click="handle(blog.id, 2)" v-model:num="blog.star" icon="star-active"
+              v-model:active="blog.isStar" />
+            <my-icon icon="view" type="text">{{ util.formatNum(blog.views) }}</my-icon>
+            <div class="delete" title="删除此博客" v-if="isMy && blog.authorUsername === userInfo.username"
               @click.stop="deleteBlog(index)">
               <my-icon icon="delete"></my-icon>
-            </li>
-            <li class="edit" title="编辑此博客" v-if="isMy && blog.authorUsername === userInfo.username"
+            </div>
+            <div class="edit" title="编辑此博客" v-if="isMy && blog.authorUsername === userInfo.username"
               @click.stop="editBlog(blog.id)">
               <my-icon icon="edit"></my-icon>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
         <img v-if="blog.cover" :src="blog.cover" alt="" height="100">
       </article>
@@ -201,16 +187,12 @@ onUnmounted(() => {
   display: flex;
   font-size: 10px;
 
-  li {
+  .icon {
     display: flex;
     align-items: center;
-
-    span {
-      margin-left: 5px;
-    }
   }
 
-  li:first-child {
+  .icon:first-child {
     border-right: 2px solid @gray-color;
     padding-right: 15px;
     margin-right: 15px;
@@ -220,7 +202,7 @@ onUnmounted(() => {
 .bottom {
   display: flex;
 
-  li {
+  .icon {
     margin-right: 2em;
     font-size: 12px;
   }

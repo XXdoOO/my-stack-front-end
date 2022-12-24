@@ -3,6 +3,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 const index = () => import('@/views/index/index.vue')
 const home = () => import('@/views/index/home/index.vue')
 const details = () => import('@/views/index/details/index.vue')
+const edit = () => import('@/views/index/edit/index.vue')
+const search = () => import('@/views/index/search/index.vue')
+const my = () => import('@/views/index/my/index.vue')
 
 const router = createRouter({
   history: createWebHistory(),
@@ -12,10 +15,13 @@ const router = createRouter({
       path: '/', component: index, children: [
         { path: '', component: home },
         { path: '/blog/:blogId', component: details },
+        { path: '/edit', component: edit, meta: { authorized: 1 } },
+        { path: '/search/:keywords', component: search, meta: { authorized: 0 } },
+        { path: '/my', component: my, meta: { authorized: 1 } }
       ]
     },
     {
-      path: '/admin', component: index, children: [
+      path: '/admin', component: index, meta: { authorized: 2 }, children: [
         { path: '/index', component: index }
       ]
     },

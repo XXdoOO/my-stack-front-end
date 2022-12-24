@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useRoute } from 'vue-router'
-import { getBlogDetails } from '@/api/blog'
-import { getCommentList, postComment } from '@/api/comment'
+import { getBlogDetails, handleBlog } from '@/api/blog'
+import { getCommentList, postComment, deleteComment, handleComment } from '@/api/comment'
 import util from '@/util/util'
 import { store } from '@/stores/index'
 
@@ -82,6 +82,7 @@ const handlePostComment = (parent, receiveId, receiveNickname, content) => {
     res.senderAvatar = userInfo.avatar
     res.senderNickname = userInfo.nickname
     res.receiveNickname = receiveNickname
+    res.children = []
     console.log(res)
 
     if (parent) {
@@ -105,12 +106,47 @@ const handlePostComment = (parent, receiveId, receiveNickname, content) => {
   })
 }
 
+const handleDeleteComment = (commentId: string | number) => {
+  deleteComment(commentId).then(data => {
+    console.log(data);
+
+    foo: for (const index in commentList.value) {
+      const item = commentList.value[index]
+
+      if (item.id == commentId) {
+        commentList.value.splice(index, 1)
+        break foo
+      }
+
+      for (const i in item.children) {
+        const j = item.children[i]
+
+        if (j.id == commentId) {
+          item.children.splice(i, 1)
+          break foo
+        }
+      }
+    }
+  })
+}
+
+const handleBlog2 = (blogId: string | number, type: 0 | 1 | 2) => {
+  handleBlog(blogId, type).then(data => {
+    console.log(data);
+
+  })
+}
+
+const handleComment2 = (commentId: string | number, type: 0 | 1) => {
+  handleComment(commentId, type).then(data => {
+    console.log(data)
+  })
+}
+
 init()
 </script>
 
 <template>
-  <!-- <v-md-editor id="markdown" v-model="text"></v-md-editor> -->
-
   <main class="container" v-if="blog">
     <div class="content">
       <v-md-preview :text="blog.content"></v-md-preview>
@@ -137,9 +173,12 @@ init()
             <div class="bottom">
               <my-button type="text" @click="reply(item)">{{ item.isShow ? '收起' : '回复' }}</my-button>
               <div class="icons">
-                <my-icon icon="delete" v-if="item.senderId == userInfo?.id"></my-icon>
-                <my-icon icon="down-active">{{ util.formatNum(item.up) }}</my-icon>
-                <my-icon icon="up-active">{{ util.formatNum(item.down) }}</my-icon>
+                <my-icon @click="handleDeleteComment(item.id)" icon="delete"
+                  v-if="item.senderId == userInfo?.id"></my-icon>
+                <my-icon @click="handleComment2(item.id, 1)" v-model:num="item.down" v-model:active="item.isDown"
+                  icon="down-active" />
+                <my-icon @click="handleComment2(item.id, 0)" v-model:num="item.up" v-model:active="item.isUp"
+                  icon="up-active" />
               </div>
             </div>
             <div class="area" v-show="item.isShow">
@@ -161,9 +200,12 @@ init()
                   <div class="bottom">
                     <my-button type="text" @click="reply(i)">{{ i.isShow ? '收起' : '回复' }}</my-button>
                     <div class="icons">
-                      <my-icon icon="delete" v-if="i.senderId == userInfo?.id"></my-icon>
-                      <my-icon icon="down-active">{{ util.formatNum(i.up) }}</my-icon>
-                      <my-icon icon="up-active">{{ util.formatNum(i.down) }}</my-icon>
+                      <my-icon @click="handleDeleteComment(i.id)" icon="delete"
+                        v-if="i.senderId == userInfo?.id"></my-icon>
+                      <my-icon @click="handleComment2(i.id, 1)" v-model:num="i.down" v-model:active="i.isDown"
+                        icon="down-active" />
+                      <my-icon @click="handleComment2(i.id, 0)" v-model:num="i.up" v-model:active="i.isUp"
+                        icon="up-active" />
                     </div>
                   </div>
                   <div class="area" v-show="i.isShow">
@@ -201,12 +243,14 @@ init()
           </router-link>
         </nav>
       </div>
-      <ul class="icon-bar">
-        <li><my-icon icon="up-active">{{ util.formatNum(blog.up) }}</my-icon></li>
-        <li><my-icon icon="down-active">{{ util.formatNum(blog.down) }}</my-icon></li>
-        <li><my-icon icon="star-active">{{ util.formatNum(blog.star) }}</my-icon></li>
-        <li><my-icon icon="view">{{ util.formatNum(blog.views) }}</my-icon></li>
-      </ul>
+      <div class="icon-bar">
+        <my-icon @click="handleBlog2(blog.id, 0)" v-model:num="blog.up" v-model:active="blog.isUp" icon="up-active" />
+        <my-icon @click="handleBlog2(blog.id, 1)" v-model:num="blog.down" v-model:active="blog.isDown"
+          icon="down-active" />
+        <my-icon @click="handleBlog2(blog.id, 2)" v-model:num="blog.star" v-model:active="blog.isStar"
+          icon="star-active" />
+        <my-icon icon="view">{{ util.formatNum(blog.views) }}</my-icon>
+      </div>
     </div>
   </main>
 </template>

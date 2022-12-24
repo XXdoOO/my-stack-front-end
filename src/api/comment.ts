@@ -18,3 +18,11 @@ export const postComment = (data: {
 }) => {
   return request.post('/user/postComments', data)
 }
+
+export const deleteComment = (commentId: string | number) => {
+  return request.delete(`/user/deleteComment/${commentId}`)
+}
+
+export const handleComment = (commentId: string | number, type: 0 | 1) => {
+  return request.put(`/user/handleComment?commentId=${commentId}&type=${type}`)
+}
