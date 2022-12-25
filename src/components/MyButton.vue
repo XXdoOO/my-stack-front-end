@@ -1,16 +1,21 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
+import { useRouter } from 'vue-router'
+
+const props = withDefaults(defineProps<{
   type?: 'primary' | 'danger' | 'text',
   icon?: string,
   plain?: boolean,
   disabled?: boolean,
-  size?: 'medium' | 'large'
+  size?: 'medium' | 'large',
+  href?: string,
 }>(), {
   type: 'primary',
   plain: false,
   disabled: false,
   size: 'medium'
 })
+
+const $router = useRouter()
 
 let timer
 const $emit = defineEmits(['click'])
@@ -19,6 +24,9 @@ const handleClick = (e) => {
   clearTimeout(timer)
   timer = setTimeout(() => {
     $emit('click', e)
+    if (props.href) {
+      $router.push(props.href)
+    }
   }, 100)
 }
 </script>

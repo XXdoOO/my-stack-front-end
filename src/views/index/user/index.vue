@@ -11,28 +11,15 @@ const translateX = ref(0)
 const toggle = (value) => {
   translateX.value = value
 
-  let type = null
+  let type
 
   if (value == 0) {
     type = null
   } else if (value == 100) {
-    type = 3
-  } else if (value == 200) {
-    type = 2
-  } else if (value == 300) {
     type = 0
-  } else if (value == 400) {
+  } else if (value == 200) {
     type = 1
-  } else if (value == 500) {
-    type = 4
-  } else if (value == 600) {
-    type = 5
   }
-
-  console.log({
-    authorId: userInfo?.id ?? '',
-    type
-  });
 
   list.length = 0
 
@@ -59,12 +46,8 @@ toggle(0)
   </div>
   <div class="container menu">
     <div :class="{ active: translateX == 0 }" @click="toggle(0)">发布</div>
-    <div :class="{ active: translateX == 100 }" @click="toggle(100)">未通过</div>
-    <div :class="{ active: translateX == 200 }" @click="toggle(200)">审核中</div>
-    <div :class="{ active: translateX == 300 }" @click="toggle(300)">顶过</div>
-    <div :class="{ active: translateX == 400 }" @click="toggle(400)">踩过</div>
-    <div :class="{ active: translateX == 500 }" @click="toggle(500)">收藏</div>
-    <div :class="{ active: translateX == 600 }" @click="toggle(600)">历史</div>
+    <div :class="{ active: translateX == 100 }" @click="toggle(100)">顶过</div>
+    <div :class="{ active: translateX == 200 }" @click="toggle(200)">踩过</div>
     <div class="bar" :style="{ transform: `translateX(${translateX}%)` }"></div>
   </div>
   <BlogList :list="list" :page-num="1"></BlogList>

@@ -229,15 +229,15 @@ init()
           <span> {{ blog.authorInfo.nickname }}</span>
         </router-link>
         <nav class="account">
-          <router-link :to="`/user/${blog.authorInfo.nickname}/postBlogList`">
+          <router-link :to="`/user/${blog.authorInfo.id}`">
             <span>{{ blog.authorInfo.passCount }}</span>
             <span>发布</span>
           </router-link>
-          <router-link :to="`/user/${blog.authorInfo.nickname}/upBlogList`">
+          <router-link :to="`/user/${blog.authorInfo.id}`">
             <span>{{ blog.authorInfo.up }}</span>
             <span>顶过</span>
           </router-link>
-          <router-link :to="`/user/${blog.authorInfo.nickname}/downBlogList`">
+          <router-link :to="`/user/${blog.authorInfo.id}`">
             <span>{{ blog.authorInfo.down }}</span>
             <span>踩过</span>
           </router-link>

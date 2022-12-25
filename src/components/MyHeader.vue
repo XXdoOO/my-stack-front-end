@@ -69,7 +69,7 @@ onUnmounted(() => {
 
       <nav>
         <router-link to="/" :class="{ active: $route.path == '/' }">首页</router-link>
-        <router-link to="/my/pass" :class="{ active: $route.path.split('/')[1] == 'my' }">我的</router-link>
+        <router-link to="/my" :class="{ active: $route.path.split('/')[1] == 'my' }">我的</router-link>
       </nav>
 
       <div class="search-input">
@@ -97,10 +97,10 @@ onUnmounted(() => {
               <span>踩过</span>
             </router-link>
           </nav>
-          <router-link class="my-menu" to="/my/pass">个人中心</router-link>
+          <router-link class="my-menu" to="/my">个人中心</router-link>
           <router-link class="my-menu" to="/admin/index" v-if="userInfo.isAdmin">管理后台</router-link>
-          <router-link class="create-btn" to="/edit">开始创作</router-link>
-          <button class="my-menu" @click="handleLogout">退出登录</button>
+          <my-button type="primary" href="/edit">开始创作</my-button>
+          <my-button type="danger" @click="handleLogout">退出登录</my-button>
         </div>
       </div>
     </div>
@@ -218,15 +218,15 @@ onUnmounted(() => {
       .hover-popup {
         position: absolute;
         top: 15px;
-        left: -60px;
+        left: -50px;
         display: flex;
         visibility: hidden;
         opacity: 0;
         flex-direction: column;
         background-color: white;
-        padding: 35px 0 15px 0;
+        padding: 35px 15px 15px 15px;
         border-radius: 5px;
-        width: 180px;
+        width: 160px;
         z-index: 999;
         transition: @transition-time;
         box-shadow: @shadow-color;
@@ -239,7 +239,7 @@ onUnmounted(() => {
           display: flex;
           justify-content: space-between;
           margin-top: 15px;
-          padding: 0 15px 12px 15px;
+          padding-bottom: 15px;
           border-bottom: 2px solid @gray-color;
 
           a {
@@ -263,14 +263,13 @@ onUnmounted(() => {
         }
 
         .my-menu {
-          padding: 10px 15px;
+          padding: 7px 0;
           cursor: pointer;
           transition: @transition-time;
           font-size: 14px;
         }
 
         .my-menu:hover {
-          background-color: @gray-color;
           color: @theme-color;
         }
 
@@ -278,35 +277,12 @@ onUnmounted(() => {
           margin-top: 10px;
         }
 
-        button.my-menu {
-          width: 80%;
-          margin: 0 auto;
-          border-radius: 5px;
-          border: 1px solid @danger-color;
-          color: @danger-color;
-          background-color: white;
-          transition: @transition-time;
-          padding: 5px;
-          font-size: 15px;
-          font-weight: 500;
+        .my-menu:first-of-type {
+          margin-top: 10px;
         }
 
-        button.my-menu:hover {
-          background-color: @danger-color;
-          color: white;
-        }
-
-        .create-btn {
-          width: 80%;
-          margin: 10px auto 0 auto;
-          border-radius: 5px;
-          background-color: @theme-color;
-          border: 1px solid @theme-color;
-          color: white;
-          text-align: center;
-          padding: 5px;
-          font-size: 15px;
-          font-weight: 500;
+        button:last-child {
+          margin-top: 10px;
         }
       }
 

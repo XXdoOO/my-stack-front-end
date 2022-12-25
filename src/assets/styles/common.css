@@ -45,6 +45,7 @@ main {
 input,
 textarea {
   transition: 0.3s;
+  outline: none;
 }
 input:focus,
 textarea:focus {
