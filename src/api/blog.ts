@@ -17,3 +17,7 @@ export const getBlogDetails = (blogId: string | number | string[]) => {
 export const handleBlog = (blogId: string | number, type: 0 | 1 | 2) => {
   return request.put(`/user/handleBlog?blogId=${blogId}&type=${type}`)
 }
+
+export const postBlog = (blog: FormData) => {
+  return request.post(`/user/postBlog`, blog)
+}

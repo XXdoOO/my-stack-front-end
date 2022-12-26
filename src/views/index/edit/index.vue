@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import xMessage from '@/components/message/index'
+import { postBlog } from '@/api/blog'
 
 const blog = reactive({
   title: '',
@@ -9,13 +10,33 @@ const blog = reactive({
   content: '# 请使用markdown语法\n ## 开始你的表演\n```js\nlet f = new Func();\nconsole.log(f.__proto__); // Object\n```'
 })
 
+const coverImg = ref()
+
 const uploadCover = (e) => {
   blog.cover = URL.createObjectURL(e.target.files[0])
 }
 
-const postBlog = () => {
+const handlePostBlog = () => {
   if (blog.title.trim().length != 0 && blog.description.trim().length != 0 && blog.content.trim().length != 0) {
+    const img = coverImg.value.files[0]
 
+    const data = new FormData()
+
+    if (img) {
+      data.append("coverImg", img)
+    }
+
+    for (let i in blog) {
+      data.append(`${i}`, blog[i])
+    }
+    for (var [a, b] of data.entries()) {
+      console.log(a, b);
+    }
+
+    postBlog(data).then(data => {
+      console.log(data);
+
+    })
   } else {
     xMessage({
       type: 'error',
@@ -34,7 +55,7 @@ const postBlog = () => {
       <my-icon v-if="!blog.cover" icon="add"></my-icon>
       <img v-if="blog.cover" :src="blog.cover" width="50" height="50" />
       <input type="file" hidden accept=".jpg,.png" ref="coverImg" @change="uploadCover" /></label>
-    <my-button class="post" @click="postBlog">发布</my-button>
+    <my-button class="post" @click="handlePostBlog">发布</my-button>
   </div>
   <v-md-editor class="markdown" v-model="blog.content"></v-md-editor>
 </template>

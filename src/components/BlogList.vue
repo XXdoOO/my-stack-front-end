@@ -95,7 +95,7 @@ onUnmounted(() => {
             </div>
           </div>
         </div>
-        <img v-if="blog.cover" :src="blog.cover" alt="" height="100">
+        <img v-if="blog.cover" :src="`/api/${blog.cover}`" alt="" height="100">
       </article>
     </div>
     <MyEmpty v-else-if="blogList.length == 0"></MyEmpty>
