@@ -8,10 +8,10 @@ withDefaults(defineProps<{
 }>(), {})
 
 
-const message = ref<HTMLElement>()
+const msg = ref<HTMLElement>()
 const timer = setTimeout(() => {
-  message.value.style.opacity = '0'
-  message.value.style.zIndex = '-1'
+  msg.value.style.opacity = '0'
+  msg.value.style.zIndex = '-1'
 }, 3000)
 
 onUnmounted(() => {
@@ -20,7 +20,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div :class="['message', 'message-' + type]" ref="message">
+  <div :class="['message', 'message-' + type]" ref="msg">
     <div class="message-text">
       <div class="message-title" v-if="title !== ''">{{ title }}</div>
       <div class="message-content">

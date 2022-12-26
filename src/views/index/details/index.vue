@@ -193,7 +193,8 @@ init()
                 <div class="detail">
                   <div class="top">
                     <div class="nickname">{{ i.senderNickname }}</div>
-                    <div class="nickname">>{{ i.receiveNickname }}</div>
+                    <my-icon class="arrow" icon="arrow-right" type="text"></my-icon>
+                    <div class="nickname">{{ i.receiveNickname }}</div>
                     <div class="time">{{ i.createTime }}</div>
                   </div>
                   <p class="center">{{ i.content }}</p>
@@ -215,7 +216,8 @@ init()
                   </div>
                 </div>
               </div>
-              <div class="collapse" v-if="item.total > item.children?.length" @click="getMoreReply(item)">展开更多回复</div>
+              <my-icon class="collapse" v-if="item.total > item.children?.length" icon="arrow-down"
+                @click="getMoreReply(item)">展开更多回复</my-icon>
             </div>
           </div>
         </div>
@@ -368,6 +370,11 @@ init()
         color: @gray-color-dep;
       }
 
+      .arrow {
+        font-size: 8px;
+        margin: 0 10px;
+      }
+
       .time {
         color: @gray-color-dep;
         font-size: 14px;
@@ -416,7 +423,7 @@ init()
 
 .collapse {
   margin-left: 50px;
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
   transition: @transition-time;
 }

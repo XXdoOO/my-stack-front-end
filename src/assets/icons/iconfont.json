@@ -6,6 +6,27 @@
   "description": "毕业设计",
   "glyphs": [
     {
+      "icon_id": "995861",
+      "name": "添加",
+      "font_class": "add",
+      "unicode": "e693",
+      "unicode_decimal": 59027
+    },
+    {
+      "icon_id": "4175511",
+      "name": "下箭头",
+      "font_class": "arrow-right",
+      "unicode": "eb6d",
+      "unicode_decimal": 60269
+    },
+    {
+      "icon_id": "33529650",
+      "name": "下箭头-copy",
+      "font_class": "arrow-down",
+      "unicode": "eb6e",
+      "unicode_decimal": 60270
+    },
+    {
       "icon_id": "11372640",
       "name": "编辑",
       "font_class": "edit",
@@ -81,13 +102,6 @@
       "font_class": "search",
       "unicode": "e7b7",
       "unicode_decimal": 59319
-    },
-    {
-      "icon_id": "33267172",
-      "name": "search-copy",
-      "font_class": "search-active",
-      "unicode": "e7be",
-      "unicode_decimal": 59326
     },
     {
       "icon_id": "33267118",
