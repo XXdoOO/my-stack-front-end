@@ -10,6 +10,8 @@ const user = () => import('@/views/index/user/index.vue')
 
 const admin = () => import('@/views/admin/index.vue')
 const adminHome = () => import('@/views/admin/home/index.vue')
+const adminBlog = () => import('@/views/admin/blog/index.vue')
+const adminUser = () => import('@/views/admin/user/index.vue')
 
 const router = createRouter({
   history: createWebHistory(),
@@ -27,7 +29,9 @@ const router = createRouter({
     },
     {
       path: '/admin', component: admin, meta: { authorized: 2 }, children: [
-        { path: '/index', component: adminHome }
+        { path: '', component: adminHome },
+        { path: 'blog', component: adminBlog },
+        { path: 'user', component: adminUser },
       ]
     },
   ]
