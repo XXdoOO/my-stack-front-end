@@ -8,6 +8,9 @@ const search = () => import('@/views/index/search/index.vue')
 const my = () => import('@/views/index/my/index.vue')
 const user = () => import('@/views/index/user/index.vue')
 
+const admin = () => import('@/views/admin/index.vue')
+const adminHome = () => import('@/views/admin/home/index.vue')
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -23,8 +26,8 @@ const router = createRouter({
       ]
     },
     {
-      path: '/admin', component: index, meta: { authorized: 2 }, children: [
-        { path: '/index', component: index }
+      path: '/admin', component: admin, meta: { authorized: 2 }, children: [
+        { path: '/index', component: adminHome }
       ]
     },
   ]
