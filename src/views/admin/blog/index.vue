@@ -7,7 +7,10 @@ const form = ref({
   title: '',
   description: '',
   author: '',
-  createTime: ''
+  createTime: '',
+  pageNum: 0,
+  pageSize: 10,
+  total: 100
 })
 
 </script>
@@ -46,8 +49,14 @@ const form = ref({
     <el-table-column label="状态" align="center" prop="status"></el-table-column>
     <el-table-column label="发布时间" align="center" prop="createTime"></el-table-column>
   </el-table>
+
+  <el-pagination class="pagination" v-model:current-page="form.pageNum" v-model:page-size="form.pageSize" background
+    layout="total, sizes, prev, pager, next" :total="form.total" />
 </template>
 
 <style lang="less" scoped>
-
+.pagination {
+  padding: 20px;
+  justify-content: end;
+}
 </style>
