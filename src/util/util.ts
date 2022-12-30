@@ -1,5 +1,9 @@
 export default {
   formatTime(time: string): string {
+    if (time == '') {
+      return time
+    }
+
     let date = new Date(time)
     let year = date.getFullYear()
     let month: number | string = date.getMonth() + 1
