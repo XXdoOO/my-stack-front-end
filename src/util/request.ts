@@ -40,6 +40,7 @@ axios.interceptors.response.use((res) => {
   if (res.data.code == 200) {
     return Promise.resolve(res.data.data)
   } else if (res.data.code == 403) {
+    sessionStorage.clear()
     LoginRegister()
     return Promise.reject(res.data.msg)
   }

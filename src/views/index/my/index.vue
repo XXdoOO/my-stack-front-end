@@ -32,7 +32,7 @@ const toggle = (value) => {
   console.log({
     authorId: userInfo?.id ?? '',
     type
-  });
+  })
 
   list.length = 0
 
@@ -58,13 +58,13 @@ toggle(0)
     <span class="ip">{{ userInfo.ip }}</span>
   </div>
   <div class="container menu">
-    <div :class="{ active: translateX == 0 }" @click="toggle(0)">发布</div>
-    <div :class="{ active: translateX == 100 }" @click="toggle(100)">未通过</div>
-    <div :class="{ active: translateX == 200 }" @click="toggle(200)">审核中</div>
-    <div :class="{ active: translateX == 300 }" @click="toggle(300)">顶过</div>
-    <div :class="{ active: translateX == 400 }" @click="toggle(400)">踩过</div>
-    <div :class="{ active: translateX == 500 }" @click="toggle(500)">收藏</div>
-    <div :class="{ active: translateX == 600 }" @click="toggle(600)">历史</div>
+    <div :class="{ active: translateX == 0 }" @click="toggle(0)">发布({{ userInfo.passCount }})</div>
+    <div :class="{ active: translateX == 100 }" @click="toggle(100)">未通过({{ userInfo.noPassCount }})</div>
+    <div :class="{ active: translateX == 200 }" @click="toggle(200)">审核中({{ userInfo.auditingCount }})</div>
+    <div :class="{ active: translateX == 300 }" @click="toggle(300)">顶过({{ userInfo.up }})</div>
+    <div :class="{ active: translateX == 400 }" @click="toggle(400)">踩过({{ userInfo.down }})</div>
+    <div :class="{ active: translateX == 500 }" @click="toggle(500)">收藏({{ userInfo.star }})</div>
+    <div :class="{ active: translateX == 600 }" @click="toggle(600)">历史({{ userInfo.history }})</div>
     <div class="bar" :style="{ transform: `translateX(${translateX}%)` }"></div>
   </div>
   <BlogList :list="list" :page-num="1"></BlogList>
@@ -93,7 +93,7 @@ toggle(0)
   border-radius: 5px 5px 0 0;
 
   >div {
-    width: 70px;
+    width: 80px;
     text-align: center;
     cursor: pointer;
     transition: @transition-time;

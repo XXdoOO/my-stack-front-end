@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
 import { RefreshRight, Download, Search } from '@element-plus/icons-vue'
-import { getBlogList2 } from '@/api/blog'
-import util from '@/util/util';
+import { getBlogList2, getBlogDetails2, auditBlog } from '@/api/blog'
 
 const blogList = ref([])
 const form = reactive({
@@ -21,14 +20,13 @@ const loading = ref(false)
 
 const getBlogList = () => {
   loading.value = true
-  console.log(form);
 
-  form.startTime = util.formatTime(form.startTime)
-  form.endTime = util.formatTime(form.endTime)
+  form.startTime = form.createTime[0]
+  form.endTime = form.createTime[1]
 
-  console.log(form);
+  console.log(form)
   getBlogList2(form).then((data: any) => {
-    form.total = data.total
+    form.total = parseInt(data.total)
     blogList.value.length = 0
     data.list.map(item => {
       blogList.value.push({
@@ -46,23 +44,40 @@ const getBlogList = () => {
   })
 }
 
-watch([() => form.pageNum, () => form.pageSize], (newVal, oldVal) => {
+watch(() => form.pageNum, () => {
+  getBlogList()
+})
+
+watch(() => form.pageSize, () => {
+  form.pageNum = 1
   getBlogList()
 })
 
 getBlogList()
 
+const tableForm = ref()
 const reset = () => {
-  const tableForm = ref()
-
   tableForm.value.resetFields()
-
+  getBlogList()
 }
 
-const changeTime = (e) => {
-  console.log(e);
-
+const getBlogDetails = (blogId) => {
+  getBlogDetails2(blogId).then((data: any) => {
+    details.value = data.content
+    visible.value = true
+  })
 }
+
+const handleAuditBlog = (blogId, status) => {
+  console.log(blogId, status);
+  auditBlog(blogId, status).then(data => {
+    console.log(data);
+
+  })
+}
+
+const visible = ref(false)
+const details = ref('')
 
 </script>
 
@@ -96,7 +111,7 @@ const changeTime = (e) => {
   </el-form>
 
   <el-table v-loading="loading" :data="blogList">
-    <el-table-column label="序号" align="center" type="index" min-width="50"></el-table-column>
+    <el-table-column label="序号" align="center" type="index" min-width="30"></el-table-column>
     <el-table-column label="标题" align="center" prop="title"></el-table-column>
     <el-table-column label="描述" align="center" prop="description" min-width="200px"></el-table-column>
     <el-table-column label="封面" align="center" prop="cover">
@@ -104,19 +119,34 @@ const changeTime = (e) => {
         <el-image v-if="scope.row.cover" style="height: 100px" :src="scope.row.cover" :zoom-rate="1.2" fit="cover" />
       </template>
     </el-table-column>
-    <el-table-column label="作者" align="center" prop="author"></el-table-column>
-    <el-table-column label="审核状态" align="center" prop="status">
+    <el-table-column label="作者" align="center">
       <template #default="scope">
-        <el-tag v-if="scope.row.status == 0" type="info" effect="dark">待审核</el-tag>
-        <el-tag v-if="scope.row.status == 1" type="success" effect="dark">已通过</el-tag>
-        <el-tag v-if="scope.row.status == 2" type="danger" effect="dark">未通过</el-tag>
+        <el-link type="primary" :href="`/`">{{ scope.row.author }}</el-link>
+      </template>
+    </el-table-column>
+    <el-table-column label="审核状态" align="center" prop="status" min-width="63">
+      <template #default="scope">
+        <el-select v-model="scope.row.status" @change="handleAuditBlog(scope.row.id, scope.row.status)">
+          <el-option label="待审核" :value="0"></el-option>
+          <el-option label="已通过" :value="1"></el-option>
+          <el-option label="未通过" :value="2"></el-option>
+        </el-select>
       </template>
     </el-table-column>
     <el-table-column label="发布时间" align="center" prop="createTime"></el-table-column>
+    <el-table-column label="操作" align="center" min-width="100">
+      <template #default="scope">
+        <el-button type="primary" text @click="getBlogDetails(scope.row.id)">详情</el-button>
+      </template>
+    </el-table-column>
   </el-table>
 
   <el-pagination class="pagination" v-model:current-page="form.pageNum" v-model:page-size="form.pageSize" background
     layout="total, sizes, prev, pager, next" :total="form.total" />
+
+  <el-dialog v-model="visible" title="博客详情">
+    <v-md-preview :text="details"></v-md-preview>
+  </el-dialog>
 </template>
 
 <style lang="less" scoped>

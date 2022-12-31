@@ -23,10 +23,18 @@ export const getBlogDetails = (blogId: string | number | string[]) => {
   return request.get(`/blog/${blogId}`)
 }
 
+export const getBlogDetails2 = (blogId: string | number | string[]) => {
+  return request.get(`/admin/blog/${blogId}`)
+}
+
 export const handleBlog = (blogId: string | number, type: 0 | 1 | 2) => {
   return request.put(`/user/handleBlog?blogId=${blogId}&type=${type}`)
 }
 
 export const postBlog = (blog: FormData) => {
   return request.post(`/user/postBlog`, blog)
+}
+
+export const auditBlog = (blogId, status: 0 | 1 | 2) => {
+  return request.put(`/admin/auditBlog?blogId=${blogId}&status=${status}`)
 }

@@ -226,7 +226,7 @@ init()
 
     <div class="sidebar">
       <div class="author-info">
-        <router-link :to="`/user/${blog.authorInfo.id}/postBlogList`" class="face">
+        <router-link :to="`/user/${blog.authorInfo.id}`" class="face">
           <my-avatar :src="`/api${blog.authorInfo.avatar}`" />
           <span> {{ blog.authorInfo.nickname }}</span>
         </router-link>

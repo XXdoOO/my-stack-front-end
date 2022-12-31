@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import { useRoute } from 'vue-router'
 import BlogList from '@/components/BlogList.vue';
 import { getBlogList } from '@/api/blog'
-import { store } from '@/stores/index'
+import { getUserInfo } from '@/api/user'
 
-const userInfo = store().userInfo
+const userInfo = ref(null)
 const list = reactive<object[]>([])
 const translateX = ref(0)
+const route = useRoute()
 
 const toggle = (value) => {
   translateX.value = value
@@ -21,33 +23,33 @@ const toggle = (value) => {
     type = 1
   }
 
+  console.log(route);
+
   list.length = 0
-
-  console.log(list);
-
   getBlogList({
-    authorId: userInfo?.id ?? '',
+    authorId: route.params.userId as string,
     type
   }).then((data: any) => {
-    console.log(data.list)
-
     list.push(...data.list)
   })
 }
+getUserInfo(route.params.userId).then(data => {
+  userInfo.value = data
 
-toggle(0)
+  toggle(0)
+})
 </script>
 
 <template>
-  <div class="container info">
+  <div class="container info" v-if="userInfo">
     <img :src="`/api/${userInfo.avatar}`" width="50" height="50" alt="">
     <span class="nickname">{{ userInfo.nickname }}</span>
     <span class="ip">{{ userInfo.ip }}</span>
   </div>
-  <div class="container menu">
-    <div :class="{ active: translateX == 0 }" @click="toggle(0)">发布</div>
-    <div :class="{ active: translateX == 100 }" @click="toggle(100)">顶过</div>
-    <div :class="{ active: translateX == 200 }" @click="toggle(200)">踩过</div>
+  <div class="container menu" v-if="userInfo">
+    <div :class="{ active: translateX == 0 }" @click="toggle(0)">发布({{ userInfo.passCount }})</div>
+    <div :class="{ active: translateX == 100 }" @click="toggle(100)">顶过({{ userInfo.up }})</div>
+    <div :class="{ active: translateX == 200 }" @click="toggle(200)">踩过({{ userInfo.down }})</div>
     <div class="bar" :style="{ transform: `translateX(${translateX}%)` }"></div>
   </div>
   <BlogList :list="list" :page-num="1"></BlogList>
@@ -76,7 +78,7 @@ toggle(0)
   border-radius: 5px 5px 0 0;
 
   >div {
-    width: 70px;
+    width: 80px;
     text-align: center;
     cursor: pointer;
     transition: @transition-time;

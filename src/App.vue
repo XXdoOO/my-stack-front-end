@@ -4,10 +4,10 @@ import { ElConfigProvider } from 'element-plus'
 
 import zhCn from 'element-plus/lib/locale/lang/zh-cn'
 
-const userInfo = JSON.parse(sessionStorage.getItem("userInfo"))
+const userInfo = sessionStorage.getItem("userInfo")
 
-if (userInfo) {
-  store().userInfo = userInfo
+if (userInfo && userInfo != 'undefined') {
+  store().userInfo = JSON.parse(userInfo)
 }
 
 </script>

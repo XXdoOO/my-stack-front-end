@@ -50,11 +50,12 @@ const handleClose = (key: string, keyPath: string[]) => {
 
 <style lang="less" scoped>
 .sidebar {
-  height: 100vh;
   background-color: black;
 }
 
 .main {
   background-color: white;
+  overflow: auto;
+  height: 100vh;
 }
 </style>

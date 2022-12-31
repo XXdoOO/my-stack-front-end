@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import LoginRegister from '@/components/login'
 
 const index = () => import('@/views/index/index.vue')
 const home = () => import('@/views/index/home/index.vue')
@@ -10,6 +11,7 @@ const user = () => import('@/views/index/user/index.vue')
 
 const admin = () => import('@/views/admin/index.vue')
 const adminHome = () => import('@/views/admin/home/index.vue')
+
 const adminBlog = () => import('@/views/admin/blog/index.vue')
 const adminUser = () => import('@/views/admin/user/index.vue')
 
@@ -35,5 +37,31 @@ const router = createRouter({
       ]
     },
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  console.log(to);
+
+
+  if (to.meta.authorized == 1) {
+    const userInfo = sessionStorage.getItem("userInfo")
+
+    if (userInfo && userInfo != 'undefined') {
+      next()
+    } else {
+      LoginRegister()
+    }
+  } else if (to.meta.authorized == 2) {
+    const userInfo = sessionStorage.getItem("userInfo")
+
+    if (userInfo && userInfo != 'undefined' && JSON.parse(userInfo).admin) {
+      next()
+    } else {
+      LoginRegister()
+    }
+  } else {
+    next()
+  }
+
 })
 export default router
