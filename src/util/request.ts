@@ -11,7 +11,7 @@ const CancelToken = axios.CancelToken
 const source = CancelToken.source()
 
 axios.interceptors.request.use((req) => {
-  console.log("请求URL：", req.url)
+  console.log("请求URL：", req.url.split('/'))
   console.log(req)
 
   const userInfo = JSON.parse(sessionStorage.getItem("userInfo"))
@@ -27,7 +27,6 @@ axios.interceptors.request.use((req) => {
   console.log("error", error);
   xMessage({
     type: 'error',
-    title: '请求或相应错误！',
     message: error.message,
   })
 })

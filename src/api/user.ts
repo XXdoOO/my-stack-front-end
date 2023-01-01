@@ -35,5 +35,5 @@ export const getUserList = (params: User) => {
 }
 
 export const getUserInfo = (userId) => {
-  return request.get(`/user/${userId}`)
+  return request.get(`/getUserInfo/${userId}`)
 }

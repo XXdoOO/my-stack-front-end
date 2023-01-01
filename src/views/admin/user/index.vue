@@ -18,6 +18,22 @@ const form = reactive({
   total: 100
 })
 const loading = ref(false)
+const dialogVisible = ref(true)
+const disableForm = reactive({
+  userId: '',
+  reason: '',
+  endTime: '',
+})
+const disableRules = reactive({
+  reason: {
+    required: true,
+    message: '请输入封禁原因'
+  },
+  endTime: {
+    required: true,
+    message: '请选择封禁时间'
+  },
+})
 
 const getList = () => {
   loading.value = true
@@ -58,6 +74,17 @@ const reset = () => {
   getList()
 }
 
+const disableFormRef = ref()
+const disableUser = () => {
+
+  return true
+}
+
+const disableDate = (date) => {
+  console.log(date);
+
+}
+
 getList()
 </script>
 
@@ -95,16 +122,15 @@ getList()
         <el-avatar :src="scope.row.avatar"></el-avatar>
       </template>
     </el-table-column>
-    <el-table-column label="状态" align="center" prop="status">
-      <template #default="scope">
-        <el-tag v-if="scope.row.status == 0" type="success" effect="dark">正常</el-tag>
-        <el-tag v-if="scope.row.status == 1" type="danger" effect="dark">封禁中</el-tag>
-      </template>
-    </el-table-column>
     <el-table-column label="身份" align="center">
       <template #default="scope">
         <el-tag v-if="scope.row.isAdmin == 0" type="info" effect="dark">普通用户</el-tag>
         <el-tag v-if="scope.row.isAdmin == 1" effect="dark">管理用户</el-tag>
+      </template>
+    </el-table-column>
+    <el-table-column label="是否封禁" align="center" prop="status">
+      <template #default="scope">
+        <el-switch v-model="scope.row.status" :before-change="disableUser" />
       </template>
     </el-table-column>
     <el-table-column label="注册时间" align="center" prop="createTime"></el-table-column>
@@ -112,6 +138,22 @@ getList()
 
   <el-pagination class="pagination" v-model:current-page="form.pageNum" v-model:page-size="form.pageSize" background
     layout="total, sizes, prev, pager, next" :total="form.total" />
+
+  <el-dialog v-model="dialogVisible" title="封禁设置" width="330">
+    <el-form :model="disableForm" ref="disableFormRef" :rules="disableRules">
+      <el-form-item label="封禁时间" prop="endTime">
+        <el-date-picker v-model="disableForm.endTime" type="datetime" value-format="YYYY-MM-DD HH:mm:ss"
+          placeholder="请选择封禁时间" :disabled-date="disableDate" />
+      </el-form-item>
+      <el-form-item label="封禁原因" prop="reason">
+        <el-input clearable rows="3" type="textarea" v-model="disableForm.reason" placeholder="请输入封禁原因"></el-input>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-button @click="dialogVisible = false">取消</el-button>
+      <el-button type="primary" @click="dialogVisible = false">确认</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <style lang="less" scoped>

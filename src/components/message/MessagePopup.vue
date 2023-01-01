@@ -3,7 +3,6 @@ import { ref, onUnmounted } from 'vue'
 
 withDefaults(defineProps<{
   message: string,
-  title: string,
   type: 'info' | 'success' | 'error' | 'warn'
 }>(), {})
 
@@ -22,7 +21,6 @@ onUnmounted(() => {
 <template>
   <div :class="['message', 'message-' + type]" ref="msg">
     <div class="message-text">
-      <div class="message-title" v-if="title !== ''">{{ title }}</div>
       <div class="message-content">
         提示信息：{{ message }}
       </div>
@@ -33,10 +31,9 @@ onUnmounted(() => {
 .message {
   position: fixed;
   left: 50%;
-  top: 20%;
+  top: 30%;
   transform: translate(-50%, -50%);
   z-index: 999;
-  width: 320px;
   padding: 10px;
   border-radius: 5px;
   display: flex;

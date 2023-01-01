@@ -1,23 +1,32 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import { useRoute } from 'vue-router'
 import xMessage from '@/components/message/index'
-import { postBlog } from '@/api/blog'
+import { postBlog, getBlogDetails, updateBlog } from '@/api/blog'
 
-const blog = reactive({
+const blog = ref({
+  id: useRoute().params.blogId ?? '',
   title: '',
   description: '',
   cover: '',
   content: '# 请使用markdown语法\n ## 开始你的表演\n```js\nlet f = new Func();\nconsole.log(f.__proto__); // Object\n```'
 })
 
+if (blog.value.id) {
+  getBlogDetails(blog.value.id).then((data: any) => {
+    console.log(data);
+    blog.value = data
+  })
+}
+
 const coverImg = ref()
 
 const uploadCover = (e) => {
-  blog.cover = URL.createObjectURL(e.target.files[0])
+  blog.value.cover = URL.createObjectURL(e.target.files[0])
 }
 
 const handlePostBlog = () => {
-  if (blog.title.trim().length != 0 && blog.description.trim().length != 0 && blog.content.trim().length != 0) {
+  if (blog.value.title.trim().length != 0 && blog.value.description.trim().length != 0 && blog.value.content.trim().length != 0) {
     const img = coverImg.value.files[0]
 
     const data = new FormData()
@@ -26,21 +35,31 @@ const handlePostBlog = () => {
       data.append("coverImg", img)
     }
 
-    for (let i in blog) {
-      data.append(`${i}`, blog[i])
+    for (let i in blog.value) {
+      data.append(`${i}`, blog.value[i])
     }
     for (var [a, b] of data.entries()) {
       console.log(a, b);
     }
 
-    postBlog(data).then(data => {
-      console.log(data);
-
-    })
+    if (blog.value.id) {
+      updateBlog(data).then(data => {
+        xMessage({
+          type: 'success',
+          message: '保存成功',
+        })
+      })
+    } else {
+      postBlog(data).then(() => {
+        xMessage({
+          type: 'success',
+          message: '发布成功',
+        })
+      })
+    }
   } else {
     xMessage({
       type: 'error',
-      title: '请完善信息',
       message: '请完善信息',
     })
   }
@@ -52,10 +71,10 @@ const handlePostBlog = () => {
     <label class="title"><span>标题：</span><input type="text" v-model="blog.title" /></label>
     <label class="description"><span>描述：</span><input type="text" v-model="blog.description" /></label>
     <label class="cover"><span>封面：</span>
-      <my-icon v-if="!blog.cover" icon="add"></my-icon>
-      <img v-if="blog.cover" :src="blog.cover" width="50" height="50" />
+      <my-icon v-if="!blog.cover" icon="add" style="font-size:25px"></my-icon>
+      <img v-if="blog.cover" :src="`/api/${blog.cover}`" width="50" height="50" />
       <input type="file" hidden accept=".jpg,.png" ref="coverImg" @change="uploadCover" /></label>
-    <my-button class="post" @click="handlePostBlog">发布</my-button>
+    <my-button class="post" @click="handlePostBlog">{{ blog.id ? '保存' : '发布' }}</my-button>
   </div>
   <v-md-editor class="markdown" v-model="blog.content"></v-md-editor>
 </template>

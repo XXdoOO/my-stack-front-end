@@ -38,3 +38,11 @@ export const postBlog = (blog: FormData) => {
 export const auditBlog = (blogId, status: 0 | 1 | 2) => {
   return request.put(`/admin/auditBlog?blogId=${blogId}&status=${status}`)
 }
+
+export const deleteBlog = (blogId) => {
+  return request.delete(`/user/deleteBlog/${blogId}`)
+}
+
+export const updateBlog = (blog: FormData) => {
+  return request.put(`/user/updateBlog`, blog)
+}

@@ -1,54 +1,79 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import BlogList from '@/components/BlogList.vue';
+import { ref, reactive, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import BlogList from '@/components/BlogList.vue'
 import { getBlogList } from '@/api/blog'
 import { store } from '@/stores/index'
 
 const userInfo = store().userInfo
 const list = reactive<object[]>([])
 const translateX = ref(0)
+const isMy = ref(false)
+const page = reactive({
+  pageNum: 1,
+  total: 0
+})
+const type = ref(null)
+let path = useRoute().path
+console.log(path);
 
-const toggle = (value) => {
-  translateX.value = value
+watch(useRoute(), (newVal) => {
+  path = newVal.path
+  console.log(path);
+  toggle()
+  getList()
+})
 
-  let type = null
-
-  if (value == 0) {
-    type = null
-  } else if (value == 100) {
-    type = 3
-  } else if (value == 200) {
-    type = 2
-  } else if (value == 300) {
-    type = 0
-  } else if (value == 400) {
-    type = 1
-  } else if (value == 500) {
-    type = 4
-  } else if (value == 600) {
-    type = 5
+const toggle = () => {
+  if (path == '/my') {
+    type.value = null
+    isMy.value = true
+    translateX.value = 0
+  } else if (path == '/my/noPass') {
+    type.value = 3
+    isMy.value = true
+    translateX.value = 100
+  } else if (path == '/my/auditing') {
+    type.value = 2
+    isMy.value = true
+    translateX.value = 200
+  } else if (path == '/my/up') {
+    type.value = 0
+    isMy.value = false
+    translateX.value = 300
+  } else if (path == '/my/down') {
+    type.value = 1
+    isMy.value = false
+    translateX.value = 400
+  } else if (path == '/my/star') {
+    type.value = 4
+    isMy.value = false
+    translateX.value = 500
+  } else if (path == '/my/history') {
+    type.value = 5
+    isMy.value = false
+    translateX.value = 600
   }
-
-  console.log({
-    authorId: userInfo?.id ?? '',
-    type
-  })
-
   list.length = 0
+  page.pageNum = 1
+}
 
-  console.log(list);
+const getList = () => {
+  console.log(page.pageNum);
 
   getBlogList({
     authorId: userInfo?.id ?? '',
-    type
+    type: type.value,
+    pageNum: page.pageNum
   }).then((data: any) => {
     console.log(data.list)
 
     list.push(...data.list)
+    page.total = data.total
   })
 }
-
-toggle(0)
+toggle()
+getList()
 </script>
 
 <template>
@@ -58,16 +83,18 @@ toggle(0)
     <span class="ip">{{ userInfo.ip }}</span>
   </div>
   <div class="container menu">
-    <div :class="{ active: translateX == 0 }" @click="toggle(0)">发布({{ userInfo.passCount }})</div>
-    <div :class="{ active: translateX == 100 }" @click="toggle(100)">未通过({{ userInfo.noPassCount }})</div>
-    <div :class="{ active: translateX == 200 }" @click="toggle(200)">审核中({{ userInfo.auditingCount }})</div>
-    <div :class="{ active: translateX == 300 }" @click="toggle(300)">顶过({{ userInfo.up }})</div>
-    <div :class="{ active: translateX == 400 }" @click="toggle(400)">踩过({{ userInfo.down }})</div>
-    <div :class="{ active: translateX == 500 }" @click="toggle(500)">收藏({{ userInfo.star }})</div>
-    <div :class="{ active: translateX == 600 }" @click="toggle(600)">历史({{ userInfo.history }})</div>
+    <router-link to="/my" :class="{ active: path == '/my' }">发布({{ userInfo.passCount }})</router-link>
+    <router-link to="/my/noPass" :class="{ active: path == '/my/noPass' }">未通过({{ userInfo.noPassCount }})</router-link>
+    <router-link to="/my/auditing" :class="{ active: path == '/my/auditing' }">审核中({{ userInfo.auditingCount
+}})</router-link>
+    <router-link to="/my/up" :class="{ active: path == '/my/up' }">顶过({{ userInfo.up }})</router-link>
+    <router-link to="/my/down" :class="{ active: path == '/my/down' }">踩过({{ userInfo.down }})</router-link>
+    <router-link to="/my/star" :class="{ active: path == '/my/star' }">收藏({{ userInfo.star }})</router-link>
+    <router-link to="/my/history" :class="{ active: path == '/my/history' }">历史({{ userInfo.history }})</router-link>
     <div class="bar" :style="{ transform: `translateX(${translateX}%)` }"></div>
   </div>
-  <BlogList :list="list" :page-num="1"></BlogList>
+  <BlogList v-model:list="list" v-model:pageNum="page.pageNum" :total="page.total" @nextPage="getList" :isMy="isMy">
+  </BlogList>
 </template>
 
 <style lang="less" scoped>
@@ -92,10 +119,9 @@ toggle(0)
   padding: 7px 10px;
   border-radius: 5px 5px 0 0;
 
-  >div {
+  >a {
     width: 80px;
     text-align: center;
-    cursor: pointer;
     transition: @transition-time;
   }
 
@@ -103,6 +129,7 @@ toggle(0)
     position: absolute;
     left: 10px;
     bottom: 0;
+    width: 80px;
     height: 3px;
     transition: @transition-time;
   }

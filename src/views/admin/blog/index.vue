@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
-import { RefreshRight, Download, Search } from '@element-plus/icons-vue'
+import { RefreshRight, Download, Search, User } from '@element-plus/icons-vue'
 import { getBlogList2, getBlogDetails2, auditBlog } from '@/api/blog'
 
 const blogList = ref([])
@@ -34,7 +34,8 @@ const getBlogList = () => {
         title: item.title,
         description: item.description,
         cover: item.cover,
-        author: item.authorNickname,
+        authorId: item.authorId,
+        authorNickname: item.authorNickname,
         status: item.status,
         createTime: item.createTime
       })
@@ -121,7 +122,8 @@ const details = ref('')
     </el-table-column>
     <el-table-column label="作者" align="center">
       <template #default="scope">
-        <el-link type="primary" :href="`/`">{{ scope.row.author }}</el-link>
+        <el-link type="primary" :icon="User" :href="`/user/${scope.row.authorId}`">{{ scope.row.authorNickname
+}}</el-link>
       </template>
     </el-table-column>
     <el-table-column label="审核状态" align="center" prop="status" min-width="63">
@@ -144,7 +146,7 @@ const details = ref('')
   <el-pagination class="pagination" v-model:current-page="form.pageNum" v-model:page-size="form.pageSize" background
     layout="total, sizes, prev, pager, next" :total="form.total" />
 
-  <el-dialog v-model="visible" title="博客详情">
+  <el-dialog v-model="visible" title="博客详情" width="1000">
     <v-md-preview :text="details"></v-md-preview>
   </el-dialog>
 </template>

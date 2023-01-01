@@ -12,8 +12,10 @@ const user = () => import('@/views/index/user/index.vue')
 const admin = () => import('@/views/admin/index.vue')
 const adminHome = () => import('@/views/admin/home/index.vue')
 
-const adminBlog = () => import('@/views/admin/blog/index.vue')
-const adminUser = () => import('@/views/admin/user/index.vue')
+import adminBlog from '@/views/admin/blog/index.vue'
+import adminUser from '@/views/admin/user/index.vue'
+// const adminBlog = () => import('@/views/admin/blog/index.vue')
+// const adminUser = () => import('@/views/admin/user/index.vue')
 
 const router = createRouter({
   history: createWebHistory(),
@@ -24,9 +26,17 @@ const router = createRouter({
         { path: '', component: home },
         { path: '/blog/:blogId', component: details },
         { path: '/edit', component: edit, meta: { authorized: 1 } },
+        { path: '/edit/:blogId', component: edit, meta: { authorized: 1 } },
         { path: '/search/:keywords', component: search, meta: { authorized: 0 } },
         { path: '/my', component: my, meta: { authorized: 1 } },
-        { path: '/user/:userId', component: user, meta: { authorized: 1 } },
+        { path: '/my/pass', component: my, meta: { authorized: 1 } },
+        { path: '/my/noPass', component: my, meta: { authorized: 1 } },
+        { path: '/my/auditing', component: my, meta: { authorized: 1 } },
+        { path: '/my/up', component: my, meta: { authorized: 1 } },
+        { path: '/my/down', component: my, meta: { authorized: 1 } },
+        { path: '/my/star', component: my, meta: { authorized: 1 } },
+        { path: '/my/history', component: my, meta: { authorized: 1 } },
+        { path: '/user/:userId', component: user, meta: { authorized: 0 } },
       ]
     },
     {
@@ -40,9 +50,6 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log(to);
-
-
   if (to.meta.authorized == 1) {
     const userInfo = sessionStorage.getItem("userInfo")
 

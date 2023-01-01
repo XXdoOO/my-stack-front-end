@@ -4,26 +4,28 @@ import { useRouter } from 'vue-router'
 import { store } from '@/stores/index'
 import MyEmpty from '@/components/MyEmpty.vue'
 import util from '@/util/util'
-import { handleBlog } from '@/api/blog'
+import { handleBlog, deleteBlog } from '@/api/blog'
+import confirm from '@/components/confirm'
+import xMessage from '@/components/message/index'
 
 const $props = withDefaults(defineProps<{
   list: any[],
   isMy?: boolean,
-  pageNum?: number
+  pageNum?: number,
+  pageSize?: number,
+  total: string
 }>(), {
   isMy: false,
-  pageNum: 1
+  pageNum: 1,
+  pageSize: 10
 })
 
 const userInfo = store().userInfo
 
-const $emit = defineEmits(['getBlogList'])
+const $emit = defineEmits(['nextPage', 'update:pageNum'])
 const $router = useRouter()
 
 const blogList = $props.list
-const pageSize: number = 10
-const total: number = 0
-
 
 const getDetails = (blogId) => {
   $router.push(`/blog/${blogId}`)
@@ -32,16 +34,20 @@ const getDetails = (blogId) => {
 const handle = (blogId: string | number, type: 0 | 1 | 2) => {
   handleBlog(blogId, type).then(data => {
     console.log(data);
-
   })
 }
 
-const deleteBlog = (index: number) => {
+const handleDeleteBlog = (index) => {
+  confirm('确认删除此博客吗？', () => {
+    deleteBlog(blogList[index].id).then(() => {
+      blogList.splice(index, 1)
 
-}
-
-const editBlog = (blogId: string | number) => {
-
+      xMessage({
+        type: 'success',
+        message: '删除成功',
+      })
+    })
+  })
 }
 
 const scroll = () => {
@@ -49,12 +55,9 @@ const scroll = () => {
 
   // console.log(doc.scrollHeight, doc.scrollTop, doc.clientHeight)
 
-  if (doc.scrollHeight - doc.scrollTop - doc.clientHeight < 1 && $props.pageNum * pageSize < total) {
-    $emit('getBlogList', {
-      pageNum: $props.pageNum + 1,
-      pageSize,
-      total
-    })
+  if (doc.scrollHeight - doc.scrollTop - doc.clientHeight < 1 && $props.pageNum * $props.pageSize < parseInt($props.total)) {
+    $emit('update:pageNum', $props.pageNum + 1)
+    $emit('nextPage')
   }
 }
 
@@ -73,7 +76,7 @@ onUnmounted(() => {
       <article v-for="(blog, index) in blogList" :key="blog.id" @click="getDetails(blog.id)">
         <div>
           <div class="top" @click.stop>
-            <my-icon icon="user" type="link" :href="`/${blog.authorId}`">{{ blog.authorNickname }}</my-icon>
+            <my-icon icon="user" type="link" :href="`/user/${blog.authorId}`">{{ blog.authorNickname }}</my-icon>
             <my-icon icon="history" type="text" :enable-hover="false">{{ util.formatTime(blog.createTime) }}</my-icon>
           </div>
           <h2>{{ blog.title }}</h2>
@@ -85,14 +88,11 @@ onUnmounted(() => {
             <my-icon @click="handle(blog.id, 2)" v-model:num="blog.star" icon="star-active"
               v-model:active="blog.isStar" />
             <my-icon icon="view" type="text">{{ util.formatNum(blog.views) }}</my-icon>
-            <div class="delete" title="删除此博客" v-if="isMy && blog.authorUsername === userInfo.username"
-              @click.stop="deleteBlog(index)">
-              <my-icon icon="delete"></my-icon>
-            </div>
-            <div class="edit" title="编辑此博客" v-if="isMy && blog.authorUsername === userInfo.username"
-              @click.stop="editBlog(blog.id)">
-              <my-icon icon="edit"></my-icon>
-            </div>
+
+            <my-icon v-if="isMy && blog.authorUsername === userInfo.username" :href="`/edit/${blog.id}`"
+              icon="edit"></my-icon>
+            <my-icon v-if="isMy && blog.authorUsername === userInfo.username" @click.stop="handleDeleteBlog(index)"
+              icon="delete"></my-icon>
           </div>
         </div>
         <img v-if="blog.cover" :src="`/api/${blog.cover}`" alt="" height="100">

@@ -6,7 +6,6 @@ document.body.appendChild(div)
 
 interface Props {
     type: 'info' | 'success' | 'error' | 'warn',
-    title: string,
     message: string
 }
 

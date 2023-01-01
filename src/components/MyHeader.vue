@@ -84,21 +84,21 @@ onUnmounted(() => {
         <div class="hover-popup">
           <span class="nickname">{{ userInfo.nickname }}</span>
           <nav class="my-count">
-            <router-link :to="`/my/pass`">
+            <router-link :to="`/my`">
               <span>{{ userInfo.passCount }}</span>
               <span>发布</span>
             </router-link>
-            <router-link :to="`/my/up`">
+            <router-link :to="`/my`">
               <span>{{ userInfo.up }}</span>
               <span>顶过</span>
             </router-link>
-            <router-link :to="`/my/down`">
+            <router-link :to="`/my`">
               <span>{{ userInfo.down }}</span>
               <span>踩过</span>
             </router-link>
           </nav>
           <router-link class="my-menu" to="/my">个人中心</router-link>
-          <router-link class="my-menu" to="/admin" v-if="userInfo.isAdmin">管理后台</router-link>
+          <router-link class="my-menu" to="/admin" v-if="userInfo.admin">管理后台</router-link>
           <my-button type="primary" href="/edit">开始创作</my-button>
           <my-button type="danger" @click="handleLogout">退出登录</my-button>
         </div>
@@ -321,7 +321,7 @@ onUnmounted(() => {
 .search-input {
   position: relative;
   width: 220px;
-  height: 40px;
+  height: 35px;
 
   input {
     width: 100%;
