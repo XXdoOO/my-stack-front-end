@@ -37,6 +37,8 @@ const router = createRouter({
         { path: '/my/star', component: my, meta: { authorized: 1 } },
         { path: '/my/history', component: my, meta: { authorized: 1 } },
         { path: '/user/:userId', component: user, meta: { authorized: 0 } },
+        { path: '/user/:userId/up', component: user, meta: { authorized: 0 } },
+        { path: '/user/:userId/down', component: user, meta: { authorized: 0 } },
       ]
     },
     {

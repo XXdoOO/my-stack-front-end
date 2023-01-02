@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
 import { RefreshRight, Download, Search } from '@element-plus/icons-vue'
-import { getUserList } from '@/api/user'
+import { getUserList, disableUser } from '@/api/user'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import 'element-plus/es/components/message/style/css'
+import 'element-plus/es/components/message-box/style/css'
 
 const userList = reactive([])
 const form = reactive({
@@ -18,12 +21,36 @@ const form = reactive({
   total: 100
 })
 const loading = ref(false)
-const dialogVisible = ref(true)
+const dialogVisible = ref(false)
 const disableForm = reactive({
   userId: '',
   reason: '',
-  endTime: '',
+  minutes: null,
+  isDisable: true
 })
+
+const minutes = [
+  { label: '1分钟', value: 1 },
+  { label: '30分钟', value: 30 },
+]
+const hours = [
+  { label: '0小时', value: 0, children: minutes },
+  { label: '1小时', value: 1, children: minutes },
+]
+const options = [
+  {
+    label: '0天', value: 0, children: hours
+  }, {
+    label: '1天', value: 1, children: hours
+  }, {
+    label: '7天', value: 7, children: hours
+  }, {
+    label: '30天', value: 30, children: hours
+  }, {
+    label: '365天', value: 365, children: hours
+  }
+]
+
 const disableRules = reactive({
   reason: {
     required: true,
@@ -49,10 +76,10 @@ const getList = () => {
         nickname: item.nickname,
         email: item.email,
         avatar: '/api' + item.avatar,
-        status: item.disable,
         isAdmin: item.admin,
         isDisable: item.disable,
-        createTime: item.createTime
+        createTime: item.createTime,
+        isDeleted: item.deleted
       })
     })
     loading.value = false
@@ -68,21 +95,65 @@ watch(() => form.pageSize, () => {
   getList()
 })
 
-const tableForm = ref()
+const tableFormRef = ref()
 const reset = () => {
-  tableForm.value.resetFields()
+  tableFormRef.value.resetFields()
   getList()
 }
 
-const disableFormRef = ref()
-const disableUser = () => {
-
-  return true
+const beforeChange = () => {
+  return false
 }
 
-const disableDate = (date) => {
-  console.log(date);
+const disableFormRef = ref()
+const handleDisableUser = () => {
+  disableFormRef.value.validate((isValid) => {
+    if (isValid) {
+      console.log(disableForm);
+      disableForm.minutes = disableForm.minutes[0] * 24 * 60 + disableForm.minutes[1] * 60 + disableForm.minutes[2]
 
+      console.log(disableForm);
+      disableUser(disableForm).then(data => {
+        getList()
+        dialogVisible.value = false
+        ElMessage({
+          type: 'success',
+          message: '封禁成功',
+        })
+      })
+    }
+  })
+}
+
+const clickSwitch = (data) => {
+  disableForm.userId = data.id
+  disableForm.isDisable = !data.isDisable
+
+  if (data.isDisable) {
+    ElMessageBox.confirm(
+      '确认解除该用户的封禁吗？',
+      '警告',
+      {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+    )
+      .then(() => {
+        disableForm.isDisable = false
+        console.log(disableForm);
+
+        disableUser(disableForm).then(data => {
+          getList()
+          ElMessage({
+            type: 'success',
+            message: '解除封禁成功',
+          })
+        })
+      })
+  } else {
+    dialogVisible.value = true
+  }
 }
 
 getList()
@@ -128,12 +199,19 @@ getList()
         <el-tag v-if="scope.row.isAdmin == 1" effect="dark">管理用户</el-tag>
       </template>
     </el-table-column>
-    <el-table-column label="是否封禁" align="center" prop="status">
+    <el-table-column label="是否封禁" align="center">
       <template #default="scope">
-        <el-switch v-model="scope.row.status" :before-change="disableUser" />
+        <el-switch v-model="scope.row.isDisable" @click.native="clickSwitch(scope.row)" :before-change="beforeChange"
+          :disabled="scope.row.isDeleted" />
       </template>
     </el-table-column>
     <el-table-column label="注册时间" align="center" prop="createTime"></el-table-column>
+    <el-table-column label="状态" align="center">
+      <template #default="scope">
+        <el-tag v-if="!scope.row.isDeleted" type="success" effect="dark">正常</el-tag>
+        <el-tag v-if="scope.row.isDeleted" type="danger" effect="dark">已注销</el-tag>
+      </template>
+    </el-table-column>
   </el-table>
 
   <el-pagination class="pagination" v-model:current-page="form.pageNum" v-model:page-size="form.pageSize" background
@@ -141,9 +219,8 @@ getList()
 
   <el-dialog v-model="dialogVisible" title="封禁设置" width="330">
     <el-form :model="disableForm" ref="disableFormRef" :rules="disableRules">
-      <el-form-item label="封禁时间" prop="endTime">
-        <el-date-picker v-model="disableForm.endTime" type="datetime" value-format="YYYY-MM-DD HH:mm:ss"
-          placeholder="请选择封禁时间" :disabled-date="disableDate" />
+      <el-form-item label="封禁时间" prop="minutes">
+        <el-cascader placeholder="请选择封禁时间" v-model="disableForm.minutes" :options="options" />
       </el-form-item>
       <el-form-item label="封禁原因" prop="reason">
         <el-input clearable rows="3" type="textarea" v-model="disableForm.reason" placeholder="请输入封禁原因"></el-input>
@@ -151,7 +228,7 @@ getList()
     </el-form>
     <template #footer>
       <el-button @click="dialogVisible = false">取消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确认</el-button>
+      <el-button type="primary" @click="handleDisableUser">确认</el-button>
     </template>
   </el-dialog>
 </template>

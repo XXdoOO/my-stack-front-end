@@ -11,7 +11,7 @@ const translateX = ref(0)
 const isMy = ref(false)
 const page = reactive({
   pageNum: 1,
-  total: 0
+  total: '0'
 })
 const type = ref(null)
 let path = useRoute().path

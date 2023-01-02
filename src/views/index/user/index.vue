@@ -9,7 +9,10 @@ const userInfo = ref(null)
 const list = reactive<object[]>([])
 const translateX = ref(0)
 const route = useRoute()
-
+const page = reactive({
+  pageNum: 1,
+  total: '0'
+})
 const toggle = (value) => {
   translateX.value = value
 
@@ -52,7 +55,7 @@ getUserInfo(route.params.userId).then(data => {
     <div :class="{ active: translateX == 200 }" @click="toggle(200)">踩过({{ userInfo.down }})</div>
     <div class="bar" :style="{ transform: `translateX(${translateX}%)` }"></div>
   </div>
-  <BlogList :list="list" :page-num="1"></BlogList>
+  <BlogList v-model:list="list" v-model:pageNum="page.pageNum" :total="page.total" @nextPage="getList"></BlogList>
 </template>
 
 <style lang="less" scoped>

@@ -37,3 +37,7 @@ export const getUserList = (params: User) => {
 export const getUserInfo = (userId) => {
   return request.get(`/getUserInfo/${userId}`)
 }
+
+export const disableUser = (disable: { userId: string, isDisable: boolean, reason: string, minutes: string }) => {
+  return request.put(`/admin/disableUser`, disable)
+}
