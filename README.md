@@ -1,46 +1,23 @@
-# my-stack-front-end-vue3
+# 技术：
 
-This template should help get you started developing with Vue 3 in Vite.
+- 前：vue3 vue-router pinia ts less axios element-plus vite mavon-editor
+- 后：springboot mybatis-plus maven lombok kaptcha pagehelper
 
-## Recommended IDE Setup
+# 系统
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## 角色及权限
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+- 游客
+  - 查看、搜索首页博客，查看用户发布、顶过、踩过的博客
+  - 查看评论
+  - 登录、注册
+- 普通用户
+  - 包含游客所拥有的功能
+  - 退出登录  
+  - 发布、更新、删除博客
+  - 顶、踩、收藏博客，保存浏览记录
+  - 发布、删除、顶、踩评论
+- 管理用户
+  - 包含游客和普通用户所拥有的功能
+  - 审核博客
+  - 封禁、解封用户
