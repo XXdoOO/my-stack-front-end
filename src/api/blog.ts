@@ -16,7 +16,7 @@ export const getBlogList = (params: Blog = { pageSize: 5 }) => {
 }
 
 export const getBlogList2 = (params: Blog = { pageSize: 5 }) => {
-  return request.get(`/admin/getBlogList`, { params })
+  return request.get(`/user/getBlogList`, { params })
 }
 
 export const getBlogDetails = (blogId: string | number | string[]) => {

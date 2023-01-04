@@ -2,7 +2,7 @@
 import { ref, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import BlogList from '@/components/BlogList.vue'
-import { getBlogList } from '@/api/blog'
+import { getBlogList2 } from '@/api/blog'
 import { store } from '@/stores/index'
 
 const userInfo = store().userInfo
@@ -61,7 +61,7 @@ const toggle = () => {
 const getList = () => {
   console.log(page.pageNum);
 
-  getBlogList({
+  getBlogList2({
     authorId: userInfo?.id ?? '',
     type: type.value,
     pageNum: page.pageNum

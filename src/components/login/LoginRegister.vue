@@ -155,11 +155,13 @@ const handleSendCode = () => {
       </div>
       <div :class="{ login: true, active }">
         <h1>登录</h1>
-        <input class="form-input" type="text" maxlength="32" required placeholder="请输入邮箱" v-model="loginFrom.email" />
-        <input class="form-input" type="password" maxlength="16" required placeholder="请输入密码"
-          v-model="loginFrom.password" />
+        <input class="form-input" @keydown.enter="handleLogin" type="text" maxlength="32" required placeholder="请输入邮箱"
+          v-model="loginFrom.email" />
+        <input class="form-input" @keydown.enter="handleLogin" type="password" maxlength="16" required
+          placeholder="请输入密码" v-model="loginFrom.password" />
         <div class="kaptcha">
-          <input class="form-input" type="text" maxlength="4" required placeholder="请输入验证码" v-model="loginFrom.code" />
+          <input class="form-input" @keydown.enter="handleLogin" type="text" maxlength="4" required placeholder="请输入验证码"
+            v-model="loginFrom.code" />
           <MyButton type="text" class="toggle" @click="time = new Date().getTime()">换一张</MyButton>
           <img :src="`/api/kaptcha?time=${time}`" />
         </div>
@@ -174,17 +176,18 @@ const handleSendCode = () => {
       <div :class="{ register: true, active }">
         <h1>注册</h1>
         <div class="email">
-          <input class="form-input" type="text" maxlength="32" required placeholder="请输入邮箱"
-            v-model="registerFrom.email"/>
+          <input class="form-input" @keydown.enter="handleRegister" type="text" maxlength="32" required
+            placeholder="请输入邮箱" v-model="registerFrom.email" />
           <MyButton type="text" class="toggle" :disabled="isDisableSend" @click="handleSendCode">{{ isDisableSend ?
-              `${countdown}后重新发送` : '发送验证码'
-          }}</MyButton>
+    `${countdown}后重新发送` : '发送验证码'
+}}</MyButton>
         </div>
-        <input class="form-input" type="text" maxlength="8" required placeholder="请输入验证码" v-model="registerFrom.code" />
-        <input class="form-input" type="password" maxlength="16" required placeholder="请输入密码"
-          v-model="registerFrom.password" />
-        <input class="form-input" type="password" maxlength="16" required placeholder="请输入确认密码" style="margin-bottom:0"
-          v-model="registerFrom.password2" />
+        <input class="form-input" @keydown.enter="handleRegister" type="text" maxlength="8" required
+          placeholder="请输入验证码" v-model="registerFrom.code" />
+        <input class="form-input" @keydown.enter="handleRegister" type="password" maxlength="16" required
+          placeholder="请输入密码" v-model="registerFrom.password" />
+        <input class="form-input" @keydown.enter="handleRegister" type="password" maxlength="16" required
+          placeholder="请输入确认密码" style="margin-bottom:0" v-model="registerFrom.password2" />
         <p :class="{ active: tip.tipClass }" @animationend="tip.tipClass = false">
           {{ tip.registerTip }}
         </p>
