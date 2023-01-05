@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import BlogList from '@/components/BlogList.vue'
 import { getBlogList2 } from '@/api/blog'
 import { store } from '@/stores/index'
+import MyDialog from '@/components/MyDialog.vue'
 
 const userInfo = store().userInfo
 const list = reactive<object[]>([])
@@ -14,8 +15,8 @@ const page = reactive({
   total: '0'
 })
 const type = ref(null)
+const visible = ref(false)
 let path = useRoute().path
-console.log(path);
 
 watch(useRoute(), (newVal) => {
   path = newVal.path
@@ -72,18 +73,23 @@ const getList = () => {
     page.total = data.total
   })
 }
+
+const updateInfo = () => {
+
+}
 toggle()
 getList()
 </script>
 
 <template>
   <div class="container info">
-    <div class="avatar">
+    <label class="avatar">
+      <input type="file" hidden accept=".jpg,.png" ref="coverImg" @change="updateInfo" />
       <img :src="`/api/${userInfo.avatar}`" alt="用户头像" />
       <my-icon class="icon" icon="edit"></my-icon>
-    </div>
+    </label>
     <span class="nickname">{{ userInfo.nickname }}</span>
-    <my-icon class="icon" icon="edit"></my-icon>
+    <my-icon class="icon" @click="visible = true" icon="edit"></my-icon>
     <span class="ip">{{ userInfo.ip }}</span>
   </div>
   <div class="container menu">
@@ -100,6 +106,10 @@ getList()
   </div>
   <BlogList v-model:list="list" v-model:pageNum="page.pageNum" :total="page.total" @nextPage="getList" :isMy="isMy">
   </BlogList>
+
+  <MyDialog v-model:visible="visible" @confirm="updateInfo">
+    <input class="input" v-model="userInfo.nickname" placeholder="请输入新的昵称" />
+  </MyDialog>
 </template>
 
 <style lang="less" scoped>
@@ -120,6 +130,12 @@ getList()
     overflow: hidden;
     transition: @transition-time;
 
+    img {
+      width: 100%;
+      height: 100%;
+      transition: @transition-time;
+    }
+
     .icon {
       display: none;
       position: absolute;
@@ -137,8 +153,16 @@ getList()
     display: block;
   }
 
+  .avatar:hover img {
+    filter: opacity(0.5);
+  }
+
   .nickname {
     margin-left: 10px;
+  }
+
+  >.icon {
+    font-size: 10px;
   }
 }
 
@@ -178,5 +202,12 @@ getList()
 
 .active {
   color: @theme-color;
+}
+
+.input {
+  border-radius: 5px;
+  padding: 0 10px;
+  width: 100%;
+  height: 35px;
 }
 </style>

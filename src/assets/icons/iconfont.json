@@ -1,10 +1,17 @@
 {
   "id": "3584595",
-  "name": "graduation-design",
+  "name": "my-stack",
   "font_family": "iconfont",
   "css_prefix_text": "",
   "description": "毕业设计",
   "glyphs": [
+    {
+      "icon_id": "954218",
+      "name": "取消",
+      "font_class": "cancel",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    },
     {
       "icon_id": "995861",
       "name": "添加",
