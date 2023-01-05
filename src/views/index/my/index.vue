@@ -78,15 +78,20 @@ getList()
 
 <template>
   <div class="container info">
-    <img :src="`/api/${userInfo.avatar}`" width="50" height="50" alt="">
+    <div class="avatar">
+      <img :src="`/api/${userInfo.avatar}`" alt="用户头像" />
+      <my-icon class="icon" icon="edit"></my-icon>
+    </div>
     <span class="nickname">{{ userInfo.nickname }}</span>
+    <my-icon class="icon" icon="edit"></my-icon>
     <span class="ip">{{ userInfo.ip }}</span>
   </div>
   <div class="container menu">
     <router-link to="/my" :class="{ active: path == '/my' }">发布({{ userInfo.passCount }})</router-link>
     <router-link to="/my/noPass" :class="{ active: path == '/my/noPass' }">未通过({{ userInfo.noPassCount }})</router-link>
-    <router-link to="/my/auditing" :class="{ active: path == '/my/auditing' }">审核中({{ userInfo.auditingCount
-}})</router-link>
+    <router-link to="/my/auditing" :class="{ active: path == '/my/auditing' }">审核中({{
+      userInfo.auditingCount
+    }})</router-link>
     <router-link to="/my/up" :class="{ active: path == '/my/up' }">顶过({{ userInfo.up }})</router-link>
     <router-link to="/my/down" :class="{ active: path == '/my/down' }">踩过({{ userInfo.down }})</router-link>
     <router-link to="/my/star" :class="{ active: path == '/my/star' }">收藏({{ userInfo.star }})</router-link>
@@ -105,6 +110,32 @@ getList()
   padding: 15px 25px;
   display: flex;
   align-items: center;
+
+  .avatar {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid @border-color;
+    overflow: hidden;
+    transition: @transition-time;
+
+    .icon {
+      display: none;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .avatar:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .avatar:hover .icon {
+    display: block;
+  }
 
   .nickname {
     margin-left: 10px;

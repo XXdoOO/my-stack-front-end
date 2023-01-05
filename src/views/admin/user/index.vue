@@ -10,7 +10,7 @@ const userList = reactive([])
 const form = reactive({
   title: '',
   description: '',
-  status: '',
+  isDeleted: '',
   nickname: '',
   isAdmin: null,
   createTime: '',
@@ -56,7 +56,7 @@ const disableRules = reactive({
     required: true,
     message: '请输入封禁原因'
   },
-  endTime: {
+  minutes: {
     required: true,
     message: '请选择封禁时间'
   },
@@ -126,6 +126,9 @@ const handleDisableUser = () => {
 }
 
 const clickSwitch = (data) => {
+  if (data.isDeleted) {
+    return
+  }
   disableForm.userId = data.id
   disableForm.isDisable = !data.isDisable
 
@@ -160,12 +163,15 @@ getList()
 </script>
 
 <template>
-  <el-form inline ref="tableForm" :model="form">
+  <el-form inline ref="tableFormRef" :model="form">
     <el-form-item label="用户昵称：" prop="nickname">
-      <el-input v-model="form.nickname" placeholder="请输入作者昵称"></el-input>
+      <el-input v-model="form.nickname" placeholder="请输入用户昵称"></el-input>
     </el-form-item>
-    <el-form-item label="状态：" prop="status">
-      <el-input v-model="form.status" placeholder="请输入状态"></el-input>
+    <el-form-item label="状态：" prop="isDeleted">
+      <el-select v-model="form.isDeleted" placeholder="请选择状态">
+        <el-option label="正常" value="0"></el-option>
+        <el-option label="已注销" value="1"></el-option>
+      </el-select>
     </el-form-item>
     <el-form-item label="身份：" prop="isAdmin">
       <el-select v-model="form.isAdmin" placeholder="请选择身份">

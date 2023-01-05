@@ -11,11 +11,11 @@ interface Blog extends Page {
   createTime?: string,
 }
 
-export const getBlogList = (params: Blog = { pageSize: 5 }) => {
+export const getBlogList = (params: Blog) => {
   return request.get(`/getBlogList`, { params })
 }
 
-export const getBlogList2 = (params: Blog = { pageSize: 5 }) => {
+export const getBlogList2 = (params: Blog) => {
   return request.get(`/user/getBlogList`, { params })
 }
 

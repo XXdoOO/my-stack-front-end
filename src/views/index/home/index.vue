@@ -6,7 +6,7 @@ import { getBlogList } from '@/api/blog'
 const list = reactive<object[]>([])
 const page = reactive({
   pageNum: 1,
-  total: 0
+  total: '0'
 })
 
 const getList = () => {

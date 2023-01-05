@@ -57,10 +57,10 @@ onUnmounted(() => {
 
 <template>
   <header class="header-block" :style="{
-  top: scroll + 'px',
-  'box-shadow':
-    scroll === -70 ? 'none' : '0px 8px 25px 20px rgba(44, 16, 111, 0.06)',
-}">
+    top: scroll + 'px',
+    'box-shadow':
+      scroll === -70 ? 'none' : '0px 8px 25px 20px rgba(44, 16, 111, 0.06)',
+  }">
     <div class="container">
       <router-link class="logo" to="/">
         <my-icon class="icon" icon="edit" :isActive="false"></my-icon>
