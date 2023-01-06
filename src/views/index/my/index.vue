@@ -3,8 +3,10 @@ import { ref, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import BlogList from '@/components/BlogList.vue'
 import { getBlogList2 } from '@/api/blog'
+import { updateInfo } from '@/api/user'
 import { store } from '@/stores/index'
 import MyDialog from '@/components/MyDialog.vue'
+import xMessage from '@/components/message/index'
 
 const userInfo = store().userInfo
 const list = reactive<object[]>([])
@@ -74,8 +76,27 @@ const getList = () => {
   })
 }
 
-const updateInfo = () => {
+const avatarRef = ref()
+const handleUpdateInfo = () => {
+  if (userInfo.nickname.length == 0) {
+    xMessage({
+      type: 'error',
+      message: '用户名不能为空'
+    })
+  } else {
+    const user = new FormData()
 
+    const avatar = avatarRef.value.files[0]
+    if (avatar) {
+      user.append('avatar', avatar)
+    }
+    user.append('nickname', userInfo.nickname)
+
+    updateInfo(user).then(data => {
+      console.log(data);
+      // userInfo.nickname = 
+    })
+  }
 }
 toggle()
 getList()
@@ -84,7 +105,7 @@ getList()
 <template>
   <div class="container info">
     <label class="avatar">
-      <input type="file" hidden accept=".jpg,.png" ref="coverImg" @change="updateInfo" />
+      <input type="file" hidden accept=".jpg,.png" ref="avatarRef" @change="handleUpdateInfo" />
       <img :src="`/api/${userInfo.avatar}`" alt="用户头像" />
       <my-icon class="icon" icon="edit"></my-icon>
     </label>
@@ -107,7 +128,7 @@ getList()
   <BlogList v-model:list="list" v-model:pageNum="page.pageNum" :total="page.total" @nextPage="getList" :isMy="isMy">
   </BlogList>
 
-  <MyDialog v-model:visible="visible" @confirm="updateInfo">
+  <MyDialog v-model:visible="visible" @confirm="handleUpdateInfo">
     <input class="input" v-model="userInfo.nickname" placeholder="请输入新的昵称" />
   </MyDialog>
 </template>

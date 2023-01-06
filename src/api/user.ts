@@ -41,3 +41,7 @@ export const getUserInfo = (userId) => {
 export const disableUser = (disable: { userId: string, isDisable: boolean, reason: string, minutes: string }) => {
   return request.put(`/admin/disableUser`, disable)
 }
+
+export const updateInfo = (user: FormData) => {
+  return request.put(`/user/updateInfo`, user)
+}
