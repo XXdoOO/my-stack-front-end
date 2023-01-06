@@ -6,6 +6,7 @@ import router from './router/index'
 import MyButton from '@/components/MyButton.vue'
 import MyIcon from '@/components/MyIcon.vue'
 import MyAvatar from '@/components/MyAvatar.vue'
+import MyIp from '@/components/MyIp.vue'
 
 import VueMarkdownEditor from '@kangc/v-md-editor'
 import '@kangc/v-md-editor/lib/style/base-editor.css'
@@ -42,7 +43,8 @@ VMdPreview.use(createCopyCodePlugin())
 app.use(VueMarkdownEditor)
 app.use(VMdPreview)
 
-app.component('my-icon', MyIcon)
-app.component('my-button', MyButton)
-app.component('my-avatar', MyAvatar)
+app.component('MyIcon', MyIcon)
+app.component('MyButton', MyButton)
+app.component('MyAvatar', MyAvatar)
+app.component('MyIp', MyIp)
 app.mount('#app')

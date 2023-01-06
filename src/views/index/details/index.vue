@@ -171,7 +171,10 @@ init()
             </div>
             <p class="center">{{ item.content }}</p>
             <div class="bottom">
-              <my-button type="text" @click="reply(item)">{{ item.isShow ? '收起' : '回复' }}</my-button>
+              <my-ip size="small">{{ item.ipTerritory }}</my-ip>
+              <my-button type="text" @click="reply(item)" style="margin-left:15px">{{
+                item.isShow ? '收起' : '回复'
+              }}</my-button>
               <div class="icons">
                 <my-icon @click="handleDeleteComment(item.id)" icon="delete"
                   v-if="item.senderId == userInfo?.id"></my-icon>
@@ -199,7 +202,10 @@ init()
                   </div>
                   <p class="center">{{ i.content }}</p>
                   <div class="bottom">
-                    <my-button type="text" @click="reply(i)">{{ i.isShow ? '收起' : '回复' }}</my-button>
+                    <my-ip size="small">{{ i.ipTerritory }}</my-ip>
+                    <my-button type="text" @click="reply(i)" style="margin-left:15px">{{
+                      i.isShow ? '收起' : '回复'
+                    }}</my-button>
                     <div class="icons">
                       <my-icon @click="handleDeleteComment(i.id)" icon="delete"
                         v-if="i.senderId == userInfo?.id"></my-icon>
@@ -423,7 +429,7 @@ init()
 
 .collapse {
   margin-left: 50px;
-  font-size: 12px;
+  font-size: 10px;
   cursor: pointer;
   transition: @transition-time;
 }

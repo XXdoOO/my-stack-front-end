@@ -94,7 +94,9 @@ const handleUpdateInfo = () => {
 
     updateInfo(user).then(data => {
       console.log(data);
-      // userInfo.nickname = 
+      userInfo.avatar = `/avatar/${userInfo.id}.jpg?time=${new Date()}`
+      sessionStorage.setItem("userInfo", JSON.stringify(userInfo))
+      visible.value = false
     })
   }
 }
@@ -111,7 +113,7 @@ getList()
     </label>
     <span class="nickname">{{ userInfo.nickname }}</span>
     <my-icon class="icon" @click="visible = true" icon="edit"></my-icon>
-    <span class="ip">{{ userInfo.ip }}</span>
+    <my-ip class="ip">{{ userInfo.ipTerritory }}</my-ip>
   </div>
   <div class="container menu">
     <router-link to="/my" :class="{ active: path == '/my' }">发布({{ userInfo.passCount }})</router-link>
@@ -129,7 +131,7 @@ getList()
   </BlogList>
 
   <MyDialog v-model:visible="visible" @confirm="handleUpdateInfo">
-    <input class="input" v-model="userInfo.nickname" placeholder="请输入新的昵称" />
+    <input class="input" v-model="userInfo.nickname" placeholder="请输入新的昵称" maxlength="20" />
   </MyDialog>
 </template>
 
@@ -184,6 +186,11 @@ getList()
 
   >.icon {
     font-size: 10px;
+    margin-left: 5px;
+  }
+
+  .ip {
+    margin-left: auto;
   }
 }
 

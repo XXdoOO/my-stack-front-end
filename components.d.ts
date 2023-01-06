@@ -36,6 +36,7 @@ declare module '@vue/runtime-core' {
     MyFooter: typeof import('./src/components/MyFooter.vue')['default']
     MyHeader: typeof import('./src/components/MyHeader.vue')['default']
     MyIcon: typeof import('./src/components/MyIcon.vue')['default']
+    MyIp: typeof import('./src/components/MyIp.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

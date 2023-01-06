@@ -45,9 +45,9 @@ getUserInfo(route.params.userId).then(data => {
 
 <template>
   <div class="container info" v-if="userInfo">
-    <img :src="`/api/${userInfo.avatar}`" width="50" height="50" alt="">
+    <img :src="`/api/${userInfo.avatar}`" alt="用户头像">
     <span class="nickname">{{ userInfo.nickname }}</span>
-    <span class="ip">{{ userInfo.ip }}</span>
+    <my-ip class="ip">{{ userInfo.ipTerritory }}</my-ip>
   </div>
   <div class="container menu" v-if="userInfo">
     <div :class="{ active: translateX == 0 }" @click="toggle(0)">发布({{ userInfo.passCount }})</div>
@@ -67,8 +67,19 @@ getUserInfo(route.params.userId).then(data => {
   display: flex;
   align-items: center;
 
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid @border-color;
+  }
+
   .nickname {
     margin-left: 10px;
+  }
+
+  .ip {
+    margin-left: auto;
   }
 }
 
