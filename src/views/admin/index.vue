@@ -21,6 +21,12 @@
           </el-icon>
           <span>用户管理</span>
         </el-menu-item>
+        <el-menu-item index="/admin/comment">
+          <el-icon>
+            <ChatLineSquare />
+          </el-icon>
+          <span>评论管理</span>
+        </el-menu-item>
       </el-menu>
     </el-aside>
     <el-main class="main">
@@ -34,6 +40,7 @@ import {
   User,
   Menu,
   Notebook,
+  ChatLineSquare
 } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router'
 

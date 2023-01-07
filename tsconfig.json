@@ -16,7 +16,10 @@
     "module": "esnext",
     "strict": false,
     "jsx": "preserve",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "types": [
+      "element-plus/global"
+    ]
   },
   "references": [
     {

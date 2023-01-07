@@ -14,6 +14,7 @@ const adminHome = () => import('@/views/admin/home/index.vue')
 
 import adminBlog from '@/views/admin/blog/index.vue'
 import adminUser from '@/views/admin/user/index.vue'
+import adminComment from '@/views/admin/comment/index.vue'
 // const adminBlog = () => import('@/views/admin/blog/index.vue')
 // const adminUser = () => import('@/views/admin/user/index.vue')
 
@@ -46,6 +47,7 @@ const router = createRouter({
         { path: '', component: adminHome },
         { path: 'blog', component: adminBlog },
         { path: 'user', component: adminUser },
+        { path: 'comment', component: adminComment },
       ]
     },
   ]

@@ -420,6 +420,7 @@ init()
   margin-top: 10px;
   display: flex;
   flex-direction: column;
+  transition: @transition-time;
 
   .nickname {
     font-size: 14px;
