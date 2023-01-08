@@ -10,6 +10,17 @@ export const getCommentList = (params: Comment) => {
   return request.get(`/getCommentsList`, { params })
 }
 
+export const getCommentList2 = (params?: {
+  blogId?: string,
+  content?: string,
+  nickname?: string,
+  startTime?: string,
+  endTime?: string,
+  isDeleted?: boolean
+}) => {
+  return request.get(`/admin/getCommentsList`, { params })
+}
+
 export const postComment = (data: {
   blogId: string | number,
   parent?: string | number,

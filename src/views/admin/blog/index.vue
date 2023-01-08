@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
-import { RefreshRight, Download, Search, User } from '@element-plus/icons-vue'
+import { RefreshRight, Download, Search, User, Notebook } from '@element-plus/icons-vue'
 import { getBlogList2, getBlogDetails2, auditBlog } from '@/api/blog'
 
 const blogList = ref([])
@@ -113,7 +113,17 @@ const details = ref('')
 
   <el-table v-loading="loading" :data="blogList">
     <el-table-column label="序号" align="center" type="index" min-width="30"></el-table-column>
-    <el-table-column label="标题" align="center" prop="title"></el-table-column>
+    <el-table-column label="标题" align="center" prop="title">
+      <template #default="scope">
+        <el-link v-if="scope.row.status == 1" type="primary" :icon="Notebook" :href="`/blog/${scope.row.id}`">{{
+          scope.row.title
+        }}</el-link>
+
+        <template v-else>
+          {{ scope.row.title }}
+        </template>
+      </template>
+    </el-table-column>
     <el-table-column label="描述" align="center" prop="description" min-width="200px"></el-table-column>
     <el-table-column label="封面" align="center" prop="cover">
       <template #default="scope">
@@ -122,8 +132,9 @@ const details = ref('')
     </el-table-column>
     <el-table-column label="作者" align="center">
       <template #default="scope">
-        <el-link type="primary" :icon="User" :href="`/user/${scope.row.authorId}`">{{ scope.row.authorNickname
-}}</el-link>
+        <el-link type="primary" :icon="User" :href="`/user/${scope.row.authorId}`">{{
+          scope.row.authorNickname
+        }}</el-link>
       </template>
     </el-table-column>
     <el-table-column label="审核状态" align="center" prop="status" min-width="63">

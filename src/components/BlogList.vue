@@ -187,12 +187,12 @@ onUnmounted(() => {
   display: flex;
   font-size: 10px;
 
-  .icon {
+  .my-icon {
     display: flex;
     align-items: center;
   }
 
-  .icon:first-child {
+  .my-icon:first-child {
     border-right: 2px solid @gray-color;
     padding-right: 15px;
     margin-right: 15px;
@@ -202,7 +202,7 @@ onUnmounted(() => {
 .bottom {
   display: flex;
 
-  .icon {
+  .my-icon {
     margin-right: 2em;
     font-size: 12px;
   }

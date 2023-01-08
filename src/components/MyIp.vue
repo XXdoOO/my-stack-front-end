@@ -9,12 +9,13 @@ const props = withDefaults(defineProps<{
 </script>
 
 <template>
-  <div class="ip" :class="size">ip属地：<slot></slot>
+  <div class="my-ip" :class="size">ip属地：<slot></slot>
   </div>
 </template>
 
 <style lang="less" scoped>
-.ip {
+.my-ip {
+  display: inline-block;
   background-color: @theme-color2;
   color: @gray-color-dep;
 }

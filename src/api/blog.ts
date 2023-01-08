@@ -16,7 +16,7 @@ export const getBlogList = (params: Blog) => {
 }
 
 export const getBlogList2 = (params: Blog) => {
-  return request.get(`/user/getBlogList`, { params })
+  return request.get(`/admin/getBlogList`, { params })
 }
 
 export const getBlogDetails = (blogId: string | number | string[]) => {

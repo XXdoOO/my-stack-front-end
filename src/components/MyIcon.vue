@@ -34,7 +34,7 @@ const handleClick = (e) => {
 </script>
 
 <template>
-  <i class="icon" :class="[type, { active: active }]" @click="handleClick">
+  <i class="my-icon" :class="[type, { active: active }]" @click="handleClick">
     <svg aria-hidden="true">
       <use :xlink:href="`#${icon}`"></use>
     </svg>
@@ -46,12 +46,13 @@ const handleClick = (e) => {
 </template>
 
 <style lang="less" scoped>
-.icon {
+.my-icon {
   color: #C0C4CC;
   transition: @transition-time;
   display: flex;
   align-items: center;
   font-style: normal;
+  font-size: 12px;
 
   svg {
     margin-right: 0.1em;

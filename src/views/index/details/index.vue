@@ -17,8 +17,9 @@ let content2 = ref<string>('')
 
 
 const init = () => {
-  getBlogDetails(blogId).then(res => {
-    blog.value = res
+  getBlogDetails(blogId).then((data: any) => {
+    blog.value = data
+    blog.value.content = `# ${data.title}\n## ${data.description}\n${data.content}`
   })
 
   getCommentList({ blogId, pageSize: 100 }).then((res: any) => {
@@ -70,7 +71,6 @@ const reply = (item) => {
     item.isShow = true
   }
 }
-
 
 const handlePostComment = (parent, receiveId, receiveNickname, content) => {
   postComment({
@@ -149,7 +149,13 @@ init()
 <template>
   <main class="container" v-if="blog">
     <div class="content">
-      <v-md-preview :text="blog.content"></v-md-preview>
+      <div class="blog">
+        <v-md-preview :text="blog.content"></v-md-preview>
+        <div class="ip">
+          <my-ip>{{ blog.ipTerritory }}</my-ip>
+          <my-icon icon="history" type="text">{{ blog.createTime }}</my-icon>
+        </div>
+      </div>
 
       <div class="comments">
         <div class="header">
@@ -276,15 +282,15 @@ init()
 }
 
 .sidebar {
+  width: 230px;
   margin-left: @gap;
   border-radius: 5px;
-  overflow: hidden;
 }
 
 .author-info {
-  width: 230px;
   padding: 20px 30px;
   background-color: white;
+  border-radius: 5px 5px 0 0;
 
   .face {
     display: flex;
@@ -324,6 +330,7 @@ init()
   align-items: center;
   justify-content: space-between;
   padding: 5px 10px;
+  border-radius: 0 0 5px 5px;
 }
 
 .comments {
@@ -437,5 +444,18 @@ init()
 
 .collapse:hover {
   color: @theme-color;
+}
+
+.blog {
+  background-color: white;
+
+  .ip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em 2.5em;
+    color: @gray-color-dep;
+    font-size: 12px;
+  }
 }
 </style>

@@ -9,7 +9,7 @@ interface TableColumn {
 interface FormColumn {
   label: string,
   prop: string,
-  type: 'text' | 'status' | 'auditStatus' | 'isAdmin' | 'isDisable' | 'time',
+  type: 'text' | 'status' | 'auditStatus' | 'isAdmin' | 'isDisable' | 'isDeleted' | 'time',
   placeholder?: string
 }
 
@@ -19,8 +19,8 @@ const props = withDefaults(defineProps<{
     data: object[]
   },
   form?: {
-    column: FormColumn[],
-    data: any
+    column?: FormColumn[],
+    data?: any
   }
 }>(), {
   table: () => {
@@ -85,6 +85,10 @@ const reset = () => {
         <el-option label="" value=""></el-option>
       </el-select>
       <el-select v-if="item.type == 'isDisable'" v-model="form[item.prop]" :placeholder="item.placeholder">
+        <el-option label="" value=""></el-option>
+        <el-option label="" value=""></el-option>
+      </el-select>
+      <el-select v-if="item.type == 'isDeleted'" v-model="form[item.prop]" :placeholder="item.placeholder">
         <el-option label="" value=""></el-option>
         <el-option label="" value=""></el-option>
       </el-select>
