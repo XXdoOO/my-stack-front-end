@@ -1,58 +1,64 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-
-interface TableColumn {
-  label: string,
-  prop: string
-}
-
-interface FormColumn {
-  label: string,
-  prop: string,
-  type: 'text' | 'status' | 'auditStatus' | 'isAdmin' | 'isDisable' | 'isDeleted' | 'time',
-  placeholder?: string
-}
+import { ref, reactive, useSlots } from 'vue'
+import { getDictData } from '@/api/dict'
 
 const props = withDefaults(defineProps<{
   table?: {
-    column: TableColumn[]
+    form?: any,
+    column: {
+      label: string,
+      prop: string
+    }[]
     data: object[]
-  },
-  form?: {
-    column?: FormColumn[],
-    data?: any
   }
 }>(), {
   table: () => {
     return {
+      form: {
+        column: [{ label: '标题', prop: 'title', type: 'text' }],
+        data: {
+          title: ''
+        }
+      },
       column: [
         { label: '标题', prop: 'title' }
       ],
       data: [{}]
     }
   },
-  form: () => {
-    return {
-      column: [{ label: '标题', prop: 'title', type: 'text' }],
-      data: {
-        title: ''
-      }
-    }
-  }
 })
-
+const $slots = useSlots()
 const $emit = defineEmits(['getList'])
 
-if (props.form) {
-  props.form.column.forEach(item => {
+const formColumn = reactive<{ prop: string, label: string, type: 'text' | 'time', placeholder: string }[]>([])
+
+
+if (props.table.form) {
+  for (const prop in props.table.form) {
     let prefix = '请'
+    let label
+    let type
+    for (const item of props.table.column) {
+      if (item.prop == prop) {
+        label = item.label
+        break
+      }
+    }
+
+    const temp = prop.toLowerCase()
+    if (temp.includes('time')) {
+      type = 'time'
+    } else if (temp.includes('_')) {
+      type = 'time'
+    } else {
+      type = 'text'
+    }
     if (item.type == 'text') {
       prefix += '输入'
     } else {
       prefix += '选择'
     }
-    item.placeholder = prefix + item.label
-  })
+  }
 }
 
 const formRef = ref()
@@ -97,6 +103,11 @@ const reset = () => {
       <el-button type="primary" @click="$emit('getList')">查找</el-button>
       <el-button @click="reset">重置</el-button>
     </el-form-item>
+    <el-row v-if="$slots.default">
+      <el-form-item>
+        <slot></slot>
+      </el-form-item>
+    </el-row>
   </el-form>
 
   <el-table :data="table.data">
