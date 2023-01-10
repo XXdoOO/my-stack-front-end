@@ -1,13 +1,17 @@
 import request from '@/util/request'
+import qs from 'qs'
 
 interface DictDTO extends Page {
   dictName?: string,
   label?: string,
-  value?: string
+  value?: string,
+  createTime?: string[]
 }
 
 export const getDictType = (dictType?: DictDTO) => {
-  return request.get(`/admin/dictType`, { params: dictType })
+  console.log(qs.stringify(dictType));
+
+  return request.get(`/admin/dictType?${qs.stringify(dictType)}`)
 }
 
 export const postDictType = (dictType: DictDTO) => {

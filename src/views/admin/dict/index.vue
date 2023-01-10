@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { User, Notebook } from '@element-plus/icons-vue'
-import { getCommentList2 } from '@/api/comment'
 import MyTable from '@/components/MyTable.vue'
 import { getDictType } from '@/api/dict'
 
@@ -9,24 +8,27 @@ const loading = ref(false)
 const table = reactive({
   form: {
     name: '',
-    createTime: '',
+    createTime: [],
     createBy: '',
-    isDeleted$is_deleted: '',
   },
   column: [
     { label: '字典名称', prop: 'name' },
     { label: '更新时间', prop: 'updateTime' },
     { label: '创建时间', prop: 'createTime' },
     { label: '创建人', prop: 'createBy' },
-    { label: '是否删除', prop: 'isDeleted' },
+    { label: '操作', prop: 'operation' },
   ],
   data: []
 })
 
 const getList = () => {
-  getDictType().then((data: any) => {
-    console.log(data);
-    table.data.push(...data.list)
+  console.log(table.form);
+
+  getDictType({
+    createTime: table.form.createTime,
+    dictName: table.form.name,
+  }).then((data: any) => {
+    table.data = data.list
   })
 }
 
@@ -38,7 +40,8 @@ getList()
 </script>
 
 <template>
-  <my-table :table="table">
+  <my-table :table="table" @getList="getList">
+    <el-button type="primary">新增</el-button>
     <template #blogId="scope">
       <el-link type="primary" :icon="Notebook" :href="`/blog/${scope.row.blogId}`">{{
         scope.row.blogId
@@ -49,8 +52,12 @@ getList()
         scope.row.senderNickname
       }}</el-link>
     </template>
-    <template #isDeleted="scope">
+    <!-- <template #isDeleted="scope">
       <el-switch v-model="scope.row.isDeleted" :before-change="beforeChange" />
+    </template> -->
+    <template #operation="scope">
+      <el-button type="primary" text>编辑</el-button>
+      <el-button type="danger" text>删除</el-button>
     </template>
   </my-table>
 </template>
