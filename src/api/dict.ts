@@ -6,7 +6,7 @@ interface DictDTO extends Page {
   value?: string
 }
 
-export const getDictType = (dictType: DictDTO) => {
+export const getDictType = (dictType?: DictDTO) => {
   return request.get(`/admin/dictType`, { params: dictType })
 }
 
@@ -33,7 +33,7 @@ export const postDictData = (dictData: DictDTO) => {
 
 export const putDictData = (dictData: DictDTO) => {
   return request.put(`/admin/dictData`, dictData)
-} 
+}
 
 export const deleteDictData = (dictTypeId: string) => {
   return request.delete(`/admin/dictData/${dictTypeId}`)

@@ -11,8 +11,7 @@ const CancelToken = axios.CancelToken
 const source = CancelToken.source()
 
 axios.interceptors.request.use((req) => {
-  console.log("请求URL：", req.url.split('/'))
-  console.log(req)
+  console.log("请求URL：", req.url, req)
 
   const userInfo = JSON.parse(sessionStorage.getItem("userInfo"))
 
@@ -49,7 +48,6 @@ axios.interceptors.response.use((res) => {
 
   if (error.code === 'ECONNABORTED' && error.message.indexOf('timeout') !== -1) {
     xMessage({
-      title: '请求超时，请刷新',
       message: error.message,
       type: 'error',
     })
@@ -58,7 +56,6 @@ axios.interceptors.response.use((res) => {
     return Promise.reject("用户未登录")
   } else {
     xMessage({
-      title: '其他错误',
       message: error.message,
       type: 'error',
     })

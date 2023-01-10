@@ -15,10 +15,7 @@ const props = withDefaults(defineProps<{
   table: () => {
     return {
       form: {
-        column: [{ label: '标题', prop: 'title', type: 'text' }],
-        data: {
-          title: ''
-        }
+        title: ''
       },
       column: [
         { label: '标题', prop: 'title' }
@@ -30,16 +27,15 @@ const props = withDefaults(defineProps<{
 const $slots = useSlots()
 const $emit = defineEmits(['getList'])
 
-const formColumn = reactive<{ prop: string, label: string, type: 'text' | 'time', placeholder: string }[]>([])
-
+const formColumn = reactive<{ prop: string, label: string, type: 'text' | 'time' | 'select', placeholder: string }[]>([])
+const dict = reactive([])
 
 if (props.table.form) {
   for (const prop in props.table.form) {
     let prefix = '请'
-    let label
-    let type
+    let label: string, type: 'text' | 'time' | 'select', placeholder = '请'
     for (const item of props.table.column) {
-      if (item.prop == prop) {
+      if (item.prop == prop || item.prop == prop.split('$')[0]) {
         label = item.label
         break
       }
@@ -48,16 +44,34 @@ if (props.table.form) {
     const temp = prop.toLowerCase()
     if (temp.includes('time')) {
       type = 'time'
-    } else if (temp.includes('_')) {
-      type = 'time'
+      placeholder += '选择'
+    } else if (temp.includes('$')) {
+      type = 'select'
+      placeholder += '选择'
+
+      getDictData({
+        dictName: temp.split('$')[1]
+      }).then((data: any) => {
+        console.log(data);
+        data.list.map(item => {
+          dict.push({
+            label: item.label,
+            value: item.value
+          })
+        })
+      })
     } else {
       type = 'text'
+      placeholder += '输入'
     }
-    if (item.type == 'text') {
-      prefix += '输入'
-    } else {
-      prefix += '选择'
-    }
+    placeholder += label
+
+    formColumn.push({
+      prop,
+      label,
+      type,
+      placeholder
+    })
   }
 }
 
@@ -72,31 +86,14 @@ const reset = () => {
 </script>
 
 <template>
-  <el-form v-if="form" inline :model="form" ref="formRef">
-    <el-form-item v-for="item in form.column" :key="item.prop" :prop="item.prop" :label="item.label">
-      <el-input v-if="item.type == 'text'" v-model="form[item.prop]" :placeholder="item.placeholder"></el-input>
-      <el-date-picker v-if="item.type == 'time'" v-model="form.data.time" value-format="yyyy-MM-dd HH:mm:ss"
+  <el-form v-if="table.form" inline :model="table.form" ref="formRef">
+    <el-form-item v-for="item in formColumn" :key="item.prop" :prop="item.prop" :label="item.label">
+      <el-input v-if="item.type == 'text'" v-model="table.form[item.prop]" :placeholder="item.placeholder"></el-input>
+      <el-date-picker v-if="item.type == 'time'" v-model="table.form[item.prop]" value-format="yyyy-MM-dd HH:mm:ss"
         type="datetimerange" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间">
       </el-date-picker>
-      <el-select v-if="item.type == 'status'" v-model="form[item.prop]" :placeholder="item.placeholder">
-        <el-option label="" value=""></el-option>
-        <el-option label="" value=""></el-option>
-      </el-select>
-      <el-select v-if="item.type == 'auditStatus'" v-model="form[item.prop]" :placeholder="item.placeholder">
-        <el-option label="" value=""></el-option>
-        <el-option label="" value=""></el-option>
-      </el-select>
-      <el-select v-if="item.type == 'isAdmin'" v-model="form[item.prop]" :placeholder="item.placeholder">
-        <el-option label="" value=""></el-option>
-        <el-option label="" value=""></el-option>
-      </el-select>
-      <el-select v-if="item.type == 'isDisable'" v-model="form[item.prop]" :placeholder="item.placeholder">
-        <el-option label="" value=""></el-option>
-        <el-option label="" value=""></el-option>
-      </el-select>
-      <el-select v-if="item.type == 'isDeleted'" v-model="form[item.prop]" :placeholder="item.placeholder">
-        <el-option label="" value=""></el-option>
-        <el-option label="" value=""></el-option>
+      <el-select v-if="item.type == 'select'" v-model="table.form[item.prop]" :placeholder="item.placeholder">
+        <el-option v-for="item in dict" :label="item.label" :value="item.value"></el-option>
       </el-select>
     </el-form-item>
     <el-form-item>
