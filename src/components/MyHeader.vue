@@ -74,7 +74,7 @@ onUnmounted(() => {
 
       <div class="search-input">
         <input type="text" placeholder="请输入搜索关键词" v-model="keywords" @keyup.enter="search(keywords)" />
-        <my-icon icon="search" @click="search(keywords)" title="点击搜索"></my-icon>
+        <my-icon icon="search" class="icon" @click="search(keywords)" title="点击搜索"></my-icon>
       </div>
 
       <span class="login" v-if="!userInfo" @click="LoginRegister()">登录/注册</span>
@@ -335,8 +335,9 @@ onUnmounted(() => {
 
   .icon {
     position: absolute;
+    top: 50%;
     right: 5px;
-    top: calc(50% - 16px);
+    transform: translateY(-50%);
   }
 }
 </style>
