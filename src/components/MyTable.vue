@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, reactive, useSlots } from 'vue'
+import { ref, reactive, useSlots, watch } from 'vue'
 import { getDictData } from '@/api/dict'
 
 const props = withDefaults(defineProps<{
   table?: {
-    form?: object,
+    form?: any,
     column?: {
       label: string,
       prop: string,
@@ -30,7 +30,6 @@ const $emit = defineEmits(['getList'])
 
 const formColumn = reactive<{ prop: string, label: string, type: 'text' | 'time' | 'date' | 'dict', placeholder: string }[]>([])
 const dict = reactive({})
-
 
 const reqs = []
 const column = []
@@ -78,13 +77,20 @@ Promise.all(reqs).then(res => {
         placeholder
       })
     }
+    props.table.form.pageNum = 1
+    props.table.form.pageSize = 10
+    props.table.form.total = 0
   }
+})
+
+watch([() => props.table.form.pageNum, () => props.table.form.pageSize], () => {
+  $emit('getList', props.table.form)
 })
 
 const formRef = ref()
 const reset = () => {
   formRef.value.resetFields()
-  $emit('getList')
+  $emit('getList', props.table.form)
 }
 
 const matchDict = (dictName, value) => {
@@ -107,7 +113,7 @@ const matchDict = (dictName, value) => {
       </el-select>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="$emit('getList')">查找</el-button>
+      <el-button type="primary" @click="$emit('getList', table.form)">查找</el-button>
       <el-button @click="reset">重置</el-button>
     </el-form-item>
     <el-row v-if="$slots.default">
@@ -117,20 +123,26 @@ const matchDict = (dictName, value) => {
     </el-row>
   </el-form>
 
-  <el-table v-if="formColumn.length > 0 && table.data.length > 0" :data="table.data">
+  <el-table v-if="table.data.length > 0" :data="table.data">
     <el-table-column align="center" label="序号" type="index" min-width="50px"></el-table-column>
     <el-table-column v-for="item in table.column" :key="item.prop" align="center" :label="item.label" :prop="item.prop">
       <template #default="scope">
         <slot :name="item.prop" :row="scope.row"
           :label="item.dict ? matchDict(item.prop, scope.row[item.prop]) : scope.row[item.prop]">{{
-  item.dict ? matchDict(item.prop, scope.row[item.prop]) : scope.row[item.prop]
+            item.dict ? matchDict(item.prop, scope.row[item.prop]) : scope.row[item.prop]
           }}</slot>
       </template>
     </el-table-column>
   </el-table>
 
+  <el-pagination v-if="table.data.length > 0" class="pagination" v-model:current-page="table.form.pageNum"
+    v-model:page-size="table.form.pageSize" background layout="total, sizes, prev, pager, next"
+    :total="table.form.total" />
 </template>
 
 <style lang="less" scoped>
-
+.pagination {
+  padding: 20px;
+  justify-content: end;
+}
 </style>
