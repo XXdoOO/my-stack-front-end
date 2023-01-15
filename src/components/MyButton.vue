@@ -39,8 +39,11 @@ const handleClick = (e) => {
   </button>
 </template>
 <style lang="less" scoped>
+@hover-color: rgba(255, 255, 255, .3);
+
 .my-button {
   border-radius: 5px;
+  overflow: hidden;
   position: relative;
   display: flex;
   align-items: center;
@@ -56,11 +59,13 @@ const handleClick = (e) => {
   top: 0;
   width: 100%;
   height: 100%;
+  border-radius: 5px;
+  overflow: hidden;
   transition: @transition-time;
 }
 
 .my-button.disabled::before {
-  background-color: rgba(255, 255, 255, .3);
+  background-color: @hover-color;
 }
 
 .primary {
@@ -70,7 +75,7 @@ const handleClick = (e) => {
 }
 
 .primary:not(.disabled, .plain):hover::before {
-  background-color: rgba(255, 255, 255, .3);
+  background-color: @hover-color;
 }
 
 .primary.plain {
@@ -90,7 +95,7 @@ const handleClick = (e) => {
 }
 
 .danger:not(.disabled, .plain):hover::before {
-  background-color: rgba(255, 255, 255, .3);
+  background-color: @hover-color;
 }
 
 .danger.plain {
@@ -113,7 +118,7 @@ const handleClick = (e) => {
 }
 
 .text:not(.disabled):hover::before {
-  background-color: rgba(255, 255, 255, .3);
+  background-color: @hover-color;
 }
 
 .disabled {

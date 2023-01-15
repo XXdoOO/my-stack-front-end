@@ -2,7 +2,7 @@
 import { ref, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import BlogList from '@/components/BlogList.vue'
-import { getBlogList2 } from '@/api/blog'
+import { getBlogList } from '@/api/blog'
 import { updateInfo } from '@/api/user'
 import { store } from '@/stores/index'
 import MyDialog from '@/components/MyDialog.vue'
@@ -12,19 +12,13 @@ const userInfo = store().userInfo
 const list = reactive<object[]>([])
 const translateX = ref(0)
 const isMy = ref(false)
-const page = reactive({
-  pageNum: 1,
-  total: '0'
-})
 const type = ref(null)
 const visible = ref(false)
 let path = useRoute().path
 
 watch(useRoute(), (newVal) => {
   path = newVal.path
-  console.log(path);
   toggle()
-  getList()
 })
 
 const toggle = () => {
@@ -58,22 +52,6 @@ const toggle = () => {
     translateX.value = 600
   }
   list.length = 0
-  page.pageNum = 1
-}
-
-const getList = () => {
-  console.log(page.pageNum);
-
-  getBlogList2({
-    authorId: userInfo?.id ?? '',
-    type: type.value,
-    pageNum: page.pageNum
-  }).then((data: any) => {
-    console.log(data.list)
-
-    list.push(...data.list)
-    page.total = data.total
-  })
 }
 
 const avatarRef = ref()
@@ -101,7 +79,6 @@ const handleUpdateInfo = () => {
   }
 }
 toggle()
-getList()
 </script>
 
 <template>
@@ -127,7 +104,10 @@ getList()
     <router-link to="/my/history" :class="{ active: path == '/my/history' }">历史({{ userInfo.history }})</router-link>
     <div class="bar" :style="{ transform: `translateX(${translateX}%)` }"></div>
   </div>
-  <BlogList v-model:list="list" v-model:pageNum="page.pageNum" :total="page.total" @nextPage="getList" :isMy="isMy">
+  <BlogList :key="path" :get-list="getBlogList" :form="{
+    createBy: userInfo?.id ?? '',
+    type: type
+  }" :isMy="isMy">
   </BlogList>
 
   <MyDialog v-model:visible="visible" @confirm="handleUpdateInfo">

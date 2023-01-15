@@ -9,23 +9,33 @@ import confirm from '@/components/confirm'
 import xMessage from '@/components/message/index'
 
 const $props = withDefaults(defineProps<{
-  list: any[],
   isMy?: boolean,
-  pageNum?: number,
-  pageSize?: number,
-  total: string
+  getList: Function,
+  form?: any,
+  [key: string]: any
 }>(), {
   isMy: false,
-  pageNum: 1,
-  pageSize: 10
+  form: {}
 })
 
 const userInfo = store().userInfo
 
-const $emit = defineEmits(['nextPage', 'update:pageNum'])
 const $router = useRouter()
 
-const blogList = $props.list
+$props.form.pageNum = 1
+$props.form.pageSize = 3
+$props.form.total = 0
+
+const blogList = reactive([])
+
+const getBlogList = () => {
+  console.log($props.form);
+
+  $props.getList($props.form).then((data: any) => {
+    blogList.push(...data.list)
+    $props.form.total = data.total
+  })
+}
 
 const getDetails = (blogId) => {
   $router.push(`/blog/${blogId}`)
@@ -53,11 +63,9 @@ const handleDeleteBlog = (index) => {
 const scroll = () => {
   const doc = document.documentElement
 
-  // console.log(doc.scrollHeight, doc.scrollTop, doc.clientHeight)
-
-  if (doc.scrollHeight - doc.scrollTop - doc.clientHeight < 1 && $props.pageNum * $props.pageSize < parseInt($props.total)) {
-    $emit('update:pageNum', $props.pageNum + 1)
-    $emit('nextPage')
+  if (doc.scrollHeight - doc.scrollTop - doc.clientHeight < 1 && $props.form.pageNum * $props.form.pageSize < parseInt($props.form.total)) {
+    $props.form.pageNum++
+    getBlogList()
   }
 }
 
@@ -68,6 +76,8 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener("scroll", scroll)
 })
+
+getBlogList()
 </script>
 
 <template>
@@ -76,7 +86,7 @@ onUnmounted(() => {
       <article v-for="(blog, index) in blogList" :key="blog.id" @click="getDetails(blog.id)">
         <div>
           <div class="top" @click.stop>
-            <my-icon icon="user" type="link" :href="`/user/${blog.authorId}`">{{ blog.authorNickname }}</my-icon>
+            <my-icon icon="user" type="link" :href="`/user/${blog.createBy}`">{{ blog.authorNickname }}</my-icon>
             <my-icon icon="history" type="text" :enable-hover="false">{{ util.formatTime(blog.createTime) }}</my-icon>
           </div>
           <h2>{{ blog.title }}</h2>
@@ -87,7 +97,7 @@ onUnmounted(() => {
               v-model:active="blog.isDown" />
             <my-icon @click="handle(blog.id, 2)" v-model:num="blog.star" icon="star-active"
               v-model:active="blog.isStar" />
-            <my-icon icon="view" type="text">{{ util.formatNum(blog.views) }}</my-icon>
+            <my-icon icon="view" type="text">{{ util.formatNum(blog.view) }}</my-icon>
 
             <my-icon v-if="isMy && blog.authorUsername === userInfo.username" :href="`/edit/${blog.id}`"
               icon="edit"></my-icon>

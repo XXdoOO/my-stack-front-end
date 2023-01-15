@@ -11,7 +11,7 @@ interface Blog extends Page {
   createTime?: string,
 }
 
-export const getBlogList = (params: Blog) => {
+export const getBlogList = (params?: Blog) => {
   return request.get(`/getBlogList`, { params })
 }
 
