@@ -1,4 +1,5 @@
 import request from "@/util/request"
+import qs from 'qs'
 
 interface Blog extends Page {
   keywords?: string,
@@ -16,7 +17,7 @@ export const getBlogList = (params?: Blog) => {
 }
 
 export const getBlogList2 = (params: Blog) => {
-  return request.get(`/admin/getBlogList`, { params })
+  return request.get(`/admin/getBlogList?${qs.stringify(params)}`)
 }
 
 export const getBlogDetails = (blogId: string | number | string[]) => {

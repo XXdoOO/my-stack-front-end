@@ -5,7 +5,8 @@ interface DictDTO extends Page {
   dictName?: string,
   label?: string,
   value?: string,
-  createTime?: string[]
+  createTime?: string[],
+  enabled?: boolean
 }
 
 export const getDictType = (dictType?: DictDTO) => {

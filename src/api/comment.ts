@@ -1,4 +1,5 @@
 import request from '@/util/request'
+import qs from 'qs'
 
 interface Comment extends Page {
   blogId: string,
@@ -7,7 +8,7 @@ interface Comment extends Page {
 }
 
 export const getCommentList = (params: Comment) => {
-  return request.get(`/getCommentsList`, { params })
+  return request.get(`/getCommentsList?${qs.stringify(params)}`)
 }
 
 export const getCommentList2 = (params?: {
@@ -18,7 +19,7 @@ export const getCommentList2 = (params?: {
   endTime?: string,
   isDeleted?: boolean
 }) => {
-  return request.get(`/admin/getCommentsList`, { params })
+  return request.get(`/admin/getCommentsList?${qs.stringify(params)}`)
 }
 
 export const postComment = (data: {

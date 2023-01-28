@@ -23,13 +23,14 @@ const userInfo = store().userInfo
 const $router = useRouter()
 
 $props.form.pageNum = 1
-$props.form.pageSize = 3
+$props.form.pageSize = 10
 $props.form.total = 0
 
 const blogList = reactive([])
 
 const getBlogList = () => {
   console.log($props.form);
+  console.log($props)
 
   $props.getList($props.form).then((data: any) => {
     blogList.push(...data.list)

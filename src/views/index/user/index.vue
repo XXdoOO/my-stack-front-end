@@ -1,46 +1,39 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import BlogList from '@/components/BlogList.vue';
+import BlogList from '@/components/BlogList.vue'
 import { getBlogList } from '@/api/blog'
 import { getUserInfo } from '@/api/user'
 
 const userInfo = ref(null)
-const list = reactive<object[]>([])
 const translateX = ref(0)
 const route = useRoute()
-const page = reactive({
-  pageNum: 1,
-  total: '0'
+const type = ref(null)
+const userId = route.params.userId
+let path = useRoute().path
+
+watch(route, (newVal) => {
+  path = newVal.path
+  toggle()
 })
-const toggle = (value) => {
-  translateX.value = value
 
-  let type
-
-  if (value == 0) {
-    type = null
-  } else if (value == 100) {
-    type = 0
-  } else if (value == 200) {
-    type = 1
+const toggle = () => {
+  if (/^\/user\/\d+$/.test(path)) {
+    type.value = null
+    translateX.value = 0
+  } else if (/^\/user\/\d+\/up$/.test(path)) {
+    type.value = 0
+    translateX.value = 100
+  } else if (/^\/user\/\d+\/down$/.test(path)) {
+    type.value = 1
+    translateX.value = 200
   }
 
-  console.log(route);
-
-  list.length = 0
-  getBlogList({
-    authorId: route.params.userId as string,
-    type
-  }).then((data: any) => {
-    list.push(...data.list)
+  getUserInfo(userId).then(data => {
+    userInfo.value = data
   })
 }
-getUserInfo(route.params.userId).then(data => {
-  userInfo.value = data
-
-  toggle(0)
-})
+toggle()
 </script>
 
 <template>
@@ -50,12 +43,21 @@ getUserInfo(route.params.userId).then(data => {
     <my-ip class="ip">{{ userInfo.ipTerritory }}</my-ip>
   </div>
   <div class="container menu" v-if="userInfo">
-    <div :class="{ active: translateX == 0 }" @click="toggle(0)">发布({{ userInfo.passCount }})</div>
-    <div :class="{ active: translateX == 100 }" @click="toggle(100)">顶过({{ userInfo.up }})</div>
-    <div :class="{ active: translateX == 200 }" @click="toggle(200)">踩过({{ userInfo.down }})</div>
+    <router-link :to="`/user/${userId}`" :class="{ active: translateX == 0 }">发布({{
+      userInfo.passCount
+    }})</router-link>
+    <router-link :to="`/user/${userId}/up`" :class="{ active: translateX == 100 }">顶过({{
+      userInfo.up
+    }})</router-link>
+    <router-link :to="`/user/${userId}/down`" :class="{ active: translateX == 200 }">踩过({{
+      userInfo.down
+    }})</router-link>
     <div class="bar" :style="{ transform: `translateX(${translateX}%)` }"></div>
   </div>
-  <BlogList v-model:list="list" v-model:pageNum="page.pageNum" :total="page.total" @nextPage="getList"></BlogList>
+  <BlogList :key="path" :get-list="getBlogList" :form="{
+    createBy: userId ?? '',
+    type: type
+  }"></BlogList>
 </template>
 
 <style lang="less" scoped>
@@ -91,10 +93,9 @@ getUserInfo(route.params.userId).then(data => {
   padding: 7px 10px;
   border-radius: 5px 5px 0 0;
 
-  >div {
+  >a {
     width: 80px;
     text-align: center;
-    cursor: pointer;
     transition: @transition-time;
   }
 
@@ -102,6 +103,7 @@ getUserInfo(route.params.userId).then(data => {
     position: absolute;
     left: 10px;
     bottom: 0;
+    width: 80px;
     height: 3px;
     transition: @transition-time;
   }

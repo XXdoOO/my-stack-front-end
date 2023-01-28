@@ -1,47 +1,26 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { getBlogDetails, handleBlog } from '@/api/blog'
 import { getCommentList, postComment, deleteComment, handleComment } from '@/api/comment'
 import util from '@/util/util'
 import { store } from '@/stores/index'
+import Confirm from '@/components/confirm'
 
 const $route = useRoute()
 const userInfo = store().userInfo
 
 const blogId = $route.params.blogId as string
 let blog = ref(null)
-let commentList = ref(null)
+let commentList = reactive([])
 let content = ref<string>('')
 let content2 = ref<string>('')
+const page = reactive({
+  pageNum: 1,
+  pageSize: 10,
+  total: '0'
+})
 
-
-const init = () => {
-  getBlogDetails(blogId).then((data: any) => {
-    blog.value = data
-    blog.value.content = `# ${data.title}\n## ${data.description}\n${data.content}`
-  })
-
-  getCommentList({ blogId, pageSize: 100 }).then((res: any) => {
-    res.list.forEach(item => {
-      item.isShow = false
-    })
-
-    commentList.value = res.list
-
-    commentList.value.forEach(item => {
-      getCommentList({ blogId, parent: item.id, pageSize: 3 }).then((res: any) => {
-        res.list.forEach(item => {
-          item.isShow = false
-        })
-
-        item.children = res.list
-        item.total = res.total
-        item.pageNum = 1
-      })
-    })
-  })
-}
 
 const getMoreReply = (item) => {
   getCommentList({ blogId, parent: item.id, pageNum: ++item.pageNum, pageSize: 3 }).then((res: any) => {
@@ -59,7 +38,7 @@ const reply = (item) => {
   if (item.isShow) {
     flag = false
   }
-  commentList.value.forEach(comment => {
+  commentList.forEach(comment => {
     comment.isShow = false
 
     comment.children?.forEach(c => {
@@ -72,31 +51,28 @@ const reply = (item) => {
   }
 }
 
-const handlePostComment = (parent, receiveId, receiveNickname, content) => {
+const handlePostComment = (parent, receiveId, content) => {
   postComment({
     blogId,
     parent,
     receiveId,
     content
-  }).then((res: any) => {
-    res.senderAvatar = userInfo.avatar
-    res.senderNickname = userInfo.nickname
-    res.receiveNickname = receiveNickname
-    res.children = []
-    console.log(res)
+  }).then((data: any) => {
+    data.children = []
+    console.log(data)
 
     if (parent) {
-      for (const item of commentList.value) {
+      for (const item of commentList) {
         if (item.id == parent) {
-          item.children.push(res)
+          item.children.push(data)
           break
         }
       }
     } else {
-      commentList.value.push(res)
+      commentList.push(data)
     }
 
-    commentList.value.forEach(comment => {
+    commentList.forEach(comment => {
       comment.isShow = false
 
       comment.children?.forEach(c => {
@@ -106,27 +82,25 @@ const handlePostComment = (parent, receiveId, receiveNickname, content) => {
   })
 }
 
-const handleDeleteComment = (commentId: string | number) => {
-  deleteComment(commentId).then(data => {
-    console.log(data);
+const handleDeleteComment = (item) => {
+  Confirm(`确认删除评论“${item.content}”吗?`, () => {
+    deleteComment(item.id).then(data => {
+      console.log(data);
 
-    foo: for (const index in commentList.value) {
-      const item = commentList.value[index]
-
-      if (item.id == commentId) {
-        commentList.value.splice(index, 1)
-        break foo
-      }
-
-      for (const i in item.children) {
-        const j = item.children[i]
-
-        if (j.id == commentId) {
-          item.children.splice(i, 1)
+      foo: for (let i = 0; i < commentList.length; i++) {
+        if (commentList[i].id == item.id) {
+          commentList.splice(i, 1)
           break foo
         }
+
+        for (let j = 0; j < commentList[i].children.length; j++) {
+          if (commentList[i].children[j].id == item.id) {
+            commentList[i].children.splice(j, 1)
+            break foo
+          }
+        }
       }
-    }
+    })
   })
 }
 
@@ -143,7 +117,58 @@ const handleComment2 = (commentId: string | number, type: 0 | 1) => {
   })
 }
 
-init()
+const scroll = () => {
+  const doc = document.documentElement
+
+  if (doc.scrollHeight - doc.scrollTop - doc.clientHeight < 1 && page.pageNum * page.pageSize < parseInt(page.total)) {
+    page.pageNum++
+    getList()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener("scroll", scroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", scroll)
+})
+
+const getList = () => {
+  getCommentList({ blogId, ...page }).then((data: any) => {
+    page.total = data.total
+    data.list.forEach(item => {
+      item.isShow = false
+    })
+
+    const reqs = []
+
+    data.list.forEach(item => {
+      reqs.push(getCommentList({ blogId, parent: item.id, pageSize: 3 }))
+    })
+
+    Promise.all(reqs).then(d => {
+      console.log(d);
+      d.forEach((item, index) => {
+        item.list.forEach(i => {
+          i.isShow = false
+        })
+        data.list[index].children = item.list
+        data.list[index].total = item.total
+        data.list[index].pageNum = 1
+      })
+      commentList.push(...data.list)
+      console.log(commentList);
+
+    })
+  })
+}
+
+getBlogDetails(blogId).then((data: any) => {
+  blog.value = data
+  blog.value.content = `# ${data.title}\n## ${data.description}\n${data.content}`
+})
+getList()
 </script>
 
 <template>
@@ -164,7 +189,7 @@ init()
           </div>
           <div class="area">
             <textarea class="content" v-model="content" placeholder="说说你的看法"></textarea>
-            <my-button class="btn" @click="handlePostComment('', '', '', content)">发布</my-button>
+            <my-button class="btn" @click="handlePostComment(undefined, undefined, content)">发布</my-button>
           </div>
         </div>
 
@@ -172,7 +197,7 @@ init()
           <my-avatar :src="`/api${item.senderAvatar}`" />
           <div class="detail">
             <div class="top">
-              <div class="nickname">{{ item.senderNickname }}</div>
+              <div class="nickname">{{ item.sender.nickname }}</div>
               <div class="time">{{ item.createTime }}</div>
             </div>
             <p class="center">{{ item.content }}</p>
@@ -182,8 +207,8 @@ init()
                 item.isShow ? '收起' : '回复'
               }}</my-button>
               <div class="icons">
-                <my-icon @click="handleDeleteComment(item.id)" icon="delete"
-                  v-if="item.senderId == userInfo?.id"></my-icon>
+                <my-icon @click="handleDeleteComment(item)" icon="delete"
+                  v-if="item.sender.id == userInfo?.id"></my-icon>
                 <my-icon @click="handleComment2(item.id, 1)" v-model:num="item.down" v-model:active="item.isDown"
                   icon="down-active" />
                 <my-icon @click="handleComment2(item.id, 0)" v-model:num="item.up" v-model:active="item.isUp"
@@ -192,8 +217,7 @@ init()
             </div>
             <div class="area" v-show="item.isShow">
               <textarea class="content" v-model="content2" placeholder="说说你的看法"></textarea>
-              <my-button class="btn"
-                @click="handlePostComment(item.id, item.senderId, item.senderNickname, content2)">回复</my-button>
+              <my-button class="btn" @click="handlePostComment(item.id, item.sender.id, content2)">回复</my-button>
             </div>
 
             <div class="children" v-if="item.children?.length != 0">
@@ -201,9 +225,9 @@ init()
                 <my-avatar :src="`/api${i.senderAvatar}`" size="40px" />
                 <div class="detail">
                   <div class="top">
-                    <div class="nickname">{{ i.senderNickname }}</div>
-                    <my-icon class="arrow" icon="arrow-right" type="text"></my-icon>
-                    <div class="nickname">{{ i.receiveNickname }}</div>
+                    <div class="nickname">{{ i.sender.nickname }}</div>
+                    <my-icon v-if="i.receiver" class="arrow" icon="arrow-right" type="text"></my-icon>
+                    <div v-if="i.receiver" class="nickname">{{ i.receiver.nickname }}</div>
                     <div class="time">{{ i.createTime }}</div>
                   </div>
                   <p class="center">{{ i.content }}</p>
@@ -213,8 +237,8 @@ init()
                       i.isShow ? '收起' : '回复'
                     }}</my-button>
                     <div class="icons">
-                      <my-icon @click="handleDeleteComment(i.id)" icon="delete"
-                        v-if="i.senderId == userInfo?.id"></my-icon>
+                      <my-icon @click="handleDeleteComment(i)" icon="delete"
+                        v-if="i.sender.id == userInfo?.id"></my-icon>
                       <my-icon @click="handleComment2(i.id, 1)" v-model:num="i.down" v-model:active="i.isDown"
                         icon="down-active" />
                       <my-icon @click="handleComment2(i.id, 0)" v-model:num="i.up" v-model:active="i.isUp"
@@ -223,13 +247,12 @@ init()
                   </div>
                   <div class="area" v-show="i.isShow">
                     <textarea class="content" v-model="content2" placeholder="说说你的看法"></textarea>
-                    <my-button class="btn"
-                      @click="handlePostComment(item.id, i.senderId, i.senderNickname, content2)">回复</my-button>
+                    <my-button class="btn" @click="handlePostComment(item.id, i.sender.id, content2)">回复</my-button>
                   </div>
                 </div>
               </div>
               <my-icon class="collapse" v-if="item.total > item.children?.length" icon="arrow-down"
-                @click="getMoreReply(item)">展开更多回复</my-icon>
+                @click="getMoreReply(item)">展开{{ item.total - item.children.length }}条回复</my-icon>
             </div>
           </div>
         </div>
@@ -247,11 +270,11 @@ init()
             <span>{{ blog.authorInfo.passCount }}</span>
             <span>发布</span>
           </router-link>
-          <router-link :to="`/user/${blog.authorInfo.id}`">
+          <router-link :to="`/user/${blog.authorInfo.id}/up`">
             <span>{{ blog.authorInfo.up }}</span>
             <span>顶过</span>
           </router-link>
-          <router-link :to="`/user/${blog.authorInfo.id}`">
+          <router-link :to="`/user/${blog.authorInfo.id}/down`">
             <span>{{ blog.authorInfo.down }}</span>
             <span>踩过</span>
           </router-link>
@@ -263,7 +286,7 @@ init()
           icon="down-active" />
         <my-icon @click="handleBlog2(blog.id, 2)" v-model:num="blog.star" v-model:active="blog.isStar"
           icon="star-active" />
-        <my-icon icon="view">{{ util.formatNum(blog.views) }}</my-icon>
+        <my-icon icon="view">{{ util.formatNum(blog.view) }}</my-icon>
       </div>
     </div>
   </main>
@@ -409,11 +432,10 @@ init()
       .icons {
         margin-left: auto;
         display: flex;
-        justify-content: space-between;
         align-items: center;
 
-        .icon {
-          margin-left: 40px;
+        .my-icon {
+          margin-left: 30px;
         }
       }
     }

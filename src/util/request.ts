@@ -16,6 +16,7 @@ axios.interceptors.request.use((req) => {
   const userInfo = JSON.parse(sessionStorage.getItem("userInfo"))
 
   if (userInfo == null && (req.url.includes("/user/") || req.url.includes("/admin/"))) {
+    sessionStorage.clear()
     LoginRegister()
     source.cancel()
   } else {
@@ -40,8 +41,8 @@ axios.interceptors.response.use((res) => {
   } else if (res.data.code == 403) {
     sessionStorage.clear()
     LoginRegister()
-    return Promise.reject(res.data.msg)
   }
+  return Promise.reject(res.data.msg)
 }, (error) => {
   console.log(error.message)
   done()

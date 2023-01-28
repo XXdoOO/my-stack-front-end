@@ -178,9 +178,9 @@ const handleSendCode = () => {
         <div class="email">
           <input class="form-input" @keydown.enter="handleRegister" type="text" maxlength="32" required
             placeholder="请输入邮箱" v-model="registerFrom.email" />
-          <MyButton type="text" class="toggle" :disabled="isDisableSend" @click="handleSendCode">{{ isDisableSend ?
-    `${countdown}后重新发送` : '发送验证码'
-}}</MyButton>
+          <MyButton type="text" class="toggle" :disabled="isDisableSend" @click="handleSendCode">{{ isDisableSend?
+          `${countdown}后重新发送` : '发送验证码'
+          }}</MyButton>
         </div>
         <input class="form-input" @keydown.enter="handleRegister" type="text" maxlength="8" required
           placeholder="请输入验证码" v-model="registerFrom.code" />

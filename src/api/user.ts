@@ -1,4 +1,5 @@
 import request from "@/util/request"
+import qs from 'qs'
 
 interface Login {
   email: string,
@@ -30,15 +31,15 @@ export const register = (data: Login) => {
   return request.post(`/register`, data)
 }
 
-export const getUserList = (params: User) => {
-  return request.get(`/admin/getUserList`, { params })
+export const getUserList = (params) => {
+  return request.get(`/admin/getUserList?${qs.stringify(params)}`)
 }
 
 export const getUserInfo = (userId) => {
   return request.get(`/getUserInfo/${userId}`)
 }
 
-export const disableUser = (disable: { userId: string, isDisable: boolean, reason: string, minutes: string }) => {
+export const disableUser = (disable: { userId: string, enabled: boolean, reason: string, minutes: string }) => {
   return request.put(`/admin/disableUser`, disable)
 }
 

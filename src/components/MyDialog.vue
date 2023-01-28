@@ -2,6 +2,7 @@
 import { ref, reactive, watch } from 'vue'
 
 const $props = withDefaults(defineProps<{
+  title: string,
   visible: boolean,
   width?: string
 }>(), {
@@ -29,6 +30,7 @@ const cancel = () => {
 <template>
   <div class="mask" ref="maskRef" @click="cancel">
     <div class="dialog" @click.stop>
+      <div class="title">{{ title }}</div>
       <my-icon class="icon" icon="cancel" @click="cancel"></my-icon>
       <slot></slot>
       <slot name="footer">
@@ -62,12 +64,18 @@ const cancel = () => {
     min-height: 100px;
     background-color: white;
     border-radius: 5px;
-    padding: 25px 20px 10px 20px;
+    padding: 45px 15px 10px 15px;
+
+    .title {
+      position: absolute;
+      top: 10px;
+      left: 15px;
+    }
 
     .icon {
       position: absolute;
-      right: 5px;
-      top: 5px;
+      right: 7px;
+      top: 7px;
       font-size: 7px;
     }
 

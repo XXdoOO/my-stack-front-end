@@ -277,9 +277,11 @@ onUnmounted(() => {
           margin-top: 10px;
         }
 
-        .my-menu:first-of-type {
-          margin-top: 10px;
+        .my-menu:last-of-type {
+          margin-bottom: 10px;
         }
+
+
 
         button:last-child {
           margin-top: 10px;

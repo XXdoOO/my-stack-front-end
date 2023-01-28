@@ -110,7 +110,7 @@ toggle()
   }" :isMy="isMy">
   </BlogList>
 
-  <MyDialog v-model:visible="visible" @confirm="handleUpdateInfo">
+  <MyDialog v-model:visible="visible" title="修改昵称" @confirm="handleUpdateInfo">
     <input class="input" v-model="userInfo.nickname" placeholder="请输入新的昵称" maxlength="20" />
   </MyDialog>
 </template>
