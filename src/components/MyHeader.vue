@@ -98,7 +98,7 @@ onUnmounted(() => {
             </router-link>
           </nav>
           <router-link class="my-menu" to="/my">个人中心</router-link>
-          <router-link class="my-menu" to="/admin" v-if="userInfo.admin">管理后台</router-link>
+          <router-link class="my-menu" to="/admin/blog" v-if="userInfo.admin">管理后台</router-link>
           <my-button type="primary" href="/edit">开始创作</my-button>
           <my-button type="danger" @click="handleLogout">退出登录</my-button>
         </div>

@@ -3,12 +3,12 @@
     <el-aside width="200px" class="sidebar">
       <el-menu router active-text-color="#40a0ff" background-color="black" text-color="#fff" @open="handleOpen"
         @close="handleClose" :default-active="useRoute().fullPath">
-        <el-menu-item index="/admin">
+        <!-- <el-menu-item index="/admin">
           <el-icon>
             <Menu />
           </el-icon>
           <span>首页</span>
-        </el-menu-item>
+        </el-menu-item> -->
         <el-menu-item index="/admin/blog">
           <el-icon>
             <Notebook />

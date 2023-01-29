@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, useSlots, watch, defineEmits, defineExpose } from 'vue'
+import { ref, reactive, useSlots, watch, defineEmits, defineExpose, onUpdated } from 'vue'
 import { Search, RefreshLeft } from '@element-plus/icons-vue'
 import { getDictData } from '@/api/dict'
 
@@ -14,18 +14,20 @@ const $props = withDefaults(defineProps<{
     }[]
     data: object[]
   },
+  disableTrigger: boolean
 }>(), {
   table: () => {
     return {
       form: {
-        title: ''
+        title: undefined
       },
       column: [
         { label: '标题', prop: 'title' }
       ],
-      data: [{}]
+      data: []
     }
   },
+  disableTrigger: false
 })
 
 const $slots = useSlots()
@@ -36,23 +38,21 @@ const loading = ref(false)
 
 const reqs = []
 const column = []
-$props.table.column.map(item => {
-  if (item.dict) {
-    console.log(item.dict);
+const formRef = ref()
 
-    reqs.push(getDictData({ dictName: item.dict }))
-    column.push(item.prop)
-  }
-})
-
-Promise.all(reqs).then(res => {
-  console.log(res);
-
-  column.map((item, index) => {
-    dict[item] = res[index].list
+if (!$props.disableTrigger) {
+  $props.table.column.map(item => {
+    if (item.dict) {
+      reqs.push(getDictData({ dictName: item.dict }))
+      column.push(item.prop)
+    }
   })
 
-  if ($props.table.form) {
+  Promise.all(reqs).then(res => {
+    column.map((item, index) => {
+      dict[item] = res[index].list
+    })
+
     for (const prop in $props.table.form) {
       let label: string, placeholder = '请输入', type: 'text' | 'time' | 'date' | 'dict' = 'text'
 
@@ -87,10 +87,9 @@ Promise.all(reqs).then(res => {
     $props.table.form.pageNum = 1
     $props.table.form.pageSize = 10
     $props.table.form.total = 0
-  }
-})
+  })
+}
 
-const formRef = ref()
 const reset = () => {
   formRef.value.resetFields()
 

@@ -9,12 +9,13 @@ const table1 = reactive({
     name: '',
     createTime: [],
     createBy: '',
+    enabled: undefined
   },
   column: [
     { label: '字典名称', prop: 'name' },
-    { label: '更新时间', prop: 'updateTime' },
-    { label: '创建时间', prop: 'createTime' },
     { label: '创建人', prop: 'createBy' },
+    { label: '是否启用', prop: 'enabled', dict: 'is_enabled' },
+    { label: '创建时间', prop: 'createTime' },
     { label: '操作', prop: 'operation', minWidth: '100px' },
   ],
   data: []
@@ -22,6 +23,7 @@ const table1 = reactive({
 
 const table2 = reactive({
   form: {
+    dictName: undefined
   },
   column: [
     { label: 'label', prop: 'label' },
@@ -34,6 +36,7 @@ const table2 = reactive({
 
 const visible1 = ref(false)
 const visible2 = ref(false)
+const disableTrigger = reactive({})
 const form1 = reactive({
   dictName: '',
   enabled: true
@@ -67,15 +70,6 @@ const rules2 = reactive({
   }
 })
 
-const expandChange = (e) => {
-  getDictData({
-    dictName: e.name
-  }).then((data: any) => {
-    console.log(data);
-    table2.data = data.list
-  })
-}
-
 const tableRef = ref()
 const formRef1 = ref()
 const handlePostDictType = () => {
@@ -92,15 +86,35 @@ const handlePostDictType = () => {
   })
 }
 
+const expandChange = (e) => {
+  console.log(!!disableTrigger[e.id]);
+  console.log(e);
+
+  e.table = {
+    form: {
+      dictName: e.name
+    },
+    column: [
+      { label: 'label', prop: 'label' },
+      { label: 'value', prop: 'value' },
+      { label: '创建人', prop: 'createBy' },
+      { label: '操作', prop: 'operation' },
+    ],
+    data: []
+  }
+  disableTrigger[e.id] = !!!disableTrigger[e.id]
+}
+
 </script>
 
 <template>
-  <my-table :table="table1" :get-list="getDictType" @expand-change="expandChange" ref="tableRef">
+  <my-table :table="table1" :get-list="getDictType" ref="tableRef" @expand-change="expandChange">
     <el-button type="primary" @click="visible1 = true">新增</el-button>
 
     <template #expand="scope">
-      <div class="sub-table">
-        <my-table :key="scope.row.id" :table="table2" :get-list="getDictData"></my-table>
+      <div class="sub-table" :class="scope.row.id">
+        <my-table v-if="scope.row.table" :table="scope.row.table" :get-list="getDictData"
+          :disable-trigger="!!!disableTrigger[scope.row.id]"></my-table>
       </div>
     </template>
     <template #blogId="scope">
