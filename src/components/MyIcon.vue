@@ -8,10 +8,12 @@ const props = withDefaults(defineProps<{
   href?: string,
   type?: 'link' | 'text' | 'button',
   active?: boolean,
-  num?: string | number
+  num?: string | number,
+  size?: string
 }>(), {
   type: 'button',
-  active: false
+  active: false,
+  size: 'inherit'
 })
 
 const $emit = defineEmits(['click', 'update:num', 'update:active'])
@@ -52,7 +54,7 @@ const handleClick = (e) => {
   display: flex;
   align-items: center;
   font-style: normal;
-  font-size: 12px;
+  font-size: v-model(size);
 
   svg {
     margin-right: 0.1em;

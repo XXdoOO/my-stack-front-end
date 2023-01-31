@@ -65,7 +65,10 @@ getDictData({
 <template>
   <my-table :table="table" :get-list="getBlogList2">
     <template #title="scope">
-      <router-link :to="`/blog/${scope.row.id}`">{{ scope.row.title }}</router-link>
+      <el-link v-if="scope.row.status == 1" type="primary" :icon="Notebook" :href="`/blog/${scope.row.id}`">{{
+        scope.row.title
+      }}</el-link>
+      <template v-if="scope.row.status != 1">{{ scope.row.title }}</template>
     </template>
     <template #cover="scope">
       <el-image v-if="scope.row.cover" :src="scope.row.cover" :preview-src-list="[scope.row.cover]"

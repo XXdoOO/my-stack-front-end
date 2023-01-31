@@ -1,8 +1,12 @@
 <template>
   <el-container>
     <el-aside width="200px" class="sidebar">
-      <el-menu router active-text-color="#40a0ff" background-color="black" text-color="#fff" @open="handleOpen"
-        @close="handleClose" :default-active="useRoute().fullPath">
+      <el-menu router background-color="black" text-color="#fff" @open="handleOpen" @close="handleClose"
+        :default-active="useRoute().fullPath">
+        <el-menu-item index="/" class="logo">
+          <my-icon icon="edit" active size="15px"></my-icon>
+          <span class="web-name">My Stack 管理后台</span>
+        </el-menu-item>
         <!-- <el-menu-item index="/admin">
           <el-icon>
             <Menu />
@@ -71,5 +75,27 @@ const handleClose = (key: string, keyPath: string[]) => {
   background-color: white;
   overflow: auto;
   height: 100vh;
+}
+
+.logo {
+  height: 50px !important;
+
+  .web-name {
+    margin-left: 5px;
+    font-weight: bold;
+    color: @theme-color;
+    font-size: 15px;
+  }
+}
+
+.el-menu-item.is-active {
+  background-color: @theme-color;
+  color: white;
+}
+
+.el-menu-item {
+  border-radius: 5px;
+  margin: 5px;
+  height: 40px;
 }
 </style>

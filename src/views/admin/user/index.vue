@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
-import { RefreshRight, Download, Search } from '@element-plus/icons-vue'
+import { RefreshRight, Download, Search, User } from '@element-plus/icons-vue'
 import { getUserList, disableUser } from '@/api/user'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import 'element-plus/es/components/message/style/css'
@@ -121,6 +121,9 @@ const handleSwitch = (row, e) => {
 
 <template>
   <my-table :table="table" :get-list="getUserList">
+    <template #nickname="scope">
+      <el-link type="primary" :icon="User" :href="`/user/${scope.row.id}`">{{ scope.row.nickname }}</el-link>
+    </template>
     <template #avatar="scope">
       <el-avatar :src="scope.row.avatar" />
     </template>
