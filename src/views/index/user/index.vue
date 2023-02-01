@@ -55,7 +55,7 @@ toggle()
     <div class="bar" :style="{ transform: `translateX(${translateX}%)` }"></div>
   </div>
   <BlogList :key="path" :get-list="getBlogList" :form="{
-    createBy: userId ?? '',
+    authorId: userId,
     type: type
   }"></BlogList>
 </template>
