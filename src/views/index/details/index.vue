@@ -217,7 +217,7 @@ getList()
             </div>
             <div class="area" v-show="item.isShow">
               <textarea class="content" v-model="content2" placeholder="说说你的看法"></textarea>
-              <my-button class="btn" @click="handlePostComment(item.id, item.sender.id, content2)">回复</my-button>
+              <my-button class="btn" @click="handlePostComment(item.id, undefined, content2)">回复</my-button>
             </div>
 
             <div class="children" v-if="item.children?.length != 0">

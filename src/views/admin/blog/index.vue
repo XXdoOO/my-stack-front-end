@@ -9,10 +9,11 @@ import xMessage from '@/components/message/index'
 
 const table = reactive({
   form: {
-    title: '',
-    description: '',
-    authorNickname: '',
-    status: '',
+    title: undefined,
+    description: undefined,
+    authorNickname: undefined,
+    status: undefined,
+    enabled: undefined,
     createTime: undefined,
   },
   column: [
@@ -21,6 +22,7 @@ const table = reactive({
     { label: '封面', prop: 'cover' },
     { label: '作者', prop: 'authorNickname' },
     { label: '审核状态', prop: 'status', dict: 'audit_status', width: '120px' },
+    { label: '是否启用', prop: 'enabled', dict: 'is_enabled' },
     { label: '创建时间', prop: 'createTime' },
     { label: '操作', prop: 'operation' },
   ],
@@ -78,6 +80,9 @@ getDictData({
       <el-link type="primary" :icon="User" :href="`/user/${scope.row.createBy}`">{{
         scope.row.authorNickname
       }}</el-link>
+    </template>
+    <template #enabled="scope">
+      <el-switch v-model="scope.row.enabled"></el-switch>
     </template>
     <template #status="scope">
       <el-select v-model="scope.row.status" @change="handleAuditBlog(scope.row.id, scope.row.status)">

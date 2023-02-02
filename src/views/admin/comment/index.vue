@@ -9,13 +9,14 @@ const table = reactive({
     blogId: undefined,
     content: undefined,
     nickname: undefined,
+    enabled: undefined,
     createTime: undefined
   },
   column: [
     { label: '所属博客ID', prop: 'blogId' },
     { label: '评论', prop: 'content' },
     { label: '发布者', prop: 'nickname' },
-    { label: '是否启用', prop: 'enabled' },
+    { label: '是否启用', prop: 'enabled', dict: 'is_enabled' },
     { label: '发布时间', prop: 'createTime' },
   ],
   data: []

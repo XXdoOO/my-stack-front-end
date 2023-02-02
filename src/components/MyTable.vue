@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, useSlots, watch, defineEmits, defineExpose, onUpdated } from 'vue'
+import { ref, reactive, useSlots, watch, defineExpose, onUpdated } from 'vue'
 import { Search, RefreshLeft } from '@element-plus/icons-vue'
 import { getDictData } from '@/api/dict'
 

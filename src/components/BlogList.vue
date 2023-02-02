@@ -98,6 +98,7 @@ getBlogList()
               v-model:active="blog.isDown" />
             <my-icon @click="handle(blog.id, 2)" v-model:num="blog.star" icon="star-active"
               v-model:active="blog.isStar" />
+            <my-icon icon="comment" type="text">{{ util.formatNum(blog.comment) }}</my-icon>
             <my-icon icon="view" type="text">{{ util.formatNum(blog.view) }}</my-icon>
 
             <my-icon v-if="isMy && blog.authorUsername === userInfo.username" :href="`/edit/${blog.id}`"
