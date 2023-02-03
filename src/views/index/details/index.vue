@@ -193,6 +193,8 @@ getList()
           </div>
         </div>
 
+        <div class="all-comment">全部评论：{{ blog.comment }}条</div>
+
         <div class="comment" v-for="item in commentList" :key="item.id">
           <my-avatar :src="`/api${item.senderAvatar}`" />
           <div class="detail">
@@ -311,7 +313,7 @@ getList()
 }
 
 .author-info {
-  padding: 20px 30px;
+  padding: 20px;
   background-color: white;
   border-radius: 5px 5px 0 0;
 
@@ -367,6 +369,11 @@ getList()
 
   img {
     margin-right: 20px;
+  }
+
+  .all-comment {
+    font-weight: bold;
+    margin-bottom: 10px;
   }
 }
 

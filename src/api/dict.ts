@@ -10,8 +10,6 @@ interface DictDTO extends Page {
 }
 
 export const getDictType = (dictType?: DictDTO) => {
-  console.log(qs.stringify(dictType));
-
   return request.get(`/admin/dictType?${qs.stringify(dictType)}`)
 }
 

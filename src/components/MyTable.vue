@@ -5,42 +5,35 @@ import { getDictData } from '@/api/dict'
 
 const $props = withDefaults(defineProps<{
   getList: Function,
-  table?: {
+  table: {
     form?: any,
-    column?: {
+    column: {
       label: string,
       prop: string,
       [propName: string]: any
     }[]
-    data: object[]
+    data?: object[]
   },
-  disableTrigger: boolean
+  trigger?: boolean
 }>(), {
-  table: () => {
-    return {
-      form: {
-        title: undefined
-      },
-      column: [
-        { label: '标题', prop: 'title' }
-      ],
-      data: []
-    }
-  },
-  disableTrigger: false
+  trigger: true
 })
 
 const $slots = useSlots()
+console.log($slots);
+
+
 const $emits = defineEmits(['expand-change'])
 const formColumn = reactive<{ prop: string, label: string, type: 'text' | 'time' | 'date' | 'dict', placeholder: string }[]>([])
 const dict = reactive({})
-const loading = ref(false)
+const loading = ref(true)
+const total = ref(0)
 
 const reqs = []
 const column = []
 const formRef = ref()
 
-if (!$props.disableTrigger) {
+if ($props.trigger) {
   $props.table.column.map(item => {
     if (item.dict) {
       reqs.push(getDictData({ dictName: item.dict }))
@@ -86,7 +79,6 @@ if (!$props.disableTrigger) {
     }
     $props.table.form.pageNum = 1
     $props.table.form.pageSize = 10
-    $props.table.form.total = 0
   })
 }
 
@@ -105,7 +97,7 @@ const matchDict = (dictName, value) => {
 const getList = () => {
   loading.value = true
   $props.getList($props.table.form).then((data) => {
-    $props.table.form.total = parseInt(data.total)
+    total.value = parseInt(data.total)
     $props.table.data = data.list
     loading.value = false
   })
@@ -120,7 +112,7 @@ defineExpose({ getList })
 </script>
 
 <template >
-  <el-form v-if="formColumn.length > 0" inline :model="table.form" ref="formRef">
+  <el-form v-if="formColumn.length" inline :model="table.form" ref="formRef">
     <el-form-item v-for="item in formColumn" :key="item.prop" :prop="item.prop" :label="item.label">
       <el-input v-if="item.type == 'text'" v-model="table.form[item.prop]" @keydown.enter="getList"
         :placeholder="item.placeholder"></el-input>
@@ -151,7 +143,9 @@ defineExpose({ getList })
           <slot name="expand" :row="scope.row">666</slot>
         </template>
       </el-table-column>
+
       <el-table-column align="center" label="序号" type="index" min-width="50px"></el-table-column>
+
       <el-table-column v-for="item in table.column" :key="item.prop" align="center" :label="item.label"
         :prop="item.prop" :width="item.width" :min-width="item.minWidth">
         <template #default="scope">
@@ -164,7 +158,7 @@ defineExpose({ getList })
     </el-table>
 
     <el-pagination class="pagination" v-model:current-page="table.form.pageNum" v-model:page-size="table.form.pageSize"
-      background layout="total, sizes, prev, pager, next" :total="table.form.total" />
+      background layout="total, sizes, prev, pager, next" :total="total" />
   </div>
 </template>
 
