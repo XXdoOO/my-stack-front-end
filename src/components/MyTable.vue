@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, useSlots, watch, defineExpose, onUpdated } from 'vue'
+import { ref, reactive, useSlots, watch, onUpdated } from 'vue'
 import { Search, RefreshLeft } from '@element-plus/icons-vue'
 import { getDictData } from '@/api/dict'
 
@@ -33,54 +33,64 @@ const reqs = []
 const column = []
 const formRef = ref()
 
-if ($props.trigger) {
-  $props.table.column.map(item => {
-    if (item.dict) {
-      reqs.push(getDictData({ dictName: item.dict }))
-      column.push(item.prop)
-    }
-  })
+watch(() => $props.trigger, (newVal) => {
+  console.log(newVal)
 
-  Promise.all(reqs).then(res => {
-    column.map((item, index) => {
-      dict[item] = res[index].list
+  if (newVal) {
+    $props.table.column.map(item => {
+      if (item.dict) {
+        reqs.push(getDictData({ dictName: item.dict }))
+        column.push(item.prop)
+      }
     })
 
-    for (const prop in $props.table.form) {
-      let label: string, placeholder = '请输入', type: 'text' | 'time' | 'date' | 'dict' = 'text'
+    Promise.all(reqs).then(res => {
+      column.map((item, index) => {
+        dict[item] = res[index].list
+      })
 
-      const temp = prop.toLowerCase()
-      if (temp.includes('time')) {
-        type = 'time'
-        placeholder = '请选择'
-      } else if (temp.includes('date')) {
-        type = 'date'
-        placeholder = '请选择'
-      }
+      for (const prop in $props.table.form) {
+        if ($props.table.form[prop]) {
+          continue
+        }
 
-      for (const item of $props.table.column) {
-        if (prop == item.prop) {
-          label = item.label
 
-          if (item.dict) {
-            type = 'dict'
-            placeholder = '请选择'
+        let label: string, placeholder = '请输入', type: 'text' | 'time' | 'date' | 'dict' = 'text'
+
+        const temp = prop.toLowerCase()
+        if (temp.includes('time')) {
+          type = 'time'
+          placeholder = '请选择'
+        } else if (temp.includes('date')) {
+          type = 'date'
+          placeholder = '请选择'
+        }
+
+        for (const item of $props.table.column) {
+          if (prop == item.prop) {
+            label = item.label
+
+            if (item.dict) {
+              type = 'dict'
+              placeholder = '请选择'
+            }
           }
         }
-      }
 
-      placeholder += label
-      formColumn.push({
-        prop,
-        label,
-        type,
-        placeholder
-      })
-    }
-    $props.table.form.pageNum = 1
-    $props.table.form.pageSize = 10
-  })
-}
+        placeholder += label
+
+        formColumn.push({
+          prop,
+          label,
+          type,
+          placeholder
+        })
+      }
+      $props.table.form.pageNum = 1
+      $props.table.form.pageSize = 10
+    })
+  }
+}, { immediate: true })
 
 const reset = () => {
   formRef.value.resetFields()

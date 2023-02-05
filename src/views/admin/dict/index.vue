@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, inject } from 'vue'
 import { User, Notebook } from '@element-plus/icons-vue'
 import MyTable from '@/components/MyTable.vue'
 import { getDictType, getDictData, postDictType, postDictData, putDictType, putDictData, deleteDictData, deleteDictType } from '@/api/dict'
@@ -17,18 +17,6 @@ const table1 = reactive({
     { label: '是否启用', prop: 'enabled', dict: 'is_enabled' },
     { label: '创建时间', prop: 'createTime' },
     { label: '操作', prop: 'operation', minWidth: '100px' },
-  ],
-})
-
-const table2 = reactive({
-  form: {
-    dictName: undefined
-  },
-  column: [
-    { label: 'label', prop: 'label' },
-    { label: 'value', prop: 'value' },
-    { label: '创建人', prop: 'createBy' },
-    { label: '操作', prop: 'operation' },
   ],
 })
 
@@ -70,9 +58,6 @@ const rules2 = reactive({
 const tableRef = ref()
 const formRef1 = ref()
 const handlePostDictType = () => {
-  console.log(tableRef.value);
-  console.log(formRef1.value);
-
   formRef1.value.validate(isValid => {
     if (isValid) {
       postDictType(form1).then(data => {
@@ -83,12 +68,27 @@ const handlePostDictType = () => {
   })
 }
 
-
+const tables = reactive({})
 const expandChange = (e) => {
-  console.log(e);
+  console.log(e)
 
-  
+  tables[e.id] = {
+    $trigger: true,
+    form: {
+      dictName: e.name
+    },
+    column: [
+      { label: 'label', prop: 'label' },
+      { label: 'value', prop: 'value' },
+      { label: '是否启用', prop: 'enabled' },
+      { label: '创建时间', prop: 'createTime' },
+      { label: '操作', prop: 'operation' },
+    ],
+  }
 }
+
+const deleteItem: Function = inject('$deleteItem')
+const enableItem: Function = inject('$enableItem')
 
 </script>
 
@@ -98,8 +98,17 @@ const expandChange = (e) => {
 
     <template #expand="scope">
       <div class="sub-table">
-        <!-- <my-table v-if="scope.row.table" :table="scope.row.$table" :get-list="getDictData"
-          :trigger="scope.row.$trigger"></my-table> -->
+        <my-table :table="tables[scope.row.id]" :get-list="getDictData" :trigger="tables[scope.row.id].$trigger">
+          <template #enabled="scope">
+            <el-switch v-model="scope.row.enabled"
+              @change="enableItem(putDictData, 'label', scope.row.label, scope.row)" />
+          </template>
+          <template #operation="scope">
+            <el-button type="primary" text>编辑</el-button>
+            <el-button type="danger" text
+              @click="deleteItem(deleteDictType, 'label', scope.row.label, scope.row.id)">删除</el-button>
+          </template>
+        </my-table>
       </div>
     </template>
     <template #blogId="scope">
@@ -113,12 +122,13 @@ const expandChange = (e) => {
       }}</el-link>
     </template>
     <template #enabled="scope">
-      <el-switch v-model="scope.row.enabled" />
+      <el-switch v-model="scope.row.enabled" @change="enableItem(putDictType, '字典名称', scope.row.name, scope.row)" />
     </template>
     <template #operation="scope">
       <el-button type="primary" text @click="">新增</el-button>
       <el-button type="primary" text>编辑</el-button>
-      <el-button type="danger" text @click="deleteDictType(scope.row.id)">删除</el-button>
+      <el-button type="danger" text
+        @click="deleteItem(deleteDictType, '字典名称', scope.row.name, scope.row.id)">删除</el-button>
     </template>
   </my-table>
 
