@@ -1,6 +1,6 @@
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-export function deleteItem(func: Function, type, name, id) {
+export function deleteItem(func: Function, type, name, id, tableRef) {
   ElMessageBox.confirm(
     `确认删除 ${type} 为“${name}”的选项吗?`,
     '提示',
@@ -12,6 +12,7 @@ export function deleteItem(func: Function, type, name, id) {
   )
     .then(() => {
       func(id).then(() => {
+        tableRef.getList()
         ElMessage({
           type: 'success',
           message: '删除成功',

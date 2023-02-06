@@ -22,14 +22,18 @@ const table1 = reactive({
 
 const visible1 = ref(false)
 const visible2 = ref(false)
+const isEdit1 = ref(false)
+const isEdit2 = ref(false)
 const form1 = reactive({
-  dictName: '',
+  id: undefined,
+  dictName: undefined,
   enabled: true
 })
 const form2 = reactive({
-  dictName: '',
-  label: '',
-  value: '',
+  id: undefined,
+  dictName: undefined,
+  label: undefined,
+  value: undefined,
   enabled: true
 })
 const rules1 = reactive({
@@ -55,15 +59,44 @@ const rules2 = reactive({
   }
 })
 
-const tableRef = ref()
+const tableRef1 = ref()
 const formRef1 = ref()
 const handlePostDictType = () => {
   formRef1.value.validate(isValid => {
     if (isValid) {
-      postDictType(form1).then(data => {
-        tableRef.value.getList()
-        visible1.value = false
-      })
+      if (isEdit1.value) {
+        putDictType(form1).then(data => {
+          tableRef1.value.getList()
+          visible1.value = false
+        })
+      } else {
+        postDictType(form1).then(data => {
+          tableRef1.value.getList()
+          visible1.value = false
+        })
+      }
+    }
+  })
+}
+
+const tableRef2 = ref()
+const formRef2 = ref()
+const handlePostDictData = () => {
+  console.log(form2);
+
+  formRef2.value.validate(isValid => {
+    if (isValid) {
+      if (isEdit2.value) {
+        putDictData(form2).then(data => {
+          tableRef2.value?.getList()
+          visible2.value = false
+        })
+      } else {
+        postDictData(form2).then(data => {
+          tableRef2.value?.getList()
+          visible2.value = false
+        })
+      }
     }
   })
 }
@@ -90,23 +123,52 @@ const expandChange = (e) => {
 const deleteItem: Function = inject('$deleteItem')
 const enableItem: Function = inject('$enableItem')
 
+const edit1 = (row) => {
+  console.log(row);
+
+  form1.id = row.id
+  form1.dictName = row.name
+  form1.enabled = row.enabled
+
+  isEdit1.value = true
+  visible1.value = true
+}
+
+const edit2 = (row) => {
+  console.log(row);
+  form2.id = row.id
+  form2.dictName = row.dictName
+  form2.label = row.label
+  form2.value = row.value
+  form2.enabled = row.enabled
+
+  isEdit2.value = true
+  visible2.value = true
+}
+
+const add2 = (dictName) => {
+  isEdit2.value = false
+  form2.dictName = dictName
+  visible2.value = true
+}
 </script>
 
 <template>
-  <my-table :table="table1" :get-list="getDictType" ref="tableRef" @expand-change="expandChange">
-    <el-button type="primary" @click="visible1 = true">新增</el-button>
+  <my-table :table="table1" :get-list="getDictType" ref="tableRef1" @expand-change="expandChange">
+    <el-button type="primary" @click="isEdit1 = false; visible1 = true">新增</el-button>
 
     <template #expand="scope">
       <div class="sub-table">
-        <my-table :table="tables[scope.row.id]" :get-list="getDictData" :trigger="tables[scope.row.id].$trigger">
+        <my-table :table="tables[scope.row.id]" :get-list="getDictData" :trigger="tables[scope.row.id].$trigger"
+          ref="tableRef2">
           <template #enabled="scope">
             <el-switch v-model="scope.row.enabled"
               @change="enableItem(putDictData, 'label', scope.row.label, scope.row)" />
           </template>
           <template #operation="scope">
-            <el-button type="primary" text>编辑</el-button>
+            <el-button type="primary" text @click="edit2(scope.row)">编辑</el-button>
             <el-button type="danger" text
-              @click="deleteItem(deleteDictType, 'label', scope.row.label, scope.row.id)">删除</el-button>
+              @click="deleteItem(deleteDictType, 'label', scope.row.label, scope.row.id, tableRef1)">删除</el-button>
           </template>
         </my-table>
       </div>
@@ -125,14 +187,14 @@ const enableItem: Function = inject('$enableItem')
       <el-switch v-model="scope.row.enabled" @change="enableItem(putDictType, '字典名称', scope.row.name, scope.row)" />
     </template>
     <template #operation="scope">
-      <el-button type="primary" text @click="">新增</el-button>
-      <el-button type="primary" text>编辑</el-button>
+      <el-button type="primary" text @click="add2(scope.row.name)">新增</el-button>
+      <el-button type="primary" text @click="edit1(scope.row)">编辑</el-button>
       <el-button type="danger" text
         @click="deleteItem(deleteDictType, '字典名称', scope.row.name, scope.row.id)">删除</el-button>
     </template>
   </my-table>
 
-  <el-dialog v-model="visible1" title="新增字典类型" width="350px">
+  <el-dialog v-model="visible1" :title="isEdit1 ? '编辑字典类型' : '新增字典类型'" width="350px">
     <el-form :model="form1" :rules="rules1" ref="formRef1">
       <el-form-item label="字典名称" prop="dictName">
         <el-input v-model="form1.dictName" placeholder="请输入字典名称"></el-input>
@@ -147,8 +209,8 @@ const enableItem: Function = inject('$enableItem')
     </template>
   </el-dialog>
 
-  <el-dialog v-model="visible2" title="新增字典数据" width="350px">
-    <el-form :model="form2" :rules="rules2">
+  <el-dialog v-model="visible2" :title="isEdit2 ? '编辑字典数据' : '新增字典数据'" width="350px">
+    <el-form :model="form2" :rules="rules2" ref="formRef2">
       <el-form-item label="键" prop="value">
         <el-input v-model="form2.value" placeholder="请输入键"></el-input>
       </el-form-item>
@@ -161,7 +223,7 @@ const enableItem: Function = inject('$enableItem')
     </el-form>
     <template #footer>
       <el-button @click="visible2 = false">取消</el-button>
-      <el-button type="primary">确认</el-button>
+      <el-button type="primary" @click="handlePostDictData">确认</el-button>
     </template>
   </el-dialog>
 </template>
