@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, inject } from 'vue'
 import { RefreshRight, Download, Search, User, Notebook } from '@element-plus/icons-vue'
 import { getBlogList2, getBlogDetails2, auditBlog } from '@/api/blog'
 import { getDictData } from '@/api/dict'
@@ -62,6 +62,7 @@ getDictData({
   options.value = data.list
 })
 
+const enableItem: Function = inject('$enableItem')
 </script>
 
 <template>
@@ -82,7 +83,8 @@ getDictData({
       }}</el-link>
     </template>
     <template #enabled="scope">
-      <el-switch v-model="scope.row.enabled"></el-switch>
+      <el-switch v-model="scope.row.enabled"
+        @change="enableItem(putBlog, 'label', scope.row.label, scope.row)"></el-switch>
     </template>
     <template #status="scope">
       <el-select v-model="scope.row.status" @change="handleAuditBlog(scope.row.id, scope.row.status)">

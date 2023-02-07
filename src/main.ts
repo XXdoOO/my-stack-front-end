@@ -21,7 +21,7 @@ import createLineNumbertPlugin from '@kangc/v-md-editor/lib/plugins/line-number/
 import createCopyCodePlugin from '@kangc/v-md-editor/lib/plugins/copy-code/index'
 import '@kangc/v-md-editor/lib/plugins/copy-code/copy-code.css'
 
-import { deleteItem, enableItem } from '@/util/xx'
+import { handleDeleteItem, handleEnableItem } from '@/util/xx'
 
 const app = createApp(App)
 
@@ -50,6 +50,6 @@ app.component('MyButton', MyButton)
 app.component('MyAvatar', MyAvatar)
 app.component('MyIp', MyIp)
 
-app.provide('$deleteItem', deleteItem)
-app.provide('$enableItem', enableItem)
+app.provide('$deleteItem', handleDeleteItem)
+app.provide('$enableItem', handleEnableItem)
 app.mount('#app')
