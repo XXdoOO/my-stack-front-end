@@ -163,12 +163,12 @@ const add2 = (dictName) => {
           ref="tableRef2">
           <template #enabled="scope">
             <el-switch v-model="scope.row.enabled"
-              @change="enableItem('dict_data', 'label', scope.row.label, scope.row)" />
+              @change="enableItem(putDictData, 'label', scope.row.label, scope.row)" />
           </template>
           <template #operation="scope">
             <el-button type="primary" text @click="edit2(scope.row)">编辑</el-button>
             <el-button type="danger" text
-              @click="deleteItem('dict_data', 'label', scope.row.label, scope.row.id, tableRef1)">删除</el-button>
+              @click="deleteItem(deleteDictData, 'label', scope.row.label, scope.row.id, tableRef1)">删除</el-button>
           </template>
         </my-table>
       </div>
@@ -184,13 +184,13 @@ const add2 = (dictName) => {
       }}</el-link>
     </template>
     <template #enabled="scope">
-      <el-switch v-model="scope.row.enabled" @change="enableItem('dict_type', '字典名称', scope.row.name, scope.row)" />
+      <el-switch v-model="scope.row.enabled" @change="enableItem(putDictType, '字典名称', scope.row.name, scope.row)" />
     </template>
     <template #operation="scope">
       <el-button type="primary" text @click="add2(scope.row.name)">新增</el-button>
       <el-button type="primary" text @click="edit1(scope.row)">编辑</el-button>
       <el-button type="danger" text
-        @click="deleteItem('dict_type', '字典名称', scope.row.name, scope.row.id)">删除</el-button>
+        @click="deleteItem(deleteDictType, '字典名称', scope.row.name, scope.row.id)">删除</el-button>
     </template>
   </my-table>
 

@@ -2,7 +2,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 
 import { enableItem, deleteItem } from '@/api/common'
 
-export const handleDeleteItem = (table: string, type, name, id, tableRef) => {
+export const handleDeleteItem = (func: Function, type, name, id, tableRef) => {
   ElMessageBox.confirm(
     `确认删除 ${type} 为“${name}”的选项吗?`,
     '提示',
@@ -13,7 +13,7 @@ export const handleDeleteItem = (table: string, type, name, id, tableRef) => {
     }
   )
     .then(() => {
-      deleteItem(table, id).then(() => {
+      func(id).then(() => {
         tableRef.getList()
         ElMessage({
           type: 'success',
@@ -29,7 +29,7 @@ export const handleDeleteItem = (table: string, type, name, id, tableRef) => {
     })
 }
 
-export function handleEnableItem(table: string, type, name, row) {
+export function handleEnableItem(func: Function, type, name, row) {
   const text = row.enabled ? '启用' : '停用'
   ElMessageBox.confirm(
     `确认${text} ${type} 为“${name}”的选项吗?`,
@@ -41,7 +41,10 @@ export function handleEnableItem(table: string, type, name, row) {
     }
   )
     .then(() => {
-      enableItem(table, row.id,).then(() => {
+      func({
+        id: row.id,
+        enabled: row.enabled
+      }).then(() => {
         ElMessage({
           type: 'success',
           message: '启用成功',
