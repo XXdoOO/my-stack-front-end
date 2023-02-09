@@ -23,7 +23,10 @@ const confirm = () => {
 <template>
   <div class="confirm-popup" ref="popup">
     <div class="content">
-      <div class="header">提示</div>
+      <div class="header">
+        <my-icon icon="warn"></my-icon>
+        <div>提示</div>
+      </div>
       <div class="msg">{{ msg }}</div>
       <div class="btn-group">
         <my-button @click="cancel" plain>取消</my-button>
@@ -53,6 +56,20 @@ const confirm = () => {
     border-radius: 5px;
     padding: 12px 15px;
 
+    .header {
+      display: flex;
+      align-items: center;
+      color: @warning-color;
+
+      .my-icon {
+        color: @warning-color;
+      }
+
+      >div {
+        margin-left: 5px;
+      }
+    }
+
     .msg {
       font-size: 14px;
       margin: 15px 0;
@@ -63,7 +80,7 @@ const confirm = () => {
       display: flex;
 
       .confirm {
-        margin-left: 30px;
+        margin-left: 20px;
       }
     }
   }

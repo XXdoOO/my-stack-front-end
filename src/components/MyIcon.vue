@@ -38,7 +38,7 @@ const handleClick = (e) => {
 <template>
   <i class="my-icon" :class="[type, { active: active }]" @click="handleClick">
     <svg aria-hidden="true">
-      <use :xlink:href="`#${icon}`"></use>
+      <use :xlink:href="`#my-${icon}`"></use>
     </svg>
     <span>
       {{ num != undefined ? util.formatNum(num) : '' }}
