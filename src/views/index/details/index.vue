@@ -308,6 +308,7 @@ getList()
 
 .sidebar {
   width: 230px;
+  min-width: 200px;
   margin-left: @gap;
   border-radius: 5px;
 }
