@@ -6,6 +6,20 @@
   "description": "毕业设计",
   "glyphs": [
     {
+      "icon_id": "20104522",
+      "name": "失败",
+      "font_class": "my-error",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "13604656",
+      "name": "成功",
+      "font_class": "my-success",
+      "unicode": "e656",
+      "unicode_decimal": 58966
+    },
+    {
       "icon_id": "7383189",
       "name": "评论",
       "font_class": "my-comment",

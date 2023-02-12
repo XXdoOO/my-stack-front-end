@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, inject } from 'vue'
 import { RefreshRight, Download, Search, User, Notebook } from '@element-plus/icons-vue'
-import { getBlogList2, getBlogDetails2, auditBlog } from '@/api/blog'
+import { getBlogList2, getBlogDetails2, auditBlog, enableBlog } from '@/api/blog'
 import { getDictData } from '@/api/dict'
 import MyTable from '@/components/MyTable.vue'
 import xMessage from '@/components/message/index'

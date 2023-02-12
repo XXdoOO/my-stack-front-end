@@ -22,12 +22,13 @@ onUnmounted(() => {
   <div :class="['message', 'message-' + type]" ref="msg">
     <div class="message-text">
       <div class="message-content">
-        提示信息：{{ message }}
+        <my-icon :icon="type" :class="type"></my-icon>
+        <div>提示信息：{{ message }}</div>
       </div>
     </div>
   </div>
 </template>
-<style scoped>
+<style scoped lang="less">
 .message {
   position: fixed;
   left: 50%;
@@ -48,6 +49,20 @@ onUnmounted(() => {
 
 .message-content {
   font-size: 12px;
+  display: flex;
+  align-items: center;
+
+  :first-child {
+    margin-right: 5px;
+  }
+
+  .success {
+    color: @success-color;
+  }
+
+  .error {
+    color: @danger-color;
+  }
 }
 
 .message-actions {

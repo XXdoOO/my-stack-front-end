@@ -47,3 +47,7 @@ export const deleteBlog = (blogId) => {
 export const updateBlog = (blog: FormData) => {
   return request.put(`/user/updateBlog`, blog)
 }
+
+export const enableBlog = (blogId) => {
+  return request.put(`/admin/enableBlog/${blogId}`)
+}

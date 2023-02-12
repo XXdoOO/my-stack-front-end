@@ -75,6 +75,10 @@ const handleUpdateInfo = () => {
       userInfo.avatar = `/avatar/${userInfo.id}.jpg?time=${new Date()}`
       sessionStorage.setItem("userInfo", JSON.stringify(userInfo))
       visible.value = false
+      xMessage({
+        type: 'success',
+        message: '修改成功'
+      })
     })
   }
 }

@@ -16,14 +16,15 @@ watch(() => $props.visible, (newVal) => {
   if (newVal) {
     maskRef.value.style['z-index'] = 1000
     maskRef.value.style['opacity'] = 1
+  } else {
+    maskRef.value.style['z-index'] = -1
+    maskRef.value.style['opacity'] = 0
   }
 })
 
 const maskRef = ref()
 const cancel = () => {
   $emit('update:visible', false)
-  maskRef.value.style['z-index'] = -1
-  maskRef.value.style['opacity'] = 0
 }
 </script>
 
