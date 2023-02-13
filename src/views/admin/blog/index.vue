@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, inject } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { RefreshRight, Download, Search, User, Notebook } from '@element-plus/icons-vue'
 import { getBlogList2, getBlogDetails2, auditBlog, enableBlog } from '@/api/blog'
 import { getDictData } from '@/api/dict'
@@ -62,7 +63,29 @@ getDictData({
   options.value = data.list
 })
 
-const enableItem: Function = inject('$enableItem')
+const enableItem = (row) => {
+  const text = row.enabled ? '启用' : '停用'
+  ElMessageBox.confirm(
+    `确认${text} 标题 为“${row.title}”的博客吗?`,
+    '提示',
+    {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+    .then(() => {
+      enableBlog(row.id).then(() => {
+        ElMessage({
+          type: 'success',
+          message: '启用成功',
+        })
+      })
+    })
+    .catch(() => {
+      row.enabled = !row.enabled
+    })
+}
 </script>
 
 <template>
@@ -83,8 +106,7 @@ const enableItem: Function = inject('$enableItem')
       }}</el-link>
     </template>
     <template #enabled="scope">
-      <el-switch v-model="scope.row.enabled"
-        @change="enableItem(putBlog, 'label', scope.row.label, scope.row)"></el-switch>
+      <el-switch v-model="scope.row.enabled" @change="enableItem(scope.row)"></el-switch>
     </template>
     <template #status="scope">
       <el-select v-model="scope.row.status" @change="handleAuditBlog(scope.row.id, scope.row.status)">
