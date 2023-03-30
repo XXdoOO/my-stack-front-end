@@ -76,7 +76,7 @@ const handlePostBlog = () => {
       <input type="file" hidden accept=".jpg,.png" ref="coverImg" @change="uploadCover" /></label>
     <my-button class="post" @click="handlePostBlog">{{ blog.id ? '保存' : '发布' }}</my-button>
   </div>
-  <v-md-editor class="markdown" v-model="blog.content"></v-md-editor>
+  <v-md-editor v-model="blog.content"></v-md-editor>
 </template>
 
 <style lang="less" scoped>
@@ -123,8 +123,10 @@ const handlePostBlog = () => {
     }
   }
 }
+</style>
 
-.markdown {
-  min-height: 100vh;
+<style lang="less">
+.v-md-editor.v-md-editor--editable {
+  min-height: calc(100vh - 90px);
 }
 </style>

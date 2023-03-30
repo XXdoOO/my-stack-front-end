@@ -142,6 +142,9 @@ const handleSendCode = () => {
           isDisableSend.value = false
         }
       }, 1000)
+    }).catch(msg => {
+      tip.registerTip = msg
+      tip.tipClass = true
     })
   }
 }
@@ -157,8 +160,8 @@ const handleSendCode = () => {
         <h1>登录</h1>
         <input class="form-input" @keydown.enter="handleLogin" type="text" maxlength="32" required placeholder="请输入邮箱"
           v-model="loginFrom.email" />
-        <input class="form-input" @keydown.enter="handleLogin" type="password" maxlength="16" required
-          placeholder="请输入密码" v-model="loginFrom.password" />
+        <input class="form-input" @keydown.enter="handleLogin" type="password" maxlength="16" required placeholder="请输入密码"
+          v-model="loginFrom.password" />
         <div class="kaptcha">
           <input class="form-input" @keydown.enter="handleLogin" type="text" maxlength="4" required placeholder="请输入验证码"
             v-model="loginFrom.code" />
@@ -178,12 +181,12 @@ const handleSendCode = () => {
         <div class="email">
           <input class="form-input" @keydown.enter="handleRegister" type="text" maxlength="32" required
             placeholder="请输入邮箱" v-model="registerFrom.email" />
-          <MyButton type="text" class="toggle" :disabled="isDisableSend" @click="handleSendCode">{{ isDisableSend?
-          `${countdown}后重新发送` : '发送验证码'
+          <MyButton type="text" class="toggle" :disabled="isDisableSend" @click="handleSendCode">{{ isDisableSend ?
+            `${countdown}后重新发送` : '发送验证码'
           }}</MyButton>
         </div>
-        <input class="form-input" @keydown.enter="handleRegister" type="text" maxlength="8" required
-          placeholder="请输入验证码" v-model="registerFrom.code" />
+        <input class="form-input" @keydown.enter="handleRegister" type="text" maxlength="8" required placeholder="请输入验证码"
+          v-model="registerFrom.code" />
         <input class="form-input" @keydown.enter="handleRegister" type="password" maxlength="16" required
           placeholder="请输入密码" v-model="registerFrom.password" />
         <input class="form-input" @keydown.enter="handleRegister" type="password" maxlength="16" required

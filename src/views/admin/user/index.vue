@@ -125,7 +125,7 @@ const handleSwitch = (row, e) => {
       <el-link type="primary" :icon="User" :href="`/user/${scope.row.id}`">{{ scope.row.nickname }}</el-link>
     </template>
     <template #avatar="scope">
-      <el-avatar :src="scope.row.avatar" />
+      <el-avatar :src="`/api${scope.row.avatar}`" />
     </template>
     <template #admin="scope">
       <el-tag v-if="!scope.row.admin" type="info">{{ scope.label }}</el-tag>

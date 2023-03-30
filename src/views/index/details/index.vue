@@ -69,7 +69,7 @@ const handlePostComment = (parent, receiveId, content) => {
         }
       }
     } else {
-      commentList.push(data)
+      commentList.unshift(data)
     }
 
     commentList.forEach(comment => {
@@ -196,7 +196,7 @@ getList()
         <div class="all-comment">全部评论：{{ blog.comment }}条</div>
 
         <div class="comment" v-for="item in commentList" :key="item.id">
-          <my-avatar :src="`/api${item.senderAvatar}`" />
+          <my-avatar :src="`/api${item.sender.avatar}`" />
           <div class="detail">
             <div class="top">
               <div class="nickname">{{ item.sender.nickname }}</div>
@@ -209,8 +209,7 @@ getList()
                 item.isShow ? '收起' : '回复'
               }}</my-button>
               <div class="icons">
-                <my-icon @click="handleDeleteComment(item)" icon="delete"
-                  v-if="item.sender.id == userInfo?.id"></my-icon>
+                <my-icon @click="handleDeleteComment(item)" icon="delete" v-if="item.sender.id == userInfo?.id"></my-icon>
                 <my-icon @click="handleComment2(item.id, 1)" v-model:num="item.down" v-model:active="item.isDown"
                   icon="down-active" />
                 <my-icon @click="handleComment2(item.id, 0)" v-model:num="item.up" v-model:active="item.isUp"
@@ -224,7 +223,7 @@ getList()
 
             <div class="children" v-if="item.children?.length != 0">
               <div class="comment" v-for="i in item.children">
-                <my-avatar :src="`/api${i.senderAvatar}`" size="40px" />
+                <my-avatar :src="`/api${i.sender.avatar}`" size="40px" />
                 <div class="detail">
                   <div class="top">
                     <div class="nickname">{{ i.sender.nickname }}</div>
@@ -239,8 +238,7 @@ getList()
                       i.isShow ? '收起' : '回复'
                     }}</my-button>
                     <div class="icons">
-                      <my-icon @click="handleDeleteComment(i)" icon="delete"
-                        v-if="i.sender.id == userInfo?.id"></my-icon>
+                      <my-icon @click="handleDeleteComment(i)" icon="delete" v-if="i.sender.id == userInfo?.id"></my-icon>
                       <my-icon @click="handleComment2(i.id, 1)" v-model:num="i.down" v-model:active="i.isDown"
                         icon="down-active" />
                       <my-icon @click="handleComment2(i.id, 0)" v-model:num="i.up" v-model:active="i.isUp"

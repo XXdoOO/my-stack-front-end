@@ -39,6 +39,10 @@ export const getUserInfo = (userId) => {
   return request.get(`/getUserInfo/${userId}`)
 }
 
+export const getUserInfo2 = () => {
+  return request.get(`/user/userInfo`)
+}
+
 export const disableUser = (disable: { userId: string, enabled: boolean, reason: string, minutes: string }) => {
   return request.put(`/admin/disableUser`, disable)
 }

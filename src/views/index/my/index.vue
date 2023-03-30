@@ -3,12 +3,12 @@ import { ref, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import BlogList from '@/components/BlogList.vue'
 import { getBlogList } from '@/api/blog'
-import { updateInfo } from '@/api/user'
+import { updateInfo, getUserInfo2 } from '@/api/user'
 import { store } from '@/stores/index'
 import MyDialog from '@/components/MyDialog.vue'
 import xMessage from '@/components/message/index'
 
-const userInfo = store().userInfo
+const userInfo = ref()
 const list = reactive<object[]>([])
 const translateX = ref(0)
 const isMy = ref(false)
@@ -52,11 +52,17 @@ const toggle = () => {
     translateX.value = 600
   }
   list.length = 0
+
+  getUserInfo2().then(data => {
+    store().userInfo = data
+    userInfo.value = data
+    sessionStorage.setItem("userInfo", JSON.stringify(data))
+  })
 }
 
 const avatarRef = ref()
 const handleUpdateInfo = () => {
-  if (userInfo.nickname.length == 0) {
+  if (userInfo.value.nickname.length == 0) {
     xMessage({
       type: 'error',
       message: '用户名不能为空'
@@ -68,11 +74,11 @@ const handleUpdateInfo = () => {
     if (avatar) {
       user.append('avatar', avatar)
     }
-    user.append('nickname', userInfo.nickname)
+    user.append('nickname', userInfo.value.nickname)
 
     updateInfo(user).then(data => {
       console.log(data);
-      userInfo.avatar = `/avatar/${userInfo.id}.jpg?time=${new Date()}`
+      userInfo.value.avatar = `/avatar/user-${userInfo.value.id}.jpg?time=${new Date()}`
       sessionStorage.setItem("userInfo", JSON.stringify(userInfo))
       visible.value = false
       xMessage({
@@ -89,7 +95,7 @@ toggle()
   <div class="container info">
     <label class="avatar">
       <input type="file" hidden accept=".jpg,.png" ref="avatarRef" @change="handleUpdateInfo" />
-      <img :src="`/api/${userInfo.avatar}`" alt="用户头像" />
+      <img :src="`/api${userInfo.avatar}`" alt="用户头像" />
       <my-icon class="icon" icon="edit"></my-icon>
     </label>
     <span class="nickname">{{ userInfo.nickname }}</span>

@@ -84,7 +84,7 @@ onUnmounted(() => {
         <div class="hover-popup">
           <span class="nickname">{{ userInfo.nickname }}</span>
           <nav class="my-count">
-            <router-link :to="`/my/pass`">
+            <router-link :to="`/my`">
               <span>{{ userInfo.passCount }}</span>
               <span>发布</span>
             </router-link>
