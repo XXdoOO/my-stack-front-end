@@ -5,9 +5,14 @@
 <template>
   <footer class="footer-block">
     <nav class="container">
-      <a href="https://github.com/XXdoOO/graduation-design2" target="_blank">
-        GitHub地址：https://github.com/XXdoOO/graduation-design2
-      </a>
+      <div>
+        <a href="https://github.com/XXdoOO/my-stack-front-end" target="_blank">
+          GitHub前端地址：https://github.com/XXdoOO/my-stack-front-end
+        </a>
+        <a href="https://github.com/XXdoOO/my-stack-front-end" target="_blank">
+          GitHub后端地址：https://github.com/XXdoOO/my-stack-back-end
+        </a>
+      </div>
       <a href="https://beian.miit.gov.cn/" target="_blank">湘ICP备2022006790号</a>
     </nav>
   </footer>
@@ -25,8 +30,9 @@
   nav.container {
     display: flex;
     justify-content: space-around;
+    align-items: center;
 
-    >nav {
+    div {
       display: flex;
       flex-direction: column;
     }
