@@ -14,8 +14,8 @@ const blog = ref({
 
 if (blog.value.id) {
   getBlogDetails(blog.value.id).then((data: any) => {
-    console.log(data);
     blog.value = data
+    blog.value.cover = '/api/' + data.cover
   })
 }
 
@@ -64,6 +64,20 @@ const handlePostBlog = () => {
     })
   }
 }
+
+const handleUploadImage = (event, insertImage, files) => {
+  console.log(event)
+  console.log(insertImage)
+  console.log(files)
+  console.log(URL.createObjectURL(files[0]))
+  insertImage({
+    url: URL.createObjectURL(files[0]),
+    src: URL.createObjectURL(files[0]),
+    desc: '七龙珠',
+    // width: 'auto',
+    // height: 'auto',
+  })
+}
 </script>
 
 <template>
@@ -72,11 +86,11 @@ const handlePostBlog = () => {
     <label class="description"><span>描述：</span><input type="text" v-model="blog.description" /></label>
     <label class="cover"><span>封面：</span>
       <my-icon v-if="!blog.cover" icon="add" style="font-size:25px"></my-icon>
-      <img v-if="blog.cover" :src="`/api/${blog.cover}`" width="50" height="50" />
+      <img v-if="blog.cover" :src="blog.cover" width="50" height="50" />
       <input type="file" hidden accept=".jpg,.png" ref="coverImg" @change="uploadCover" /></label>
     <my-button class="post" @click="handlePostBlog">{{ blog.id ? '保存' : '发布' }}</my-button>
   </div>
-  <v-md-editor v-model="blog.content"></v-md-editor>
+  <v-md-editor v-model="blog.content" :disabled-menus="[]" @upload-image="handleUploadImage"></v-md-editor>
 </template>
 
 <style lang="less" scoped>
