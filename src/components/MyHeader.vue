@@ -68,7 +68,7 @@ onUnmounted(() => {
       </router-link>
 
       <nav>
-        <router-link to="/" :class="{ active: $route.path == '/' }">首页552155</router-link>
+        <router-link to="/" :class="{ active: $route.path == '/' }">首页5522155</router-link>
         <router-link to="/my" :class="{ active: $route.path.split('/')[1] == 'my' }">我的</router-link>
       </nav>
 
