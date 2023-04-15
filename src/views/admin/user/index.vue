@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
-import { RefreshRight, Download, Search, User } from '@element-plus/icons-vue'
+import { User } from '@element-plus/icons-vue'
 import { getUserList, disableUser } from '@/api/user'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import 'element-plus/es/components/message/style/css'
