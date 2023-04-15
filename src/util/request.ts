@@ -49,6 +49,7 @@ axios.interceptors.response.use((res) => {
   }
   return Promise.reject(res.data.msg)
 }, (error) => {
+  console.log(error)
   done()
 
   if (error.code === 'ECONNABORTED' && error.message.indexOf('timeout') !== -1) {
