@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import pinia from '@/stores/pinia'
 
 import App from './App.vue'
 import router from './router/index'
@@ -25,7 +25,7 @@ import { handleDeleteItem, handleEnableItem } from '@/util/xx'
 
 const app = createApp(App)
 
-app.use(createPinia())
+app.use(pinia)
 app.use(router)
 
 

@@ -6,7 +6,7 @@ import { getBlogList2, getBlogDetails2, auditBlog, enableBlog } from '@/api/blog
 import { getDictData } from '@/api/dict'
 import MyTable from '@/components/MyTable.vue'
 import xMessage from '@/components/message/index'
-
+import { handleEnableItem } from '@/util/xx'
 
 const table = reactive({
   form: {
@@ -59,32 +59,11 @@ const options = ref()
 getDictData({
   dictName: 'audit_status'
 }).then((data: any) => {
-  console.log(data);
   options.value = data.list
 })
 
 const enableItem = (row) => {
-  const text = row.enabled ? '启用' : '停用'
-  ElMessageBox.confirm(
-    `确认${text} 标题 为“${row.title}”的博客吗?`,
-    '提示',
-    {
-      confirmButtonText: '确认',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }
-  )
-    .then(() => {
-      enableBlog(row.id).then(() => {
-        ElMessage({
-          type: 'success',
-          message: '启用成功',
-        })
-      })
-    })
-    .catch(() => {
-      row.enabled = !row.enabled
-    })
+  handleEnableItem(enableBlog, '博客标题', row.title, row)
 }
 </script>
 
@@ -97,8 +76,8 @@ const enableItem = (row) => {
       <template v-if="scope.row.status != 1">{{ scope.row.title }}</template>
     </template>
     <template #cover="scope">
-      <el-image v-if="scope.row.cover" :src="scope.row.cover" :preview-src-list="[scope.row.cover]"
-        style="height: 100px"></el-image>
+      <el-image v-if="scope.row.cover" :src="`/api${scope.row.cover}`" :preview-src-list="[scope.row.cover]"
+        style="height: 100px;border-radius: 5px;"></el-image>
     </template>
     <template #authorNickname="scope">
       <el-link type="primary" :icon="User" :href="`/user/${scope.row.createBy}`">{{

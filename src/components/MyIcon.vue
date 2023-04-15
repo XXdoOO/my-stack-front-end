@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<{
   size: 'inherit'
 })
 
-const $emit = defineEmits(['click', 'update:num', 'update:active'])
+const $emit = defineEmits(['click'])
 const $router = useRouter()
 
 let timer
@@ -24,8 +24,6 @@ const handleClick = (e) => {
   clearTimeout(timer)
   timer = setTimeout(() => {
 
-    $emit('update:num', props.active ? Number(props.num) - 1 : Number(props.num) + 1)
-    $emit('update:active', !props.active)
     $emit('click', e)
 
     if (props.href) {

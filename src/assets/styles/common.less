@@ -12,7 +12,7 @@
 @shadow-color: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 @border-color: #d7dae2;
 @gap: 5px;
-@mask: rgba(0, 0, 0, 0.2);
+@mask: rgba(0, 0, 0, 0.15);
 
 @font-face {
     font-family: "jxzk";
@@ -48,6 +48,11 @@ li {
 a {
     text-decoration: none;
     color: black;
+    transition: @transition-time;
+}
+
+a:hover {
+    color: @theme-color;
 }
 
 img {

@@ -1,7 +1,5 @@
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-import { enableItem, deleteItem } from '@/api/common'
-
 export const handleDeleteItem = (func: Function, type, name, id, tableRef) => {
   ElMessageBox.confirm(
     `确认删除 ${type} 为“${name}”的选项吗?`,
@@ -31,7 +29,8 @@ export const handleDeleteItem = (func: Function, type, name, id, tableRef) => {
 
 export function handleEnableItem(func: Function, type, name, row) {
   const text = row.enabled ? '启用' : '停用'
-  ElMessageBox.confirm(
+
+  return ElMessageBox.confirm(
     `确认${text} ${type} 为“${name}”的选项吗?`,
     '提示',
     {
@@ -41,17 +40,19 @@ export function handleEnableItem(func: Function, type, name, row) {
     }
   )
     .then(() => {
-      func({
-        id: row.id,
-        enabled: row.enabled
-      }).then(() => {
-        ElMessage({
-          type: 'success',
-          message: '启用成功',
-        })
+      return func(row.id)
+    })
+    .then(() => {
+      ElMessage({
+        type: 'success',
+        message: `${text}成功`,
       })
     })
     .catch(() => {
       row.enabled = !row.enabled
+      ElMessage({
+        type: 'success',
+        message: `${text}失败`,
+      })
     })
 }

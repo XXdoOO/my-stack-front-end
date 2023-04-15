@@ -104,10 +104,31 @@ const handleDeleteComment = (item) => {
   })
 }
 
-const handleBlog2 = (blogId: string | number, type: 0 | 1 | 2) => {
-  handleBlog(blogId, type).then(data => {
-    console.log(data);
-
+const handleBlog2 = (blog, type: 0 | 1 | 2) => {
+  handleBlog(blog.id, type).then(data => {
+    if (type == 0) {
+      if (blog.isUp) {
+        blog.up--
+      } else {
+        blog.up++
+      }
+      blog.isUp = !blog.isUp
+    } else if (type == 1) {
+      if (blog.isDown) {
+        blog.down--
+      } else {
+        blog.down++
+      }
+      blog.isDown = !blog.isDown
+    }
+    else if (type == 2) {
+      if (blog.isStar) {
+        blog.star--
+      } else {
+        blog.star++
+      }
+      blog.isStar = !blog.isStar
+    }
   })
 }
 
@@ -281,11 +302,9 @@ getList()
         </nav>
       </div>
       <div class="icon-bar">
-        <my-icon @click="handleBlog2(blog.id, 0)" v-model:num="blog.up" v-model:active="blog.isUp" icon="up-active" />
-        <my-icon @click="handleBlog2(blog.id, 1)" v-model:num="blog.down" v-model:active="blog.isDown"
-          icon="down-active" />
-        <my-icon @click="handleBlog2(blog.id, 2)" v-model:num="blog.star" v-model:active="blog.isStar"
-          icon="star-active" />
+        <my-icon @click="handleBlog2(blog, 0)" :num="blog.up" :active="blog.isUp" icon="up-active" />
+        <my-icon @click="handleBlog2(blog, 1)" :num="blog.down" :active="blog.isDown" icon="down-active" />
+        <my-icon @click="handleBlog2(blog, 2)" :num="blog.star" :active="blog.isStar" icon="star-active" />
         <my-icon icon="view">{{ util.formatNum(blog.view) }}</my-icon>
       </div>
     </div>
@@ -309,6 +328,8 @@ getList()
   min-width: 200px;
   margin-left: @gap;
   border-radius: 5px;
+  position: sticky;
+  top: 0;
 }
 
 .author-info {
@@ -335,7 +356,6 @@ getList()
       display: flex;
       flex-direction: column;
       align-items: center;
-      color: black;
       font-size: 20px;
 
       span:last-child {

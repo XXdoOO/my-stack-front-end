@@ -3,6 +3,7 @@ import { ref, reactive } from 'vue'
 import { useRoute } from 'vue-router'
 import xMessage from '@/components/message/index'
 import { postBlog, getBlogDetails, updateBlog } from '@/api/blog'
+import { uploadImage } from '@/api/user'
 
 const blog = ref({
   id: useRoute().params.blogId ?? '',
@@ -38,9 +39,6 @@ const handlePostBlog = () => {
     for (let i in blog.value) {
       data.append(`${i}`, blog.value[i])
     }
-    for (var [a, b] of data.entries()) {
-      console.log(a, b);
-    }
 
     if (blog.value.id) {
       updateBlog(data).then(data => {
@@ -66,17 +64,18 @@ const handlePostBlog = () => {
 }
 
 const handleUploadImage = (event, insertImage, files) => {
-  console.log(event)
-  console.log(insertImage)
-  console.log(files)
-  console.log(URL.createObjectURL(files[0]))
-  insertImage({
-    url: URL.createObjectURL(files[0]),
-    src: URL.createObjectURL(files[0]),
-    desc: '七龙珠',
-    // width: 'auto',
-    // height: 'auto',
+  const data = new FormData()
+  data.append('image', files[0])
+  data.append('blogId', blog.value.id.toString())
+  uploadImage(data).then(data => {
+    insertImage({
+      url: '/api/' + data,
+    })
   })
+}
+
+const handleUpdateBlog = (text, html) => {
+
 }
 </script>
 
@@ -90,14 +89,14 @@ const handleUploadImage = (event, insertImage, files) => {
       <input type="file" hidden accept=".jpg,.png" ref="coverImg" @change="uploadCover" /></label>
     <my-button class="post" @click="handlePostBlog">{{ blog.id ? '保存' : '发布' }}</my-button>
   </div>
-  <v-md-editor v-model="blog.content" :disabled-menus="[]" @upload-image="handleUploadImage"></v-md-editor>
+  <v-md-editor v-model="blog.content" @change="handleUpdateBlog" :disabled-menus="[]"
+    @upload-image="handleUploadImage"></v-md-editor>
 </template>
 
 <style lang="less" scoped>
 .info {
   background-color: white;
-  margin-bottom: @gap;
-  border-radius: 5px;
+  // margin-bottom: @gap;
   padding: 20px;
   display: flex;
   align-items: center;
@@ -142,5 +141,10 @@ const handleUploadImage = (event, insertImage, files) => {
 <style lang="less">
 .v-md-editor.v-md-editor--editable {
   min-height: calc(100vh - 90px);
+}
+
+.v-md-editor {
+  border-radius: unset;
+  box-shadow: unset;
 }
 </style>

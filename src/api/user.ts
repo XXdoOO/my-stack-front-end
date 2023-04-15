@@ -50,3 +50,7 @@ export const disableUser = (disable: { userId: string, enabled: boolean, reason:
 export const updateInfo = (user: FormData) => {
   return request.put(`/user/updateInfo`, user)
 }
+
+export const uploadImage = (image: FormData) => {
+  return request.post(`/user/uploadImage`, image)
+}

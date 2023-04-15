@@ -3,12 +3,13 @@ import { ref, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import BlogList from '@/components/BlogList.vue'
 import { getBlogList } from '@/api/blog'
-import { updateInfo, getUserInfo2 } from '@/api/user'
+import { updateInfo } from '@/api/user'
 import { store } from '@/stores/index'
 import MyDialog from '@/components/MyDialog.vue'
 import xMessage from '@/components/message/index'
+import { storeToRefs } from 'pinia'
 
-const userInfo = ref()
+const { userInfo } = storeToRefs(store())
 const list = reactive<object[]>([])
 const translateX = ref(0)
 const isMy = ref(false)
@@ -52,12 +53,6 @@ const toggle = () => {
     translateX.value = 600
   }
   list.length = 0
-
-  getUserInfo2().then(data => {
-    store().userInfo = data
-    userInfo.value = data
-    sessionStorage.setItem("userInfo", JSON.stringify(data))
-  })
 }
 
 const avatarRef = ref()
@@ -77,9 +72,6 @@ const handleUpdateInfo = () => {
     user.append('nickname', userInfo.value.nickname)
 
     updateInfo(user).then(data => {
-      console.log(data);
-      userInfo.value.avatar = `/avatar/user-${userInfo.value.id}.jpg?time=${new Date()}`
-      sessionStorage.setItem("userInfo", JSON.stringify(userInfo))
       visible.value = false
       xMessage({
         type: 'success',

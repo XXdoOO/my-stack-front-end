@@ -91,13 +91,11 @@ const handleSwitch = (row, e) => {
   disableForm.userId = row.id
   disableForm.enabled = e
   row.enabled = !e
-  console.log(row);
-
-
+  
   if (e) {
     ElMessageBox.confirm(
       `确认启用用户“${row.nickname}”吗？`,
-      '警告',
+      '提示',
       {
         confirmButtonText: '确认',
         cancelButtonText: '取消',

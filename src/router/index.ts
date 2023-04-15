@@ -16,8 +16,6 @@ import adminBlog from '@/views/admin/blog/index.vue'
 import adminUser from '@/views/admin/user/index.vue'
 import adminComment from '@/views/admin/comment/index.vue'
 import adminDict from '@/views/admin/dict/index.vue'
-// const adminBlog = () => import('@/views/admin/blog/index.vue')
-// const adminUser = () => import('@/views/admin/user/index.vue')
 
 const router = createRouter({
   history: createWebHistory(),
@@ -56,6 +54,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+
+
   if (to.meta.authorized == 1) {
     const userInfo = sessionStorage.getItem("userInfo")
 

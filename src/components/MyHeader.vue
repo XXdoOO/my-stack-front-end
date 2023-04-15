@@ -6,10 +6,14 @@ import { store } from '@/stores/index'
 import { logout } from '@/api/user'
 import Confirm from '@/components/confirm'
 import LoginRegister from '@/components/login'
+import { storeToRefs } from 'pinia'
 
 let scrollTop: Ref<number> = ref(0)
 let scroll: Ref<number> = ref(0)
-const userInfo = store().userInfo
+
+const state = store()
+const { userInfo } = storeToRefs(state)
+state.setUserInfo()
 
 const onScroll = (): void => {
   let scrollTop2: number =
@@ -39,9 +43,8 @@ const search = (keywords) => {
 const handleLogout = () => {
   Confirm('确认退出账号吗?', () => {
     logout().then(() => {
-      sessionStorage.clear()
+      state.removeUserInfo()
       $router.push("/")
-      window.location.reload()
     })
   })
 }
@@ -78,8 +81,9 @@ onUnmounted(() => {
       </div>
 
       <span class="login" v-if="!userInfo" @click="LoginRegister()">登录/注册</span>
+
       <div class="my" v-if="userInfo">
-        <img :src="`/api/${userInfo.avatar}`" alt="" width="50" height="50">
+        <img :src="`/api${userInfo.avatar}`" alt="" width="50" height="50">
 
         <div class="hover-popup">
           <span class="nickname">{{ userInfo.nickname }}</span>

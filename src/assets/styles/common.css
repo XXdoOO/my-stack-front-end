@@ -26,6 +26,10 @@ li {
 a {
   text-decoration: none;
   color: black;
+  transition: 0.3s;
+}
+a:hover {
+  color: #40a0ff;
 }
 img {
   object-fit: cover;

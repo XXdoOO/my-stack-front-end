@@ -1,21 +1,8 @@
 <script setup lang="ts">
-import { ref, onUnmounted } from 'vue'
-
 withDefaults(defineProps<{
   message: string,
   type: 'info' | 'success' | 'error' | 'warn'
 }>(), {})
-
-
-const msg = ref<HTMLElement>()
-const timer = setTimeout(() => {
-  msg.value.style.opacity = '0'
-  msg.value.style.zIndex = '-1'
-}, 3000)
-
-onUnmounted(() => {
-  clearTimeout(timer)
-})
 </script>
 
 <template>
@@ -39,6 +26,7 @@ onUnmounted(() => {
   border-radius: 5px;
   display: flex;
   justify-content: space-between;
+  transition: @transition-time;
 }
 
 .message-title {

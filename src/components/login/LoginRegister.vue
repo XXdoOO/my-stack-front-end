@@ -24,7 +24,6 @@ interface RegisterForm extends BaseForm {
 const regex: RegExp = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
 const active = ref<boolean>(false)
 const time = ref<number>(new Date().getTime())
-const isDisableSend = ref<boolean>(false)
 const countdown = ref<number>(60)
 
 const tip = reactive<Tip>({
@@ -40,7 +39,7 @@ const loginFrom = reactive<LoginForm>({
 })
 
 const registerFrom = reactive<RegisterForm>({
-  email: '1972524359@qq.com',
+  email: '3596353356@qq.com',
   password: 'xx',
   password2: 'xx',
   code: ''
@@ -115,7 +114,7 @@ const handleRegister = () => {
     tip.tipClass = true
   } else {
     register({ email, password, code }).then(() => {
-      tip.registerTip = '注册成功'
+      tip.registerTip = '注册成功，请返回登录'
     }).catch(msg => {
       tip.registerTip = msg
       tip.tipClass = true
@@ -131,17 +130,14 @@ const handleSendCode = () => {
     tip.registerTip = "邮箱格式错误"
     tip.tipClass = true
   } else {
-    sendCode(registerFrom.email).then(res => {
-      console.log(res)
+    setInterval(() => {
+      if (countdown.value > 0) {
+        countdown.value--
+      }
+    }, 1000)
 
-      isDisableSend.value = true
-      setInterval(() => {
-        if (countdown.value > 0) {
-          countdown.value--
-        } else {
-          isDisableSend.value = false
-        }
-      }, 1000)
+    sendCode(registerFrom.email).then(res => {
+
     }).catch(msg => {
       tip.registerTip = msg
       tip.tipClass = true
@@ -153,7 +149,7 @@ const handleSendCode = () => {
 <template>
   <div class="login-register" ref="popup" @click="hiddenPopup" id="popup">
     <div @click.stop="">
-      <div class="cover" :class="{ cover: true, active }">
+      <div class="cover" :class="{ cover: true, active }" @click="active = !active">
         <div>My Stack</div>
       </div>
       <div :class="{ login: true, active }">
@@ -181,9 +177,9 @@ const handleSendCode = () => {
         <div class="email">
           <input class="form-input" @keydown.enter="handleRegister" type="text" maxlength="32" required
             placeholder="请输入邮箱" v-model="registerFrom.email" />
-          <MyButton type="text" class="toggle" :disabled="isDisableSend" @click="handleSendCode">{{ isDisableSend ?
-            `${countdown}后重新发送` : '发送验证码'
-          }}</MyButton>
+          <MyButton type="text" class="toggle" :disabled="countdown != 60 &&
+            countdown != 0" @click="handleSendCode">{{ countdown != 60 && countdown != 0 ? `${countdown}后重新发送` :
+    '发送验证码' }}</MyButton>
         </div>
         <input class="form-input" @keydown.enter="handleRegister" type="text" maxlength="8" required placeholder="请输入验证码"
           v-model="registerFrom.code" />
@@ -195,8 +191,7 @@ const handleSendCode = () => {
           {{ tip.registerTip }}
         </p>
 
-        <MyButton style="margin-top: 20px" size="large" @click="handleRegister">注册
-        </MyButton>
+        <MyButton style="margin-top: 20px" size="large" @click="handleRegister">注册</MyButton>
         <p @click="active = !active">已有账号？点击登录</p>
       </div>
     </div>
@@ -237,6 +232,7 @@ const handleSendCode = () => {
   transition: opacity @transition-time;
   z-index: -999;
   opacity: 0;
+  background-color: @mask;
 
   >div {
     position: relative;
@@ -245,7 +241,6 @@ const handleSendCode = () => {
     height: 520px;
     aspect-ratio: calc(1 / 0.618);
     border-radius: 10px;
-    box-shadow: @shadow-color;
 
     .cover {
       position: absolute;

@@ -1,7 +1,13 @@
 import axios from "axios"
 import LoginRegister from '@/components/login'
 import xMessage from '@/components/message/index'
+import { store } from '@/stores/index'
+import pinia from '@/stores/pinia'
+import { storeToRefs } from 'pinia'
 
+const $store = store(pinia)
+const setUserInfo = $store.setUserInfo
+const { userInfo } = storeToRefs($store)
 
 axios.defaults.baseURL = "/api"
 axios.defaults.withCredentials = true
@@ -9,14 +15,10 @@ axios.defaults.timeout = 10000
 
 const CancelToken = axios.CancelToken
 const source = CancelToken.source()
+const urls = ['/user/handleBlog', '/blog', '/admin/auditBlog', '/user/deleteBlog']
 
 axios.interceptors.request.use((req) => {
-  console.log("请求URL：", req.url, req)
-
-  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"))
-
-  if (userInfo == null && (req.url.includes("/user/") || req.url.includes("/admin/"))) {
-    sessionStorage.clear()
+  if (!userInfo) {
     LoginRegister()
     source.cancel()
   } else {
@@ -24,7 +26,6 @@ axios.interceptors.request.use((req) => {
     return req
   }
 }, (error) => {
-  console.log("error", error);
   xMessage({
     type: 'error',
     message: error.message,
@@ -32,19 +33,22 @@ axios.interceptors.request.use((req) => {
 })
 
 axios.interceptors.response.use((res) => {
-  console.log("响应", res);
-
   done()
-
   if (res.data.code == 200) {
+    if (urls.some(item => RegExp('^' + item).test(res.config.url))) {
+      setUserInfo()
+    }
+
     return Promise.resolve(res.data.data)
   } else if (res.data.code == 403) {
-    sessionStorage.clear()
-    LoginRegister()
+    $store.removeUserInfo()
+
+    if (res.config.url != '/user/userInfo') {
+      LoginRegister()
+    }
   }
   return Promise.reject(res.data.msg)
 }, (error) => {
-  console.log(error.message)
   done()
 
   if (error.code === 'ECONNABORTED' && error.message.indexOf('timeout') !== -1) {

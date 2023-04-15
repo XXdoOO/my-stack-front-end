@@ -29,9 +29,6 @@ $props.form.total = 0
 const blogList = reactive([])
 
 const getBlogList = () => {
-  console.log($props.form);
-  console.log($props)
-
   $props.getList($props.form).then((data: any) => {
     blogList.push(...data.list)
     $props.form.total = data.total
@@ -42,9 +39,31 @@ const getDetails = (blogId) => {
   $router.push(`/blog/${blogId}`)
 }
 
-const handle = (blogId: string | number, type: 0 | 1 | 2) => {
-  handleBlog(blogId, type).then(data => {
-    console.log(data);
+const handle = (blog, type: 0 | 1 | 2) => {
+  handleBlog(blog.id, type).then(data => {
+    if (type == 0) {
+      if (blog.isUp) {
+        blog.up--
+      } else {
+        blog.up++
+      }
+      blog.isUp = !blog.isUp
+    } else if (type == 1) {
+      if (blog.isDown) {
+        blog.down--
+      } else {
+        blog.down++
+      }
+      blog.isDown = !blog.isDown
+    }
+    else if (type == 2) {
+      if (blog.isStar) {
+        blog.star--
+      } else {
+        blog.star++
+      }
+      blog.isStar = !blog.isStar
+    }
   })
 }
 
@@ -93,11 +112,9 @@ getBlogList()
           <h2>{{ blog.title }}</h2>
           <p>{{ blog.description }}</p>
           <div class="bottom" @click.stop>
-            <my-icon @click="handle(blog.id, 0)" v-model:num="blog.up" v-model:active="blog.isUp" icon="up-active" />
-            <my-icon @click="handle(blog.id, 1)" v-model:num="blog.down" icon="down-active"
-              v-model:active="blog.isDown" />
-            <my-icon @click="handle(blog.id, 2)" v-model:num="blog.star" icon="star-active"
-              v-model:active="blog.isStar" />
+            <my-icon @click="handle(blog, 0)" :num="blog.up" :active="blog.isUp" icon="up-active" />
+            <my-icon @click="handle(blog, 1)" :num="blog.down" :active="blog.isDown" icon="down-active" />
+            <my-icon @click="handle(blog, 2)" :num="blog.star" :active="blog.isStar" icon="star-active" />
             <my-icon icon="comment" type="text">{{ util.formatNum(blog.comment) }}</my-icon>
             <my-icon icon="view" type="text">{{ util.formatNum(blog.view) }}</my-icon>
 
@@ -154,6 +171,7 @@ getBlogList()
     img {
       object-fit: cover;
       margin-left: 20px;
+      border-radius: 5px;
     }
 
     h2 {
