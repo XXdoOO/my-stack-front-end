@@ -27,6 +27,10 @@ export const logout = () => {
   return request.get('/user/logout')
 }
 
+export const cancelAccount = () => {
+  return request.delete('/user/cancelAccount')
+}
+
 export const register = (data: Login) => {
   return request.post(`/register`, data)
 }

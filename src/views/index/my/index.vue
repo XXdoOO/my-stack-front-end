@@ -1,21 +1,25 @@
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import BlogList from '@/components/BlogList.vue'
 import { getBlogList } from '@/api/blog'
-import { updateInfo } from '@/api/user'
+import { updateInfo, cancelAccount } from '@/api/user'
 import { store } from '@/stores/index'
 import MyDialog from '@/components/MyDialog.vue'
 import xMessage from '@/components/message/index'
 import { storeToRefs } from 'pinia'
+import Confirm from '@/components/confirm'
 
-const { userInfo } = storeToRefs(store())
+const $store = store()
+const { userInfo } = storeToRefs($store)
 const list = reactive<object[]>([])
 const translateX = ref(0)
 const isMy = ref(false)
 const type = ref(null)
 const visible = ref(false)
-let path = useRoute().path
+const $route = useRoute()
+const $router = useRouter()
+let path = $route.path
 
 watch(useRoute(), (newVal) => {
   path = newVal.path
@@ -80,6 +84,15 @@ const handleUpdateInfo = () => {
     })
   }
 }
+
+const handleCancelAccount = () => {
+  Confirm('确认注销此账号吗？此操作无法撤回！', () => {
+    cancelAccount().then(() => {
+      $store.removeUserInfo()
+      $router.push("/")
+    })
+  })
+}
 toggle()
 </script>
 
@@ -92,7 +105,9 @@ toggle()
     </label>
     <span class="nickname">{{ userInfo.nickname }}</span>
     <my-icon class="icon" @click="visible = true" icon="edit"></my-icon>
+
     <my-ip class="ip">{{ userInfo.ipTerritory }}</my-ip>
+    <my-button class="cancel-account" type="danger" @click="handleCancelAccount">注销账户</my-button>
   </div>
   <div class="container menu">
     <router-link to="/my" :class="{ active: path == '/my' }">发布({{ userInfo.passCount }})</router-link>
@@ -173,6 +188,10 @@ toggle()
 
   .ip {
     margin-left: auto;
+  }
+
+  .cancel-account {
+    margin-left: 20px;
   }
 }
 
