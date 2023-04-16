@@ -6,6 +6,7 @@ import { getCommentList, postComment, deleteComment, handleComment } from '@/api
 import util from '@/util/util'
 import { store } from '@/stores/index'
 import Confirm from '@/components/confirm'
+import { handleIcon } from '@/util/xx'
 
 const $route = useRoute()
 const userInfo = store().userInfo
@@ -106,35 +107,13 @@ const handleDeleteComment = (item) => {
 
 const handleBlog2 = (blog, type: 0 | 1 | 2) => {
   handleBlog(blog.id, type).then(data => {
-    if (type == 0) {
-      if (blog.isUp) {
-        blog.up--
-      } else {
-        blog.up++
-      }
-      blog.isUp = !blog.isUp
-    } else if (type == 1) {
-      if (blog.isDown) {
-        blog.down--
-      } else {
-        blog.down++
-      }
-      blog.isDown = !blog.isDown
-    }
-    else if (type == 2) {
-      if (blog.isStar) {
-        blog.star--
-      } else {
-        blog.star++
-      }
-      blog.isStar = !blog.isStar
-    }
+    handleIcon(blog, type)
   })
 }
 
-const handleComment2 = (commentId: string | number, type: 0 | 1) => {
-  handleComment(commentId, type).then(data => {
-    console.log(data)
+const handleComment2 = (comment, type: 0 | 1) => {
+  handleComment(comment.id, type).then(data => {
+    handleIcon(comment, type)
   })
 }
 
@@ -179,8 +158,6 @@ const getList = () => {
         data.list[index].pageNum = 1
       })
       commentList.push(...data.list)
-      console.log(commentList);
-
     })
   })
 }
@@ -231,10 +208,8 @@ getList()
               }}</my-button>
               <div class="icons">
                 <my-icon @click="handleDeleteComment(item)" icon="delete" v-if="item.sender.id == userInfo?.id"></my-icon>
-                <my-icon @click="handleComment2(item.id, 1)" v-model:num="item.down" v-model:active="item.isDown"
-                  icon="down-active" />
-                <my-icon @click="handleComment2(item.id, 0)" v-model:num="item.up" v-model:active="item.isUp"
-                  icon="up-active" />
+                <my-icon @click="handleComment2(item, 1)" :num="item.down" :active="item.isDown" icon="down-active" />
+                <my-icon @click="handleComment2(item, 0)" :num="item.up" :active="item.isUp" icon="up-active" />
               </div>
             </div>
             <div class="area" v-show="item.isShow">

@@ -56,3 +56,29 @@ export function handleEnableItem(func: Function, type, name, row) {
       })
     })
 }
+
+export const handleIcon = (item, type) => {
+  if (type == 0) {
+    if (item.isUp) {
+      item.up--
+    } else {
+      item.up++
+    }
+    item.isUp = !item.isUp
+  } else if (type == 1) {
+    if (item.isDown) {
+      item.down--
+    } else {
+      item.down++
+    }
+    item.isDown = !item.isDown
+  }
+  else if (type == 2) {
+    if (item.isStar) {
+      item.star--
+    } else {
+      item.star++
+    }
+    item.isStar = !item.isStar
+  }
+}

@@ -7,6 +7,7 @@ import util from '@/util/util'
 import { handleBlog, deleteBlog } from '@/api/blog'
 import confirm from '@/components/confirm'
 import xMessage from '@/components/message/index'
+import { handleIcon } from '@/util/xx'
 
 const $props = withDefaults(defineProps<{
   isMy?: boolean,
@@ -41,29 +42,7 @@ const getDetails = (blogId) => {
 
 const handle = (blog, type: 0 | 1 | 2) => {
   handleBlog(blog.id, type).then(data => {
-    if (type == 0) {
-      if (blog.isUp) {
-        blog.up--
-      } else {
-        blog.up++
-      }
-      blog.isUp = !blog.isUp
-    } else if (type == 1) {
-      if (blog.isDown) {
-        blog.down--
-      } else {
-        blog.down++
-      }
-      blog.isDown = !blog.isDown
-    }
-    else if (type == 2) {
-      if (blog.isStar) {
-        blog.star--
-      } else {
-        blog.star++
-      }
-      blog.isStar = !blog.isStar
-    }
+    handleIcon(blog, type)
   })
 }
 
