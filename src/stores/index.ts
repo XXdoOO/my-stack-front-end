@@ -12,6 +12,8 @@ export const store = defineStore('counter', {
       console.log('获取用户信息')
       return getUserInfo2().then(data => {
         this.userInfo = data
+      }).catch(() => {
+        this.removeUserInfo()
       })
     },
     removeUserInfo() {

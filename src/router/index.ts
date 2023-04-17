@@ -63,7 +63,7 @@ router.beforeEach((to, from, next) => {
   const authorized = to.meta.authorized
 
   $store.setUserInfo().then(() => {
-    if (authorized == 0 && !userInfo || authorized == 1 && !userInfo?.value?.admin) {
+    if (authorized == 0 && !userInfo.value || authorized == 1 && !userInfo.value.admin) {
       LoginRegister()
     } else {
       next()

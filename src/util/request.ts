@@ -18,7 +18,7 @@ const source = CancelToken.source()
 const urls = ['/user/handleBlog', '/user/postBlog', '/admin/auditBlog', '/user/deleteBlog', '/user/updateInfo']
 
 axios.interceptors.request.use((req) => {
-  if (!userInfo) {
+  if (/^\/user/.test(req.url) && !userInfo || /^\/admin/.test(req.url) && !userInfo.value.admin) {
     LoginRegister()
     source.cancel()
   } else {
@@ -34,6 +34,7 @@ axios.interceptors.request.use((req) => {
 
 axios.interceptors.response.use((res) => {
   done()
+  console.log(res)
   if (res.data.code == 200) {
     if (urls.some(item => RegExp('^' + item).test(res.config.url))) {
       setUserInfo()
@@ -41,8 +42,6 @@ axios.interceptors.response.use((res) => {
 
     return Promise.resolve(res.data.data)
   } else if (res.data.code == 403) {
-    $store.removeUserInfo()
-
     if (res.config.url != '/user/userInfo') {
       LoginRegister()
     }
