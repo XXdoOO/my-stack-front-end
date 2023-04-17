@@ -30,24 +30,25 @@ const router = createRouter({
       path: '/', component: index, children: [
         { path: '', component: home },
         { path: '/blog/:blogId', component: details },
-        { path: '/edit', component: edit, meta: { authorized: 1 } },
-        { path: '/edit/:blogId', component: edit, meta: { authorized: 1 } },
-        { path: '/search/:keywords', component: search, meta: { authorized: 0 } },
-        { path: '/my', component: my, meta: { authorized: 1 } },
-        { path: '/my/pass', component: my, meta: { authorized: 1 } },
-        { path: '/my/noPass', component: my, meta: { authorized: 1 } },
-        { path: '/my/auditing', component: my, meta: { authorized: 1 } },
-        { path: '/my/up', component: my, meta: { authorized: 1 } },
-        { path: '/my/down', component: my, meta: { authorized: 1 } },
-        { path: '/my/star', component: my, meta: { authorized: 1 } },
-        { path: '/my/history', component: my, meta: { authorized: 1 } },
-        { path: '/user/:userId', component: user, meta: { authorized: 0 } },
-        { path: '/user/:userId/up', component: user, meta: { authorized: 0 } },
-        { path: '/user/:userId/down', component: user, meta: { authorized: 0 } },
+        { path: '/edit', component: edit, meta: { authorized: 0 } },
+        { path: '/edit/:blogId', component: edit, meta: { authorized: 0 } },
+        { path: '/search/:keywords', component: search },
+        { path: '/search/', redirect: '/' },
+        { path: '/my', component: my, meta: { authorized: 0 } },
+        { path: '/my/pass', component: my, meta: { authorized: 0 } },
+        { path: '/my/noPass', component: my, meta: { authorized: 0 } },
+        { path: '/my/auditing', component: my, meta: { authorized: 0 } },
+        { path: '/my/up', component: my, meta: { authorized: 0 } },
+        { path: '/my/down', component: my, meta: { authorized: 0 } },
+        { path: '/my/star', component: my, meta: { authorized: 0 } },
+        { path: '/my/history', component: my, meta: { authorized: 0 } },
+        { path: '/user/:userId', component: user },
+        { path: '/user/:userId/up', component: user },
+        { path: '/user/:userId/down', component: user },
       ]
     },
     {
-      path: '/admin', component: admin, meta: { authorized: 2 }, children: [
+      path: '/admin', component: admin, meta: { authorized: 1 }, children: [
         { path: '', component: adminHome },
         { path: 'blog', component: adminBlog },
         { path: 'user', component: adminUser },
@@ -59,22 +60,14 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.authorized == 1) {
+  const authorized = to.meta.authorized
 
-    if (userInfo) {
-      next()
-    } else {
+  $store.setUserInfo().then(() => {
+    if (authorized == 0 && !userInfo || authorized == 1 && !userInfo?.value?.admin) {
       LoginRegister()
-    }
-  } else if (to.meta.authorized == 2) {
-    if (userInfo && userInfo.value.admin) {
-      next()
     } else {
-      LoginRegister()
+      next()
     }
-  } else {
-    next()
-  }
-
+  })
 })
 export default router

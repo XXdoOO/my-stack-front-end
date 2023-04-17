@@ -13,7 +13,6 @@ let scroll: Ref<number> = ref(0)
 
 const state = store()
 const { userInfo } = storeToRefs(state)
-state.setUserInfo()
 
 const onScroll = (): void => {
   let scrollTop2: number =

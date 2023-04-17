@@ -13,7 +13,8 @@ const $props = withDefaults(defineProps<{
   isMy?: boolean,
   getList: Function,
   form?: any,
-  [key: string]: any
+  [key: string]: any,
+  keywords?: string,
 }>(), {
   isMy: false,
   form: {}
@@ -76,6 +77,13 @@ onUnmounted(() => {
   window.removeEventListener("scroll", scroll)
 })
 
+const replaceKeywords = (text) => {
+  if ($props.keywords) {
+    return text.replaceAll($props.keywords, `<strong>${$props.keywords}</strong>`)
+  }
+  return text
+}
+
 getBlogList()
 </script>
 
@@ -88,8 +96,8 @@ getBlogList()
             <my-icon icon="user" type="link" :href="`/user/${blog.createBy}`">{{ blog.authorNickname }}</my-icon>
             <my-icon icon="history" type="text" :enable-hover="false">{{ util.formatTime(blog.createTime) }}</my-icon>
           </div>
-          <h2>{{ blog.title }}</h2>
-          <p>{{ blog.description }}</p>
+          <h2 v-html="replaceKeywords(blog.title)"></h2>
+          <p v-html="replaceKeywords(blog.description)"></p>
           <div class="bottom" @click.stop>
             <my-icon @click="handle(blog, 0)" :num="blog.up" :active="blog.isUp" icon="up-active" />
             <my-icon @click="handle(blog, 1)" :num="blog.down" :active="blog.isDown" icon="down-active" />
@@ -164,6 +172,10 @@ getBlogList()
       color: @gray-color-dep;
       transition: @tt;
       margin-bottom: 0.5em;
+    }
+
+    /deep/ strong {
+      color: @theme-color;
     }
   }
 

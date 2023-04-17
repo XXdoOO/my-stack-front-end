@@ -15,7 +15,7 @@ axios.defaults.timeout = 10000
 
 const CancelToken = axios.CancelToken
 const source = CancelToken.source()
-const urls = ['/user/handleBlog', '/blog', '/admin/auditBlog', '/user/deleteBlog', '/user/updateInfo']
+const urls = ['/user/handleBlog', '/user/postBlog', '/admin/auditBlog', '/user/deleteBlog', '/user/updateInfo']
 
 axios.interceptors.request.use((req) => {
   if (!userInfo) {

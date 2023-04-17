@@ -7,7 +7,7 @@
     <nav class="container">
       <div>
         <a href="https://github.com/XXdoOO/my-stack-front-end" target="_blank">
-          GitHub前端地址：https://github.com/XXdoOO/my-stack-front-end
+          GitHub前端地址：https://github.com/XXdoOO/my-stack-front-end-vue3
         </a>
         <a href="https://github.com/XXdoOO/my-stack-front-end" target="_blank">
           GitHub后端地址：https://github.com/XXdoOO/my-stack-back-end

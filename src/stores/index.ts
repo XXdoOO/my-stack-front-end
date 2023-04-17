@@ -9,7 +9,8 @@ export const store = defineStore('counter', {
   }),
   actions: {
     setUserInfo() {
-      getUserInfo2().then(data => {
+      console.log('获取用户信息')
+      return getUserInfo2().then(data => {
         this.userInfo = data
       })
     },
