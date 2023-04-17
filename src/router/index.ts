@@ -8,7 +8,6 @@ const edit = () => import('@/views/index/edit/index.vue')
 const search = () => import('@/views/index/search/index.vue')
 const my = () => import('@/views/index/my/index.vue')
 const user = () => import('@/views/index/user/index.vue')
-
 const admin = () => import('@/views/admin/index.vue')
 const adminHome = () => import('@/views/admin/home/index.vue')
 
@@ -16,6 +15,12 @@ import adminBlog from '@/views/admin/blog/index.vue'
 import adminUser from '@/views/admin/user/index.vue'
 import adminComment from '@/views/admin/comment/index.vue'
 import adminDict from '@/views/admin/dict/index.vue'
+import { store } from '@/stores/index'
+import pinia from '@/stores/pinia'
+import { storeToRefs } from 'pinia'
+
+const $store = store(pinia)
+const { userInfo } = storeToRefs($store)
 
 const router = createRouter({
   history: createWebHistory(),
@@ -54,20 +59,15 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-
-
   if (to.meta.authorized == 1) {
-    const userInfo = sessionStorage.getItem("userInfo")
 
-    if (userInfo && userInfo != 'undefined') {
+    if (userInfo) {
       next()
     } else {
       LoginRegister()
     }
   } else if (to.meta.authorized == 2) {
-    const userInfo = sessionStorage.getItem("userInfo")
-
-    if (userInfo && userInfo != 'undefined' && JSON.parse(userInfo).admin) {
+    if (userInfo && userInfo.value.admin) {
       next()
     } else {
       LoginRegister()
