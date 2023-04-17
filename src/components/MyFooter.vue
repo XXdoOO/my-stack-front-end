@@ -25,7 +25,7 @@
   background-color: white;
   margin-top: @gap;
   position: sticky;
-  top: calc(100% - 85px);
+  top: 100%;
 
   nav.container {
     display: flex;

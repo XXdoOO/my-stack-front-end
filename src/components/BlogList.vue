@@ -23,6 +23,7 @@ const $props = withDefaults(defineProps<{
 const userInfo = store().userInfo
 
 const $router = useRouter()
+const ready = ref(false)
 
 $props.form.pageNum = 1
 $props.form.pageSize = 10
@@ -34,6 +35,7 @@ const getBlogList = () => {
   $props.getList($props.form).then((data: any) => {
     blogList.push(...data.list)
     $props.form.total = data.total
+    ready.value = true
   })
 }
 
@@ -114,7 +116,7 @@ getBlogList()
         <img v-if="blog.cover" :src="`/api/${blog.cover}`" alt="" height="100">
       </article>
     </div>
-    <MyEmpty v-else-if="blogList.length == 0"></MyEmpty>
+    <MyEmpty v-if="ready && blogList.length == 0"></MyEmpty>
   </div>
 </template>
 

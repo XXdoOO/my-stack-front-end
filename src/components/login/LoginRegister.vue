@@ -80,8 +80,6 @@ const handleLogin = () => {
       password,
       code
     }).then((data) => {
-      sessionStorage.setItem("userInfo", JSON.stringify(data))
-
       window.location.reload()
     }).catch(msg => {
       time.value = new Date().getTime()
@@ -130,7 +128,7 @@ const handleSendCode = () => {
     tip.registerTip = "邮箱格式错误"
     tip.tipClass = true
   } else {
-    setInterval(() => {
+    const timer = setInterval(() => {
       if (countdown.value > 0) {
         countdown.value--
       }
@@ -139,6 +137,8 @@ const handleSendCode = () => {
     sendCode(registerFrom.email).then(res => {
 
     }).catch(msg => {
+      clearTimeout(timer)
+      countdown.value = 60
       tip.registerTip = msg
       tip.tipClass = true
     })
@@ -149,7 +149,7 @@ const handleSendCode = () => {
 <template>
   <div class="login-register" ref="popup" @click="hiddenPopup" id="popup">
     <div @click.stop="">
-      <div class="cover" :class="{ cover: true, active }" @click="active = !active">
+      <div :class="{ cover: true, active }" @click="active = !active">
         <div>My Stack</div>
       </div>
       <div :class="{ login: true, active }">
@@ -385,10 +385,11 @@ const handleSendCode = () => {
 
   div {
     position: absolute;
-    left: 100px;
-    top: 50px;
+    left: 50%;
+    top: 80px;
+    transform: translateX(-50%);
     color: white;
-    font-size: 30px;
+    font-size: 35px;
   }
 }
 </style>
