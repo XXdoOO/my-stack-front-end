@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { useSlots } from 'vue'
 import { useRouter } from 'vue-router'
 import util from '@/util/util'
 
+const slots = useSlots()
 const props = withDefaults(defineProps<{
   icon: string,
   href?: string,
@@ -37,7 +39,7 @@ const handleClick = (e) => {
     <svg aria-hidden="true">
       <use :xlink:href="`#my-${icon}`"></use>
     </svg>
-    <span v-if="num">
+    <span v-if="num || slots.default">
       {{ num ? util.formatNum(num) : '' }}
       <slot></slot>
     </span>
