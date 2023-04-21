@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import MyIcon from '@/components/MyIcon.vue'
 const display = ref<string>('none')
 
 const goTop = () => {
@@ -27,26 +28,19 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <i @click="goTop()" class="goTop" :style="{display:display}" title="返回顶部"></i>
+  <MyIcon icon="arrow-down" @click="goTop()" class="goTop" :style="{ display: display }" title="返回顶部"></MyIcon>
 </template>
 
 <style lang="less" scoped>
 .goTop {
+  font-size: 12px;
   position: fixed;
-  right: 50px;
-  bottom: 50px;
-  // display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  padding: 20px;
-  background-color: @theme-color;
-  background-image: url(../../assets/img/arrow.png);
-  background-size: cover;
-  color: white;
+  right: 70px;
+  bottom: 70px;
+  padding: 7px;
   border-radius: 50%;
-  transform: rotate(180deg);
   cursor: pointer;
+  background-color: white;
+  transform: rotate(180deg);
 }
 </style>

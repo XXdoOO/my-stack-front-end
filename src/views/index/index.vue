@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
 import MyHeader from '@/components/MyHeader.vue'
 import MyFooter from '@/components/MyFooter.vue'
-
+import GoTop from '@/components/GoTop.vue'
 
 </script>
 
@@ -10,8 +9,7 @@ import MyFooter from '@/components/MyFooter.vue'
   <MyHeader></MyHeader>
   <RouterView></RouterView>
   <MyFooter></MyFooter>
+  <GoTop></GoTop>
 </template>
 
-<style lang="less" scoped>
-
-</style>
+<style lang="less" scoped></style>

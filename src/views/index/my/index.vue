@@ -106,6 +106,7 @@ toggle()
     <span class="nickname">{{ userInfo.nickname }}</span>
     <my-icon class="icon" @click="visible = true" icon="edit"></my-icon>
 
+    <div class="email">{{ userInfo.email }}</div>
     <my-ip class="ip">{{ userInfo.ipTerritory }}</my-ip>
     <my-button class="cancel-account" type="danger" @click="handleCancelAccount">注销账户</my-button>
   </div>
@@ -186,8 +187,12 @@ toggle()
     margin-left: 5px;
   }
 
-  .ip {
+  .email {
     margin-left: auto;
+  }
+
+  .ip {
+    margin-left: 20px;
   }
 
   .cancel-account {

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import util from '@/util/util'
 
@@ -38,8 +37,8 @@ const handleClick = (e) => {
     <svg aria-hidden="true">
       <use :xlink:href="`#my-${icon}`"></use>
     </svg>
-    <span>
-      {{ num != undefined ? util.formatNum(num) : '' }}
+    <span v-if="num">
+      {{ num ? util.formatNum(num) : '' }}
       <slot></slot>
     </span>
   </i>
@@ -55,10 +54,8 @@ const handleClick = (e) => {
   font-size: v-model(size);
 
   svg {
-    margin-right: 0.1em;
     width: 2em;
     height: 2em;
-    vertical-align: -0.15em;
     fill: currentColor;
   }
 }
