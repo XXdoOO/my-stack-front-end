@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { store } from '@/stores/index'
+import { postBlog } from '@/api/blog'
 import { logout } from '@/api/user'
 import Confirm from '@/components/confirm'
 import LoginRegister from '@/components/login'
@@ -45,6 +46,16 @@ const handleLogout = () => {
       state.removeUserInfo()
       $router.push("/")
     })
+  })
+}
+
+const handlePostBlog = () => {
+  const data = new FormData()
+  data.append('title', '无')
+  data.append('description', '无')
+  data.append('content', '# 请使用markdown语法\n ## 开始你的表演\n```js\nlet f = new Func();\nconsole.log(f.__proto__); // Object\n```')
+  postBlog(data).then((data) => {
+    $router.push(`/edit/${data}`)
   })
 }
 
@@ -102,7 +113,7 @@ onUnmounted(() => {
           </nav>
           <router-link class="my-menu" to="/my">个人中心</router-link>
           <router-link class="my-menu" to="/admin/blog" v-if="userInfo.admin">管理后台</router-link>
-          <my-button type="primary" href="/edit">开始创作</my-button>
+          <my-button type="primary" @click="handlePostBlog">开始创作</my-button>
           <my-button type="danger" @click="handleLogout">退出登录</my-button>
         </div>
       </div>

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import xMessage from '@/components/message/index'
-import { postBlog, getBlogDetails, updateBlog } from '@/api/blog'
+import { getBlogDetails, updateBlog } from '@/api/blog'
 import { uploadImage } from '@/api/user'
 
+const tip = ref('已开启自动保存')
 const blog = ref({
   id: useRoute().params.blogId ?? '',
   title: '',
@@ -16,7 +16,10 @@ const blog = ref({
 if (blog.value.id) {
   getBlogDetails(blog.value.id).then((data: any) => {
     blog.value = data
-    blog.value.cover = '/api/' + data.cover
+
+    if (data.cover) {
+      blog.value.cover = '/api/' + data.cover
+    }
   })
 }
 
@@ -24,43 +27,6 @@ const coverImg = ref()
 
 const uploadCover = (e) => {
   blog.value.cover = URL.createObjectURL(e.target.files[0])
-}
-
-const handlePostBlog = () => {
-  if (blog.value.title.trim().length != 0 && blog.value.description.trim().length != 0 && blog.value.content.trim().length != 0) {
-    const img = coverImg.value.files[0]
-
-    const data = new FormData()
-
-    if (img) {
-      data.append("coverImg", img)
-    }
-
-    for (let i in blog.value) {
-      data.append(`${i}`, blog.value[i])
-    }
-
-    if (blog.value.id) {
-      updateBlog(data).then(data => {
-        xMessage({
-          type: 'success',
-          message: '保存成功',
-        })
-      })
-    } else {
-      postBlog(data).then(() => {
-        xMessage({
-          type: 'success',
-          message: '发布成功',
-        })
-      })
-    }
-  } else {
-    xMessage({
-      type: 'error',
-      message: '请完善信息',
-    })
-  }
 }
 
 const handleUploadImage = (event, insertImage, files) => {
@@ -74,8 +40,35 @@ const handleUploadImage = (event, insertImage, files) => {
   })
 }
 
-const handleUpdateBlog = (text, html) => {
+watch(() => blog, () => {
+  handleUpdateBlog()
+}, { deep: true })
 
+let timer: number
+const handleUpdateBlog = () => {
+  tip.value = '自动保存中...'
+  clearTimeout(timer)
+  timer = setTimeout(() => {
+    if (blog.value.title.trim().length != 0 && blog.value.description.trim().length != 0 && blog.value.content.trim().length != 0) {
+      const img = coverImg.value.files[0]
+
+      const data = new FormData()
+
+      if (img) {
+        data.append("coverImg", img)
+      }
+
+      for (let i in blog.value) {
+        data.append(`${i}`, blog.value[i])
+      }
+
+      updateBlog(data).then(data => {
+        tip.value = '自动保存成功！'
+      })
+    } else {
+      tip.value = '自动保存失败！请完善信息或检查网络！'
+    }
+  }, 1000)
 }
 </script>
 
@@ -86,11 +79,11 @@ const handleUpdateBlog = (text, html) => {
     <label class="cover"><span>封面：</span>
       <my-icon v-if="!blog.cover" icon="add" style="font-size:25px"></my-icon>
       <img v-if="blog.cover" :src="blog.cover" width="50" height="50" />
-      <input type="file" hidden accept=".jpg,.png" ref="coverImg" @change="uploadCover" /></label>
-    <my-button class="post" @click="handlePostBlog">{{ blog.id ? '保存' : '发布' }}</my-button>
+      <input type="file" hidden accept=".jpg,.png" ref="coverImg" @change="uploadCover" />
+    </label>
+    <my-button class="post" @click="handleUpdateBlog">{{ tip }}</my-button>
   </div>
-  <v-md-editor v-model="blog.content" @change="handleUpdateBlog" :disabled-menus="[]"
-    @upload-image="handleUploadImage"></v-md-editor>
+  <v-md-editor v-model="blog.content" :disabled-menus="[]" @upload-image="handleUploadImage"></v-md-editor>
 </template>
 
 <style lang="less" scoped>
@@ -124,7 +117,6 @@ const handleUpdateBlog = (text, html) => {
   }
 
   .post {
-    width: 120px;
     margin-left: auto;
   }
 

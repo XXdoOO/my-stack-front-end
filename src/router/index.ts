@@ -30,10 +30,8 @@ const router = createRouter({
       path: '/', component: index, children: [
         { path: '', component: home },
         { path: '/blog/:blogId', component: details },
-        { path: '/edit', component: edit, meta: { authorized: 0 } },
         { path: '/edit/:blogId', component: edit, meta: { authorized: 0 } },
         { path: '/search/:keywords', component: search },
-        { path: '/search/', redirect: '/' },
         { path: '/my', component: my, meta: { authorized: 0 } },
         { path: '/my/pass', component: my, meta: { authorized: 0 } },
         { path: '/my/noPass', component: my, meta: { authorized: 0 } },
