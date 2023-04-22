@@ -1,46 +1,40 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
 import MyIcon from '@/components/MyIcon.vue'
-const display = ref<string>('none')
 
 const goTop = () => {
   document.documentElement.scrollTop = 0
 }
 
-const scrollToTop = () => {
-  let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-  let browserHeight = window.outerHeight
-
-  if (scrollTop > browserHeight) {
-    display.value = 'flex'
-  } else {
-    display.value = 'none'
-  }
+const goBottom = () => {
+  document.documentElement.scrollTop = document.body.scrollHeight
 }
-
-onMounted(() => {
-  window.addEventListener("scroll", scrollToTop)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', scrollToTop)
-})
 </script>
 
 <template>
-  <MyIcon icon="arrow-down" @click="goTop()" class="goTop" :style="{ display: display }" title="返回顶部"></MyIcon>
+  <MyIcon icon="arrow-down" @click="goTop()" class="goTop" title="返回顶部"></MyIcon>
+  <MyIcon icon="arrow-down" @click="goBottom()" class="goBottom" title="返回底部"></MyIcon>
 </template>
 
 <style lang="less" scoped>
-.goTop {
+.goTop,
+.goBottom {
   font-size: 12px;
   position: fixed;
-  right: 70px;
-  bottom: 70px;
+  right: 60px;
   padding: 7px;
-  border-radius: 50%;
   cursor: pointer;
   background-color: white;
+  box-shadow: @shadow-color;
+}
+
+.goTop {
+  bottom: 90px;
   transform: rotate(180deg);
+  border-radius: 0 0 5px 5px;
+}
+
+.goBottom {
+  bottom: 50px;
+  border-radius: 0 0 5px 5px;
 }
 </style>
