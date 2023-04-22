@@ -1,0 +1,1 @@
+import{B as t}from"./BlogList.c2f7f0ea.js";import{d as e,c as o,l as s,j as r,G as a}from"./index.34659f9c.js";import"./index.bf40c14e.js";const _=e({__name:"index",setup(n){return(i,l)=>(o(),s(t,{"get-list":r(a)},null,8,["get-list"]))}});export{_ as default};

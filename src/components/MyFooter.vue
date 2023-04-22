@@ -6,7 +6,7 @@
   <footer class="footer-block">
     <nav class="container">
       <div>
-        <a href="https://github.com/XXdoOO/my-stack-front-end" target="_blank">
+        <a href="https://github.com/XXdoOO/my-stack-front-end-vue3" target="_blank">
           GitHub前端地址：https://github.com/XXdoOO/my-stack-front-end-vue3
         </a>
         <a href="https://github.com/XXdoOO/my-stack-front-end" target="_blank">
