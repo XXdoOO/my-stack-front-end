@@ -18,6 +18,7 @@ const source = CancelToken.source()
 const urls = ['/user/handleBlog', '/user/postBlog', '/admin/auditBlog', '/user/deleteBlog', '/user/updateInfo']
 
 axios.interceptors.request.use((req) => {
+  req.headers.token = localStorage.getItem('token')
   if (/^\/user/.test(req.url) && !userInfo || /^\/admin/.test(req.url) && !userInfo.value.admin) {
     LoginRegister()
     source.cancel()
@@ -34,7 +35,6 @@ axios.interceptors.request.use((req) => {
 
 axios.interceptors.response.use((res) => {
   done()
-  console.log(res)
   if (res.data.code == 200) {
     if (urls.some(item => RegExp('^' + item).test(res.config.url))) {
       setUserInfo()
@@ -48,7 +48,6 @@ axios.interceptors.response.use((res) => {
   }
   return Promise.reject(res.data.msg)
 }, (error) => {
-  console.log(error)
   done()
 
   if (error.code === 'ECONNABORTED' && error.message.indexOf('timeout') !== -1) {

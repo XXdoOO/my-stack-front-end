@@ -176,7 +176,7 @@ getBlogList()
       margin-bottom: 0.5em;
     }
 
-    /deep/ strong {
+    :deep(strong) {
       color: @theme-color;
     }
   }

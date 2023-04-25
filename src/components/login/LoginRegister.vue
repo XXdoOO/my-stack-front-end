@@ -33,15 +33,15 @@ const tip = reactive<Tip>({
 })
 
 const loginFrom = reactive<LoginForm>({
-  email: '1972524359@qq.com',
-  password: 'xx',
+  email: '',
+  password: '',
   code: ''
 })
 
 const registerFrom = reactive<RegisterForm>({
-  email: '3596353356@qq.com',
-  password: 'xx',
-  password2: 'xx',
+  email: '',
+  password: '',
+  password2: '',
   code: ''
 })
 
@@ -79,7 +79,8 @@ const handleLogin = () => {
       email,
       password,
       code
-    }).then((data) => {
+    }).then((data: any) => {
+      localStorage.setItem('token', data)
       window.location.reload()
     }).catch(msg => {
       time.value = new Date().getTime()

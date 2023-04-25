@@ -44,6 +44,7 @@ const handleLogout = () => {
   Confirm('确认退出账号吗?', () => {
     logout().then(() => {
       state.removeUserInfo()
+      localStorage.removeItem('token')
       $router.push("/")
     })
   })

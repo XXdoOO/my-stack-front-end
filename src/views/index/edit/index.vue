@@ -89,7 +89,6 @@ const handleUpdateBlog = () => {
 <style lang="less" scoped>
 .info {
   background-color: white;
-  // margin-bottom: @gap;
   padding: 20px;
   display: flex;
   align-items: center;
