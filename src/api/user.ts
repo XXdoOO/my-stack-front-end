@@ -58,3 +58,7 @@ export const updateInfo = (user: FormData) => {
 export const uploadImage = (image: FormData) => {
   return request.post(`/user/uploadImage`, image)
 }
+
+export const getToken = () => {
+  return request.get(`/user/getToken`)
+}

@@ -7,6 +7,7 @@ import { storeToRefs } from 'pinia'
 
 const $store = store(pinia)
 const setUserInfo = $store.setUserInfo
+const removeUserInfo = $store.removeUserInfo
 const { userInfo } = storeToRefs($store)
 
 axios.defaults.baseURL = "/api"
@@ -16,8 +17,19 @@ axios.defaults.timeout = 10000
 const CancelToken = axios.CancelToken
 const source = CancelToken.source()
 const urls = ['/user/handleBlog', '/user/postBlog', '/admin/auditBlog', '/user/deleteBlog', '/user/updateInfo']
+let isTokenRefreshing = false
+let subscriberList = []
 
 axios.interceptors.request.use((req) => {
+  if (isTokenRefreshing && req.url != '/user/getToken') {
+    return new Promise((resolve) => {
+      subscriberList.push(() => {
+        req.headers.token = localStorage.getItem('token')
+        resolve(req)
+      })
+    })
+  }
+
   req.headers.token = localStorage.getItem('token')
   if (/^\/user/.test(req.url) && !userInfo || /^\/admin/.test(req.url) && !userInfo.value.admin) {
     LoginRegister()
@@ -35,6 +47,23 @@ axios.interceptors.request.use((req) => {
 
 axios.interceptors.response.use((res) => {
   done()
+
+  if (res.status == 201 && !isTokenRefreshing) {
+    isTokenRefreshing = true
+    axios({
+      headers: {
+        token: localStorage.getItem('token')
+      },
+      url: '/user/getToken'
+    }).then((data: any) => {
+      localStorage.setItem('token', data)
+      isTokenRefreshing = false
+
+      subscriberList.map(cb => cb())
+      subscriberList = []
+    })
+  }
+
   if (res.data.code == 200) {
     if (urls.some(item => RegExp('^' + item).test(res.config.url))) {
       setUserInfo()
@@ -43,9 +72,13 @@ axios.interceptors.response.use((res) => {
     return Promise.resolve(res.data.data)
   } else if (res.data.code == 403) {
     if (res.config.url != '/user/userInfo') {
+      localStorage.removeItem('token')
+      removeUserInfo()
+
       LoginRegister()
     }
   }
+
   return Promise.reject(res.data.msg)
 }, (error) => {
   done()

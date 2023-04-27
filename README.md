@@ -3,7 +3,8 @@
 # 技术
 
 - 前：vue3、vue-router、pinia、ts、less、axios、element-plus、vite、mavon-editor
-- 后：springboot、mybatis-plus、maven、lombok、kaptcha、pagehelper
+- 后：springboot、springsecurity、mybatisplus、jwt、kaptcha、pagehelper、druid、lombok
+- 其他：mysql、redis、maven、git
 
 # 角色
 
@@ -19,10 +20,10 @@
   - 发布、回复、删除、顶、踩评论
 - 管理用户
   - 包含游客和普通用户所拥有的功能
-  - 博客管理：查看、审核、启用、禁用博客
-  - 评论管理：查看、启用、禁用评论
-  - 用户管理：查看、封禁、解封用户
-  - 字典管理
+  - 博客管理：条件筛选、审核、启用、禁用博客
+  - 评论管理：条件筛选、启用、禁用评论
+  - 用户管理：条件筛选、封禁、解封用户
+  - 字典管理：增删改查
 
 # 其他
 
@@ -38,5 +39,7 @@ ip地址显示
 
 快捷滚动至顶部、底部
 
+无感更新token
 
+节流自动保存博客
 
