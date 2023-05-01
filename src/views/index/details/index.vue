@@ -53,6 +53,8 @@ const reply = (item) => {
 }
 
 const handlePostComment = (parent, receiveId, content) => {
+  blog.value.comment += 1
+
   postComment({
     blogId,
     parent,
@@ -60,7 +62,6 @@ const handlePostComment = (parent, receiveId, content) => {
     content
   }).then((data: any) => {
     data.children = []
-    console.log(data)
 
     if (parent) {
       for (const item of commentList) {
@@ -84,9 +85,9 @@ const handlePostComment = (parent, receiveId, content) => {
 }
 
 const handleDeleteComment = (item) => {
+  blog.value.comment -= 1
   Confirm(`确认删除评论“${item.content}”吗?`, () => {
     deleteComment(item.id).then(data => {
-      console.log(data);
 
       foo: for (let i = 0; i < commentList.length; i++) {
         if (commentList[i].id == item.id) {
@@ -148,7 +149,6 @@ const getList = () => {
     })
 
     Promise.all(reqs).then(d => {
-      console.log(d);
       d.forEach((item, index) => {
         item.list.forEach(i => {
           i.isShow = false

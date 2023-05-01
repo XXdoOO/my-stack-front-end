@@ -68,7 +68,7 @@ const handleUpdateBlog = () => {
     } else {
       tip.value = '自动保存失败！请完善信息或检查网络！'
     }
-  }, 1000)
+  }, 2000)
 }
 </script>
 
