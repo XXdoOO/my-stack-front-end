@@ -53,14 +53,14 @@ const reply = (item) => {
 }
 
 const handlePostComment = (parent, receiveId, content) => {
-  blog.value.comment += 1
-
   postComment({
     blogId,
     parent,
     receiveId,
     content
   }).then((data: any) => {
+    blog.value.comment = Number(blog.value.comment) + 1
+
     data.children = []
 
     if (parent) {
@@ -85,9 +85,9 @@ const handlePostComment = (parent, receiveId, content) => {
 }
 
 const handleDeleteComment = (item) => {
-  blog.value.comment -= 1
   Confirm(`确认删除评论“${item.content}”吗?`, () => {
     deleteComment(item.id).then(data => {
+      blog.value.comment = Number(blog.value.comment) - 1
 
       foo: for (let i = 0; i < commentList.length; i++) {
         if (commentList[i].id == item.id) {
